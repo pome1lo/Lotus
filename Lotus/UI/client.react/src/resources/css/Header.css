@@ -1,0 +1,6 @@
+.bg-dark {
+    background: #1B2021 !important;
+    -webkit-box-shadow: 0px 1px 18px 19px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 1px 18px 19px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 1px 18px 19px rgba(0, 0, 0, 0.5);
+}

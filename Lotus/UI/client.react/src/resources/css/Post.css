@@ -1,0 +1,21 @@
+.post {
+    margin-top:200px;
+}
+
+.img-container {
+    width: 75px;
+    height: 75px;
+    border: 2px solid #333738 ; /* Черная граница */
+    border-radius: 50%; /* Делает границу круглой */
+    overflow: hidden; /* Обрезает все, что выходит за пределы контейнера */
+    padding: 4px; /* Отступ вокруг картинки */
+    box-sizing: border-box; /* Учитывает padding и border в общей ширине и высоте */
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Масштабирует и обрезает изображение, чтобы оно заполнило контейнер */
+    display: block; /* Убирает пробел под изображением */
+    border-radius: 50%; /* Делает изображение круглым */
+}

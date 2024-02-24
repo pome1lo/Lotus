@@ -1,0 +1,27 @@
+.leftBlock {
+    width: 280px;
+}
+
+.nav-pills > .nav-item > a.nav-link.active {
+    background: #333738 !important;
+}
+
+a.otherLink {
+    margin-left: 15px;
+}
+
+div.otherLink {
+    margin-left: 5px;
+}
+
+.imageHover {
+    width: 25px;
+    margin: 5px;
+    transition: 0.5s;
+}
+
+.imageHover:hover {
+    width: 30px;
+
+    margin: 51px;
+}
