@@ -1,28 +1,25 @@
 import './resources/css/App.css';
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
-import logo from "./resources/images/logo/big_logo.svg";
-import home from "./resources/images/icons/icon _home_.svg";
-import twitter from "./resources/images/icons/twitter_logo.svg";
-import instagram from "./resources/images/icons/instagram_logo.svg";
-import facebook from "./resources/images/icons/facebook_logo.svg";
-import telegram from "./resources/images/icons/telegram_logo.svg";
 import Footer from "./components/Footer";
 import Post from "./components/Post";
+import Recommendations from "./components/Recommendations";
 
 function App() {
   return (
       <div className="App">
-          <div className="container">
+          <div className="container-xxl">
               <Header/>
-              <main className="container">
-                  <div className="row g-5">
+              <main className="container-xxl">
+                  <div className="row g-4">
                       <Sidebar/>
-
-                      {/* TEST */}
-                      <Post/>
-                      {/* TEST */}
-
+                      <div className="col-md-6">
+                          <Post/>
+                          <Post/>
+                          <Post/>
+                          <Post/>
+                      </div>
+                      <Recommendations/>
                   </div>
               </main>
               <Footer/>

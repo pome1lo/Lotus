@@ -8,47 +8,45 @@ import instagram from '../resources/images/icons/instagram_logo.svg';
 
 function Sidebar() {
     return (
-
-        <div className="col-md-4">
-            <aside className="bd-aside sticky-xl-top text-body-secondary align-self-start mb-3 mb-xl-5 px-2">
-                <h2 className="h6 pt-4 pb-3 mb-4 border-bottom">On this page</h2>
+        <div className="col-md-2">
+            <aside className="bd-aside sticky-xl-top">
                 <nav className="small" id="toc">
                     <div className="d-flex flex-column flex-shrink-0 p-3  leftBlock">
                         <hr/>
                         <ul className="nav nav-pills flex-column mb-auto">
                             <li className="nav-item">
-                                <a href="#" className="nav-link active" aria-current="page">
-                                    <img src={home} className="bi pe-none me-2" width="16" height="16"/>
+                                <a href="#" className="nav-link active link-body-emphasis" aria-current="page">
+                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Home
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2" width="16" height="16"/>
+                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2" width="16" height="16"/>
+                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2" width="16" height="16"/>
+                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2" width="16" height="16"/>
+                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2" width="16" height="16"/>
+                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>

@@ -1,6 +1,7 @@
 .leftBlock {
-    width: 280px;
+    width: 200px;
 }
+
 
 .nav-pills > .nav-item > a.nav-link.active {
     background: var(--bs-secondary-bg) !important;
@@ -22,6 +23,5 @@ div.otherLink {
 
 .imageHover:hover {
     width: 30px;
-
     margin: 51px;
 }

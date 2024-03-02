@@ -3,6 +3,7 @@ import Avatar from "../../src/resources/images/content/test_Avatar.png";
 import React from "https://esm.run/react@18";
 import confetti from "https://esm.run/canvas-confetti@1";
 import content from "../../src/resources/images/content/content.jpg";
+import Publisher from "./Publisher";
 function Post() {
 
     function onClick() {
@@ -13,17 +14,10 @@ function Post() {
     }
 
     return (
-        <div className="col-md-8 post">
+        <div className="post">
+        {/*<div className="col-md-6 post">*/}
             <div>
-                <div className="d-flex align-items-center user">
-                    <div className="img-container">
-                        <img src={Avatar} alt="Ваше изображение"/>
-                    </div>
-                    <div className="m-3">
-                        <span className="nickname">Travis Scott</span>
-                        <span className="date"><br/>31 Jan. 15:23</span>
-                    </div>
-                </div>
+                <Publisher avatar={Avatar} nickname="Travis Scott" info="31 Jan. 15:23" />
                 <blockquote>
                     <div className="context-post">
                         <div className="scale">
