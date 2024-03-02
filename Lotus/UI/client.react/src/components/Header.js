@@ -1,6 +1,6 @@
 import '../resources/css/Header.css';
 import Logo from "../resources/images/logo/big_logo.svg";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 
 function Header() {
@@ -16,6 +16,16 @@ function Header() {
         }
     };
 
+    useEffect(() => {
+        const icons = document.querySelectorAll('.negative');
+        icons.forEach(icon => {
+            if (theme === 'dark') {
+                icon.style.filter = 'invert(1)';
+            } else {
+                icon.style.filter = 'invert(0)';
+            }
+        });
+    }, [theme]);
     return (
         <div>
             <header>

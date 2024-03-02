@@ -3,7 +3,7 @@
 }
 
 .nav-pills > .nav-item > a.nav-link.active {
-    background: #333738 !important;
+    background: var(--bs-secondary-bg) !important;
 }
 
 a.otherLink {

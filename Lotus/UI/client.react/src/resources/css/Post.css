@@ -5,17 +5,227 @@
 .img-container {
     width: 75px;
     height: 75px;
-    border: 2px solid #333738 ; /* Черная граница */
-    border-radius: 50%; /* Делает границу круглой */
-    overflow: hidden; /* Обрезает все, что выходит за пределы контейнера */
-    padding: 4px; /* Отступ вокруг картинки */
-    box-sizing: border-box; /* Учитывает padding и border в общей ширине и высоте */
+    border: 3px solid var(--bs-secondary-bg) ;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 3px;
+    box-sizing: border-box;
 }
 
 .img-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Масштабирует и обрезает изображение, чтобы оно заполнило контейнер */
-    display: block; /* Убирает пробел под изображением */
-    border-radius: 50%; /* Делает изображение круглым */
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+
+.user > div.m-3 {
+    line-height: 18px;
+}
+
+.date,
+.nickname,
+.like > span,
+.content-text {
+    font-family: "Montserrat", sans-serif;
+}
+.nickname {
+    font-weight: bold;
+    font-size: medium;
+}
+
+.date {
+    font-size: small;
+}
+
+.content-text {
+    text-align: justify;
+}
+
+.scale {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.scale img {
+    transition: .5s;
+    display: block;
+    max-width: 100%;
+}
+
+.scale img:hover {
+    transform: scale(1.1);
+}
+
+.content-text {
+    margin-top: 10px;
+}
+
+blockquote {
+    margin: 10px 0 0 35px;
+    border-left: 3.5px solid var(--bs-secondary-bg);
+    padding-left: 15px;
+}
+
+blockquote:before {
+    display: none;
+}
+
+.fav-switch {
+    position: relative;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+}
+
+.fav-switch input {
+    display: none;
+}
+
+.icon {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    margin-top: 3px;
+    background-image: url('../images/icons/fav.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    cursor: pointer;
+
+    transition:  0.3s;
+}
+.fav-switch input:checked ~ .icon {
+    background-image: url('../images/icons/unfav.png');
+}
+
+
+.footer-panel {
+    margin-left: 10px;
+}
+
+.like > span {
+    font-weight: bold;
+    color: #FF2525;
+}
+
+svg{
+    cursor:pointer; overflow:visible; width:50px;
+    #heart{transform-origin:center; animation:animateHeartOut .3s linear forwards;}
+    #main-circ{transform-origin:29.5px 29.5px;}
+}
+
+#checkbox{display:none;}
+
+#checkbox:checked + label svg{
+    #heart{transform:scale(.2); fill:#FF2525; animation:animateHeart .3s linear forwards .25s;}
+    #main-circ{transition:all 2s; animation:animateCircle .3s linear forwards; opacity:1;}
+    #grp1{
+        opacity:1; transition:.1s all .3s;
+        #oval1{
+            transform:scale(0) translate(0, -30px);
+            transform-origin:0 0 0;
+            transition:.5s transform .3s;}
+        #oval2{
+            transform:scale(0) translate(10px, -50px);
+            transform-origin:0 0 0;
+            transition:1.5s transform .3s;}
+    }
+    #grp2{
+        opacity:1; transition:.1s all .3s;
+        #oval1{
+            transform:scale(0) translate(30px, -15px);
+            transform-origin:0 0 0;
+            transition:.5s transform .3s;}
+        #oval2{
+            transform:scale(0) translate(60px, -15px);
+            transform-origin:0 0 0;
+            transition:1.5s transform .3s;}
+    }
+    #grp3{
+        opacity:1; transition:.1s all .3s;
+        #oval1{
+            transform:scale(0) translate(30px, 0px);
+            transform-origin:0 0 0;
+            transition:.5s transform .3s;}
+        #oval2{
+            transform:scale(0) translate(60px, 10px);
+            transform-origin:0 0 0;
+            transition:1.5s transform .3s;}
+    }
+    #grp4{
+        opacity:1; transition:.1s all .3s;
+        #oval1{
+            transform:scale(0) translate(30px, 15px);
+            transform-origin:0 0 0;
+            transition:.5s transform .3s;}
+        #oval2{
+            transform:scale(0) translate(40px, 50px);
+            transform-origin:0 0 0;
+            transition:1.5s transform .3s;}
+    }
+    #grp5{
+        opacity:1; transition:.1s all .3s;
+        #oval1{
+            transform:scale(0) translate(-10px, 20px);
+            transform-origin:0 0 0;
+            transition:.5s transform .3s;}
+        #oval2{
+            transform:scale(0) translate(-60px, 30px);
+            transform-origin:0 0 0;
+            transition:1.5s transform .3s;}
+    }
+    #grp6{
+        opacity:1; transition:.1s all .3s;
+        #oval1{
+            transform:scale(0) translate(-30px, 0px);
+            transform-origin:0 0 0;
+            transition:.5s transform .3s;}
+        #oval2{
+            transform:scale(0) translate(-60px, -5px);
+            transform-origin:0 0 0;
+            transition:1.5s transform .3s;}
+    }
+    #grp7{
+        opacity:1; transition:.1s all .3s;
+        #oval1{
+            transform:scale(0) translate(-30px, -15px);
+            transform-origin:0 0 0;
+            transition:.5s transform .3s;}
+        #oval2{
+            transform:scale(0) translate(-55px, -30px);
+            transform-origin:0 0 0;
+            transition:1.5s transform .3s;}
+    }
+    #grp2{opacity:1; transition:.1s opacity .3s;}
+    #grp3{opacity:1; transition:.1s opacity .3s;}
+    #grp4{opacity:1; transition:.1s opacity .3s;}
+    #grp5{opacity:1; transition:.1s opacity .3s;}
+    #grp6{opacity:1; transition:.1s opacity .3s;}
+    #grp7{opacity:1; transition:.1s opacity .3s;}
+}
+
+@keyframes animateCircle{
+    40%{transform:scale(10); opacity:1; fill:#DD4688;}
+    55%{transform:scale(11); opacity:1; fill:#D46ABF;}
+    65%{transform:scale(12); opacity:1; fill:#CC8EF5;}
+    75%{transform:scale(13); opacity:1; fill:transparent; stroke:#CC8EF5; stroke-width:.5;}
+    85%{transform:scale(17); opacity:1; fill:transparent; stroke:#CC8EF5; stroke-width:.2;}
+    95%{transform:scale(18); opacity:1; fill:transparent; stroke:#CC8EF5; stroke-width:.1;}
+    100%{transform:scale(19); opacity:1; fill:transparent; stroke:#CC8EF5; stroke-width:0;}
+}
+
+@keyframes animateHeart{
+    0%{transform:scale(.2);}
+    40%{transform:scale(1.2);}
+    100%{transform:scale(1);}
+}
+
+@keyframes animateHeartOut{
+    0%{transform:scale(1.4);}
+    100%{transform:scale(1);}
 }
