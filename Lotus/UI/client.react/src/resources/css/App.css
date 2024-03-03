@@ -37,3 +37,46 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+@media (max-width: 770px) {
+  .two {
+    flex: 0 0 100% !important;
+  }
+  .one {
+    display: none;
+  }
+
+}
+
+@media (max-width: 1030px) {
+  .bd-aside{
+    display: flex;
+    flex-direction: column;
+  }
+
+
+
+  .row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .one, .two, .three {
+    width: 100%;
+  }
+  .one {
+    flex: 0 0 30%;
+  }
+  .two {
+    flex: 0 0 70%;
+  }
+  .three {
+    order: -1 !important;
+  }
+
+  .display-none {
+    display: none;
+  }
+}

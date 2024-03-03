@@ -50,11 +50,25 @@ function Header() {
                                 <li className="nav-item">
                                     <a className="nav-link disabled">Disabled</a>
                                 </li>
+                                <h6 className="h6 pt-4 pb-3 mb-4 border-bottom show-display"></h6>
+                                <li className="nav-item show-display">
+                                    <a className="nav-link active" aria-current="page" href="#">Home</a>
+                                </li>
+                                <li className="nav-item show-display">
+                                    <a className="nav-link active" aria-current="page" href="#">Home</a>
+                                </li>
+                                <li className="nav-item show-display">
+                                    <a className="nav-link active" aria-current="page" href="#">Home</a>
+                                </li>
+                                <li className="nav-item show-display">
+                                    <a className="nav-link active" aria-current="page" href="#">Home</a>
+                                </li>
+
                             </ul>
                             <form className="d-flex" role="search">
                                 <div>
                                     <label className="theme-switch">
-                                        <input type="checkbox" onChange={toggleTheme}/>
+                                    <input type="checkbox" onChange={toggleTheme}/>
                                         <span className="slider"></span>
                                     </label>
                                 </div>

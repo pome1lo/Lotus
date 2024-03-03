@@ -43,3 +43,14 @@ header {
 .theme-switch input:checked ~ .slider {
     background-image: url('../images/icons/moon.png');
 }
+
+
+.show-display {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .show-display {
+        display: block;
+    }
+}

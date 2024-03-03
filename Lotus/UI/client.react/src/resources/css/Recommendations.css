@@ -97,3 +97,12 @@ a {
 a:hover {
     color: #FF2525;
 }
+
+
+@media (max-width: 1300px) {
+    .big-card-item,
+    .card-item {
+        width: 100px;
+    }
+}
+

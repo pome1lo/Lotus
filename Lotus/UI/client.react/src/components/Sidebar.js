@@ -8,7 +8,7 @@ import instagram from '../resources/images/icons/instagram_logo.svg';
 
 function Sidebar() {
     return (
-        <div className="col-md-2">
+        <div className="col-md-2 order-md-1 one">
             <aside className="bd-aside sticky-xl-top">
                 <nav className="small" id="toc">
                     <div className="d-flex flex-column flex-shrink-0 p-3  leftBlock">

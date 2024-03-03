@@ -10,13 +10,13 @@ import Publisher from "./Publisher";
 
 function Recommendations() {
     return (
-        <div className="col-md-4">
+        <div className="col-md-4 order-md-3 three">
             <aside className="bd-aside sticky-xl-top">
                 <div className="themes">
                     <img src={Logo}/>
                     <h3>Themes in the Lotus</h3>
                 </div>
-                <div className="row">
+                <div className="row display-none">
                     <div className="col-md-8">
                         <div className="row mb-3 text-center">
                             <div className="col-md-6 card-item shared-card-item">
@@ -44,14 +44,14 @@ function Recommendations() {
                 </div>
 
 
-                <div className="p-4 mb-3 bg-body-tertiary rounded">
+                <div className="p-4 mb-3 bg-body-tertiary rounded about">
                     <h5 className="fst-italic">About</h5>
                     <p className="mb-0">Customize this section to tell your visitors a little bit about your
                         publication,
                         writers, content, or something else entirely. Totally up to you.</p>
                 </div>
 
-                <div>
+                <div className="display-none">
                     <div className="d-flex justify-content-between align-items-center">
                         <h6 className="">Recommendations for you</h6>
                         <button className="btn btn-outline-secondary button-all">All</button>

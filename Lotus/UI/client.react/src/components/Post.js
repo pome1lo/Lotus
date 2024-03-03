@@ -13,7 +13,7 @@ function Post() {
         });
     }
     return (
-        <div data-aos="fade-up" data-aos-anchor-placement="center-bottom" className="post" data-aos-duration="750">
+        <div data-aos="fade-up" data-aos-anchor-placement="center-bottom" className="post two" data-aos-duration="750">
         {/*<div className="col-md-6 post">*/}
             <div>
                 <Publisher avatar={Avatar} nickname="Travis Scott" info="31 Jan. 15:23" />
