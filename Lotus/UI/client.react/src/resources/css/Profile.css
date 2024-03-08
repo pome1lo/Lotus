@@ -1,0 +1,38 @@
+.bg-cover {
+    background: url("../images/content/cover.jpg");
+}
+
+.ava h1.display-4 {
+    font-weight: 900 !important;
+    margin-left: 50px;
+}
+
+.ava {
+    position: relative;
+    bottom: -150px;
+    align-items: end;
+}
+
+
+.img-container.profile-ava {
+    width: 15vw;
+    height: 15vw;
+    min-height: 50px;
+    min-width: 50px;
+    border: 5px solid var(--bs-secondary-bg);
+}
+
+@media (max-width: 768px) {
+    .img-container.profile-ava {
+        width: 30vw;
+        height: 30vw;
+    }
+}
+
+@media (max-width: 576px) {
+    .img-container.profile-ava {
+        width: 20vw;
+        height: 20vw;
+        border: 2px solid var(--bs-secondary-bg);
+    }
+}
