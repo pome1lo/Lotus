@@ -49,7 +49,7 @@ router.post('/userAccount/auth', async (ctx) => {
         return;
     }
 
-    const token = jwt.sign({ username }, secretKey);
+    const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
     ctx.body = { token };
 });
 router.get('/userAccount/protected', koaJwt({ secret: secretKey }), async (ctx) => {
