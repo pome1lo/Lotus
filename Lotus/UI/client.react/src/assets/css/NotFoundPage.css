@@ -1,0 +1,14 @@
+
+.milk-404 {
+    max-height: 100vh;
+}
+
+#mouth-frown{
+    visibility: hidden;
+}
+
+a {
+    font-family: sans-serif;
+    font-size: .8em;
+    padding: 10px;
+}
