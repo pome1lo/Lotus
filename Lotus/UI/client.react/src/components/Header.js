@@ -1,5 +1,5 @@
-import '../resources/css/Header.css';
-import Logo from "../resources/images/logo/big_logo.svg";
+import '../assets/css/Header.css';
+import Logo from "../assets/images/logo/big_logo.svg";
 import React, { useState, useEffect } from 'react';
 
 

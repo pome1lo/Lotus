@@ -1,10 +1,10 @@
-import '../resources/css/Sidebar.css';
-import logo from '../resources/images/logo/big_logo.svg';
-import home from '../resources/images/icons/icon _home_.svg';
-import twitter from '../resources/images/icons/twitter_logo.svg';
-import telegram from '../resources/images/icons/telegram_logo.svg';
-import facebook from '../resources/images/icons/facebook_logo.svg';
-import instagram from '../resources/images/icons/instagram_logo.svg';
+import '../assets/css/Sidebar.css';
+import logo from '../assets/images/logo/big_logo.svg';
+import home from '../assets/images/icons/icon _home_.svg';
+import twitter from '../assets/images/icons/twitter_logo.svg';
+import telegram from '../assets/images/icons/telegram_logo.svg';
+import facebook from '../assets/images/icons/facebook_logo.svg';
+import instagram from '../assets/images/icons/instagram_logo.svg';
 
 function Sidebar() {
     return (

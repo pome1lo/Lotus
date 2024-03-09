@@ -1,40 +1,25 @@
-import './resources/css/App.css';
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
-import Footer from "./components/Footer";
-import Post from "./components/Post";
-import Recommendations from "./components/Recommendations";
+import './assets/css/App.css';
+import 'aos/dist/aos.css';
 import React, { useEffect } from 'react';
 import AOS from 'aos';
-import 'aos/dist/aos.css';
-import Profile from "./components/Profile"; // Импортируйте CSS из библиотеки AOS
+import Form from "./components/Form"; // Импортируйте CSS из библиотеки AOS
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Main from "./components/Main";
 export default App;
 
 
 function App() {
-    useEffect(() => {
-        AOS.init();
-    }, []);
+    useEffect(() => AOS.init , []);
 
     return (
         <div className="App">
-            <div className="container-xxl">
-                <Header/>
-                <main className="container-xxl">
-                    <div className="row g-4">
-                        <Sidebar/>
-                        <div className="col-md-6 order-md-1 two">
-                            <Post/>
-                            <Post/>
-                            <Post/>
-                            <Post/>
-                        </div>
-                        <Recommendations />
-                    {/*<Profile/>*/}
-                    </div>
-                </main>
-                <Footer/>
-            </div>
+            <Router>
+                <Routes>
+                    <Route exact path="/Login" element={<Form/>} />
+                    <Route path="/Main" element={<Main/>} />
+                    {/*<Route path="*" element={<NotFoundPage />} />*/}
+                </Routes>
+            </Router>
         </div>
     );
 }

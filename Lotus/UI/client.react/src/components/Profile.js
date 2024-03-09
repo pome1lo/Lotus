@@ -1,6 +1,6 @@
-import "../resources/css/Profile.css";
-import Avatar from "../../src/resources/images/content/test_Avatar.png";
-import Cover from "../../src/resources/images/content/cover.jpg";
+import "../assets/css/Profile.css";
+import Avatar from "../assets/images/content/test_Avatar.png";
+import Cover from "../assets/images/content/cover.jpg";
 
 
 function Profile() {

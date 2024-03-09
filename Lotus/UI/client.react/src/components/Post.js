@@ -1,8 +1,8 @@
-import "../resources/css/Post.css";
-import Avatar from "../../src/resources/images/content/test_Avatar.png";
+import "../assets/css/Post.css";
+import Avatar from "../assets/images/content/test_Avatar.png";
 import React from "https://esm.run/react@18";
 import confetti from "https://esm.run/canvas-confetti@1";
-import content from "../../src/resources/images/content/content.jpg";
+import content from "../assets/images/content/content.jpg";
 import Publisher from "./Publisher";
 function Post() {
 

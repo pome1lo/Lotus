@@ -1,11 +1,11 @@
-import '../resources/css/Recommendations.css';
-import img1 from "../../src/resources/images/content/1.png";
-import img2 from "../../src/resources/images/content/2.png";
-import img3 from "../../src/resources/images/content/3.png";
-import img4 from "../../src/resources/images/content/4.png";
-import img5 from "../../src/resources/images/content/5.png";
-import Logo from "../resources/images/logo/logo.png";
-import Avatar from "../resources/images/content/test_Avatar.png";
+import '../assets/css/Recommendations.css';
+import img1 from "../assets/images/content/1.png";
+import img2 from "../assets/images/content/2.png";
+import img3 from "../assets/images/content/3.png";
+import img4 from "../assets/images/content/4.png";
+import img5 from "../assets/images/content/5.png";
+import Logo from "../assets/images/logo/logo.png";
+import Avatar from "../assets/images/content/test_Avatar.png";
 import Publisher from "./Publisher";
 
 function Recommendations() {
