@@ -11,8 +11,12 @@
 
 .rememberMe {
     font-size: small;
+    margin-bottom: 0;
+    text-decoration: none;
+    color: var(--bs-heading-color);
 }
 
+.redHover:hover,
 button.btn.w-auto.rememberMe:hover {
     color: #da5c69;
 }
