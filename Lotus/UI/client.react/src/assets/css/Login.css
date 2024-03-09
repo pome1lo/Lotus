@@ -1,0 +1,38 @@
+
+.form-floating.username input {
+
+    border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.form-floating.password input {
+    margin-top: -1px;
+    border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
+}
+
+.rememberMe {
+    font-size: small;
+}
+
+button.btn.w-auto.rememberMe:hover {
+    color: #da5c69;
+}
+.changePasswordBorder input {
+    border-radius: 0 !important;
+}
+.display-none {
+    display: none;
+}
+/*.form-floating.password input:focus,*/
+/*.form-floating.username input:focus {*/
+/*    border-color: #EA638C;*/
+/*}*/
+
+/*.form-floating.password input:valid,*/
+/*.form-floating.username input:valid {*/
+/*    border-color: #2b7a0e;*/
+/*}*/
+
+/*.form-floating.password input:invalid,*/
+/*.form-floating.username input:invalid {*/
+/*    border-color: darkred;*/
+/*}*/

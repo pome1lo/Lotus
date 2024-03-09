@@ -1,6 +1,7 @@
 Discovers-chat/
 IMG/
 .garbage
+.garbage/
 
 # dependencies
 /node_modules
