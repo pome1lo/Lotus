@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../assets/css/NotFoundPage.css';
-function NotFoundPage() {
+import '../../assets/css/NotFoundPage.css';
+const NotFoundPage = () => {
     return (
         <div className="d-flex flex-column align-items-center justify-content-center text-center" style={{ height: '100vh', background: '#f8f9fa' }}>
             <h1 className="display-1" style={{ color: '#dc3545' }}>404</h1>
@@ -12,4 +12,4 @@ function NotFoundPage() {
     );
 }
 
-export default NotFoundPage;
+export { NotFoundPage };

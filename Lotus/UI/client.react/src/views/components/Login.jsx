@@ -1,8 +1,8 @@
-import "../assets/css/Login.css";
+import "../../assets/css/Login.css";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-function Login() {
+const Login = () => {
     const navigate = useNavigate();
     const [inputUsername, setUsername] = useState('');
     const [inputPassword, setPassword] = useState('');
@@ -14,7 +14,7 @@ function Login() {
     const [changePasswordBorder, setStyle] = useState('');
 
     async function fetchData() {
-        const response = await fetch('http://localhost:31002/userAccount/auth', {
+        const response = await fetch('http://localhost:31002/api/auth/userAccount/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -94,4 +94,4 @@ function Login() {
     );
 }
 
-export default Login;
+export { Login };

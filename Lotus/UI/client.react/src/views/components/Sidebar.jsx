@@ -1,12 +1,12 @@
-import '../assets/css/Sidebar.css';
-import logo from '../assets/images/logo/big_logo.svg';
-import home from '../assets/images/icons/icon _home_.svg';
-import twitter from '../assets/images/icons/twitter_logo.svg';
-import telegram from '../assets/images/icons/telegram_logo.svg';
-import facebook from '../assets/images/icons/facebook_logo.svg';
-import instagram from '../assets/images/icons/instagram_logo.svg';
+import '../../assets/css/Sidebar.css';
+import logo from '../../assets/images/logo/big_logo.svg';
+import home from '../../assets/images/icons/icon _home_.svg';
+import twitter from '../../assets/images/icons/twitter_logo.svg';
+import telegram from '../../assets/images/icons/telegram_logo.svg';
+import facebook from '../../assets/images/icons/facebook_logo.svg';
+import instagram from '../../assets/images/icons/instagram_logo.svg';
 
-function Sidebar() {
+const Sidebar = () => {
     return (
         <div className="col-md-2 order-md-1 one">
             <aside className="bd-aside sticky-xl-top">
@@ -16,37 +16,37 @@ function Sidebar() {
                         <ul className="nav nav-pills flex-column mb-auto">
                             <li className="nav-item">
                                 <a href="#" className="nav-link active link-body-emphasis" aria-current="page">
-                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
+                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Home
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
+                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
+                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
+                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
+                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} className="bi pe-none me-2 negative" width="16" height="16"/>
+                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Dashboard
                                 </a>
                             </li>
@@ -77,4 +77,4 @@ function Sidebar() {
     );
 }
 
-export default Sidebar;
+export {Sidebar};

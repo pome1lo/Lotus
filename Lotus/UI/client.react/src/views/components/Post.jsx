@@ -1,11 +1,10 @@
-import "../assets/css/Post.css";
-import Avatar from "../assets/images/content/test_Avatar.png";
+import "../../assets/css/Post.css";
+// import Avatar from "../../assets/images/content/test_Avatar.png";
 import React from "https://esm.run/react@18";
 import confetti from "https://esm.run/canvas-confetti@1";
-import content from "../assets/images/content/content.jpg";
-import Publisher from "./Publisher";
-function Post() {
-
+// import content from "../../assets/images/content/content.jpg";
+import {Publisher} from "./Publisher";
+const Post =  ({ avatar, nickname, info, content, text, likes }) => {
     function onClick() {
         confetti({
             particleCount: 150,
@@ -14,24 +13,14 @@ function Post() {
     }
     return (
         <div data-aos="fade-up" data-aos-anchor-placement="center-bottom" className="post two" data-aos-duration="750">
-        {/*<div className="col-md-6 post">*/}
             <div>
-                <Publisher avatar={Avatar} nickname="Travis Scott" info="31 Jan. 15:23" />
+                <Publisher avatar={avatar} nickname={nickname} info={info} />
                 <blockquote>
                     <div className="context-post">
                         <div className="scale">
-                            <img src={content}/>
+                            <img src={content} alt={"content"}/>
                         </div>
-                        <p className="content-text">
-                            I've been hiding it for a long time, but it's time to tell everyone about it, I'm a
-                            pineapple.
-                            I've been hiding it for a long time, but it's time to tell everyone about it, I'm a
-                            pineapple.
-                            I've been hiding it for a long time, but it's time to tell everyone about it, I'm a
-                            pineapple.
-                            I've been hiding it for a long time, but it's time to tell everyone about it, I'm a
-                            pineapple.
-                        </p>
+                        <p className="content-text">{text}</p>
                     </div>
                 </blockquote>
                <div className="footer-panel d-flex align-items-center justify-content-between">
@@ -82,7 +71,7 @@ function Post() {
                                </g>
                            </svg>
                        </label>
-                       <span>4563</span>
+                       <span>{likes}</span>
                    </div>
                    <label className="fav-switch">
                        <input type="checkbox"/>
@@ -94,4 +83,4 @@ function Post() {
     );
 }
 
-export default Post;
+export {Post};

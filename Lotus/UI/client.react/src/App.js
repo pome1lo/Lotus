@@ -1,11 +1,13 @@
 import './assets/css/App.css';
 import 'aos/dist/aos.css';
-import React, { useEffect } from 'react';
+import React, {Profiler, useEffect} from 'react';
 import AOS from 'aos';
-import Form from "./components/Form";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Main from "./components/Main";
-import NotFoundPage from "./components/NotFoundPage";
+import {FormPage} from "./views/pages/FormPage";
+import { Route, Routes } from 'react-router-dom';
+import {MainPage} from "./views/pages/MainPage";
+import {NotFoundPage} from "./views/pages/NotFoundPage";
+import {Profile} from "./views/components/Profile";
+import {Layout} from "./views/Layout";
 export default App;
 
 function App() {
@@ -13,13 +15,16 @@ function App() {
 
     return (
         <div className="App">
-            <Router>
-                <Routes>
-                    <Route exact path="/Login" element={<Form/>} />
-                    <Route path="/Main" element={<Main/>} />
+            <>
+            <Routes>
+                <Route path="/" element={<Layout/>}>
+                    <Route index element={<MainPage/>} />
+                    <Route path="/login" element={<FormPage/>} />
+                    <Route path="/profile/:userName" element={<Profile/>} />
                     <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            </Router>
+                </Route>
+            </Routes>
+            </>
         </div>
     );
 }

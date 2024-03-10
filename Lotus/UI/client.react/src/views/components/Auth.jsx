@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function Auth() {
+const Auth = () => {
     const [inputCode, setCode] = useState('');
     const [timeLeft, setTimeLeft] = useState(10);
     const [isButtonDisabled, setButtonDisabled] = useState(true);
@@ -42,4 +42,4 @@ function Auth() {
     );
 }
 
-export default Auth;
+export { Auth };

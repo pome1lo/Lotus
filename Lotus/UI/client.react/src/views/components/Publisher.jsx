@@ -1,8 +1,8 @@
-function Publisher({ avatar, nickname, info }) {
+const Publisher = ({ avatar, nickname, info }) => {
     return (
         <div className="d-flex align-items-center user">
             <div className="img-container">
-                <img src={avatar} alt="Ваше изображение"/>
+                <img src={avatar} alt="avatar"/>
             </div>
             <div className="m-3">
                 <span className="nickname">{nickname}</span>
@@ -12,4 +12,4 @@ function Publisher({ avatar, nickname, info }) {
     );
 }
 
-export default Publisher;
+export {Publisher};
