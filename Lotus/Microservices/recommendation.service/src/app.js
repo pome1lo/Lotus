@@ -5,49 +5,15 @@ const Router = require('@koa/router');
 const router = new Router();
 const axios = require('axios');
 const cheerio = require('cheerio');
-const cron = require('node-cron');
 const schedule = require('node-schedule');
-const {DataTypes, Sequelize} = require("sequelize");
+const newsRoutes = require('./routes/news');
+const port = 31001;
+const NEWS = require('./database/models/news');
+const cors = require('koa2-cors');
 
+app.use(cors());
 
-
-
-const sequelize = new Sequelize('RECOMMENDATION_SERVICE', 'sa', 'sa', {
-    host: 'localhost',
-    dialect: 'mssql',
-    dialectOptions: {
-        options: {
-            trustServerCertificate: true,
-        },
-    },
-});
-
-const NEWS = sequelize.define('NEWS', {
-    ID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    Heading: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-    },
-    Paragraph: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
-    Date: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-    }
-}, {
-    timestamps: false,
-    freezeTableName: true
-});
-
-
-const job = schedule.scheduleJob('*/10 * * * * *', async function(){
+const job = schedule.scheduleJob('0 * * * *', async function(){
     const response = await axios.get('https://www.rt.com/news/');
     const $ = cheerio.load(response.data);
     $('li.listCard-rows__item').each(async (i, element) => {
@@ -62,12 +28,9 @@ const job = schedule.scheduleJob('*/10 * * * * *', async function(){
             await NEWS.create({ Heading: heading, Paragraph: paragraph, Date: date });
         }
     });
-    console.log('Это сообщение выводится каждые 10 секунды');
-});
-
-router.get('/news', async ctx => {
-    ctx.body = await NEWS.findAll();
+    console.log('✅ log: successful news parsing.');
 });
 
 app.use(router.routes());
-app.listen(3000);
+app.use(newsRoutes.routes());
+app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

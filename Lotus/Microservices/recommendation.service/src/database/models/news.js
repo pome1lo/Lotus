@@ -17,7 +17,7 @@ const NEWS = sequelize.define('NEWS', {
         allowNull: false
     },
     Date: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(255),
         allowNull: false
     }
 }, {
