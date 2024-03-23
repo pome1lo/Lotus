@@ -16,7 +16,7 @@ const Recommendations = () => {
                     <img src={Logo} alt={"logo"}/>
                     <h3>Themes in the Lotus</h3>
                 </div>
-                <div className="row display-none">
+                <div className="row">
                     <div className="col-md-8">
                         <div className="row mb-3 text-center">
                             <div className="col-md-6 card-item shared-card-item">
@@ -51,7 +51,7 @@ const Recommendations = () => {
                         writers, content, or something else entirely. Totally up to you.</p>
                 </div>
 
-                <div className="display-none">
+                <div className="">
                     <div className="d-flex justify-content-between align-items-center">
                         <h6 className="">Recommendations for you</h6>
                         <button className="btn btn-outline-secondary button-all">All</button>

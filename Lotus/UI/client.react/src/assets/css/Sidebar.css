@@ -15,12 +15,23 @@ div.otherLink {
     margin-left: 5px;
 }
 
+.imageHover .bi {
+    font-size: x-large;
+    color: #ff2525;
+}
+
 .imageHover {
     width: 25px;
-    margin: 5px;
+    margin: 4px;
     transition: 0.5s;
 }
 
 .imageHover:hover {
     transform: scale(1.4);
+}
+
+
+.nav.nav-pills.flex-column i.bi {
+    font-size: medium;
+    padding: 10px;
 }

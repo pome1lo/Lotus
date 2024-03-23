@@ -1,4 +1,3 @@
-import {Post} from "../components/Post";
 import {Recommendations} from "../components/Recommendations";
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
@@ -20,30 +19,9 @@ const NewsPage = () => {
             .then(data => setNews(data))
     }, [navigate]);
 
-    // async function fetchData() {
-    //     const response = await fetch('http://localhost:31001/api/news', {
-    //         method: 'GET'
-    //     });
-    //     if (!response.ok) {
-    //         console.error('Ошибка входа:', response.statusText);
-    //         return;
-    //     }
-    //
-    //     const data = await response.json();
-    //     if (response.ok) {
-    //         console.log("data", data.Date);
-    //         console.log("data", data.Paragraph);
-    //         console.log("data", data.ID);
-    //     } else {
-    //         console.error('Ошибка входа:', data.message);
-    //     }
-    // }
-
-
     return(
         <>
             <div className="col-md-6 order-md-1 two">
-
                 <div className="bd-example m-0 border-0">
                     <nav>
                         <div className="nav nav-tabs mb-3" id="nav-tab" role="tablist">
@@ -71,12 +49,15 @@ const NewsPage = () => {
                             <p>Тут должен быть топик <strong>Главная</strong></p>
                             {
                                 news.sort((a, b) => b.ID - a.ID).map(item => (
-                                    <NewsItem
-                                        ID={item.ID}
-                                        Heading={item.Heading}
-                                        Paragraph={item.Paragraph}
-                                        Date={item.Date}
-                                    />
+                                    <div className="mt-3 mb-3" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
+                                        <NewsItem
+                                            ID={item.ID}
+                                            Heading={item.Heading}
+                                            Paragraph={item.Paragraph}
+                                            Date={item.Date}
+                                        />
+                                    </div>
+
                                 ))
                             }
                         </div>
@@ -110,8 +91,6 @@ const NewsPage = () => {
                         </div>
                     </div>
                 </div>
-
-
             </div>
             <Recommendations/>
         </>

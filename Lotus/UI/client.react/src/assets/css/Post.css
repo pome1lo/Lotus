@@ -111,7 +111,7 @@ blockquote:before {
     color: #FF2525;
 }
 
-svg{
+.like svg{
     cursor:pointer; overflow:visible; width:50px;
     #heart{transform-origin:center; animation:animateHeartOut .3s linear forwards;}
     #main-circ{transform-origin:29.5px 29.5px;}

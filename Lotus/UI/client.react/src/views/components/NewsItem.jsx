@@ -1,9 +1,10 @@
 import "../../assets/css/NewsItem.css";
+import {Link} from "react-router-dom";
 
 const NewsItem =  ({ ID, Heading, Paragraph, Date })  => {
     return (
         <>
-            <div className="mb-4 news-item-card" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
+            <Link to={`/news/${ID}`} className="mb-4 news-item-card">
                 <div className="card">
                     <svg className="bd-placeholder-img card-img-top" width="100%" height="200"
                          xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap"
@@ -18,7 +19,7 @@ const NewsItem =  ({ ID, Heading, Paragraph, Date })  => {
                         </p>
                     </div>
                 </div>
-            </div>
+            </Link>
         </>
     );
 }

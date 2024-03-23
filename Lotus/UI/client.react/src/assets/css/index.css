@@ -21,3 +21,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1 ; /* Цвет фона трека */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff2525 !important; /* Цвет ползунка */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b90000 !important; /* Цвет ползунка при наведении */
+}
+

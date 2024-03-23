@@ -1,11 +1,4 @@
 import '../../assets/css/Sidebar.css';
-import logo from '../../assets/images/logo/big_logo.svg';
-import home from '../../assets/images/icons/icon_home.svg';
-import news from '../../assets/images/icons/icon_news.svg';
-import twitter from '../../assets/images/icons/twitter_logo.svg';
-import telegram from '../../assets/images/icons/telegram_logo.svg';
-import facebook from '../../assets/images/icons/facebook_logo.svg';
-import instagram from '../../assets/images/icons/instagram_logo.svg';
 import {Link, NavLink} from "react-router-dom";
 import React from "react";
 
@@ -19,39 +12,28 @@ const Sidebar = () => {
                         <ul className="nav nav-pills flex-column mb-auto">
                             <li className="nav-item">
                                 <NavLink to="/home" className="nav-link link-body-emphasis" aria-current="page">
-                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
-                                    Home
+                                    <i className="bi bi-house"></i>Home
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink to="/news" className="nav-link link-body-emphasis" aria-current="page">
-                                    <img src={news} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
-                                    News
+                                    <i className="bi bi-columns"></i>News
                                 </NavLink>
                             </li>
                             <li>
-                                <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
-                                    Dashboard
-                                </a>
+                                <NavLink to="/1" className="nav-link link-body-emphasis" aria-current="page">
+                                    <i className="bi bi-emoji-sunglasses"></i>link 1
+                                </NavLink>
                             </li>
                             <li>
-                                <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
-                                    Dashboard
-                                </a>
+                                <NavLink to="/2" className="nav-link link-body-emphasis" aria-current="page">
+                                    <i className="bi bi-emoji-sunglasses"></i>link 2
+                                </NavLink>
                             </li>
                             <li>
-                                <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
-                                    Dashboard
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
-                                    Dashboard
-                                </a>
+                                <NavLink to="/3" className="nav-link link-body-emphasis" aria-current="page">
+                                    <i className="bi bi-emoji-sunglasses"></i>link 3
+                                </NavLink>
                             </li>
                         </ul>
                         <hr/>
@@ -59,18 +41,18 @@ const Sidebar = () => {
                             <a href="#" className="nav-link otherLink">All about the Lotus</a>
                             <a href="#" className="nav-link otherLink">Come join us: </a>
                             <div className="d-flex otherLink">
-                                <a href="" className="nav-link link-body-emphasis imageHover"><img
-                                    src={twitter}
-                                    className="imageHover bi pe-none me-2"></img></a>
-                                <a href="" className="nav-link link-body-emphasis imageHover"><img
-                                    src={instagram}
-                                    className="imageHover bi pe-none me-2"/></a>
-                                <a href="" className="nav-link link-body-emphasis imageHover"><img
-                                    src={facebook}
-                                    className="imageHover bi pe-none me-2 "/></a>
-                                <a href="" className="nav-link link-body-emphasis imageHover"><img
-                                    src={telegram}
-                                    className="imageHover bi pe-none me-2"/></a>
+                                <Link to="https://t.me/telegram" className="nav-link link-body-emphasis imageHover" >
+                                    <i className="bi-telegram bi"></i>
+                                </Link>
+                                <Link to="https://www.instagram.com/" className="nav-link link-body-emphasis imageHover" >
+                                    <i className="bi-instagram bi"></i>
+                                </Link>
+                                <Link to="https://twitter.com/" className="nav-link link-body-emphasis imageHover" >
+                                    <i className="bi-twitter bi"></i>
+                                </Link>
+                                <Link to="https://www.facebook.com/" className="nav-link link-body-emphasis imageHover" >
+                                    <i className="bi-facebook bi"></i>
+                                </Link>
                             </div>
                         </div>
                     </div>

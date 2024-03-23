@@ -5,6 +5,7 @@ const argon2 = require('argon2');
 const redis = require('redis');
 const { promisify } = require('util');
 const { USER: User } = require('../database/models/user');
+const amqp = require('amqplib/callback_api');
 
 const router = new Router();
 const secretKey = 'your-secret-key'; // docker
@@ -12,10 +13,30 @@ const secretKey = 'your-secret-key'; // docker
 // const client = redis.createClient("redis://localhost:6379");
 // client.connect();
 
-router.post('/api/auth/userAccount/register', async (ctx) => {
-    const { username, password } = ctx.request.body;
+// router.post('/api/auth/userAccount/register', async (ctx) => {
+//     const { username, password } = ctx.request.body;
+//
+//     const existingUser = await User.findOne({ where: { username } });
+//     if (existingUser) {
+//         ctx.status = 400;
+//         ctx.body = { message: 'Пользователь уже существует' };
+//         return;
+//     }
+//
+//     const hashedPassword = await argon2.hash(password);
+//     const newUser = await User.create({ username, password: hashedPassword });
+//
+//     // await client.set(username, JSON.stringify(newUser));
+//
+//     ctx.status = 201;
+//     ctx.body = { message: 'Пользователь успешно зарегистрирован', user: newUser.username };
+// });
 
-    const existingUser = await User.findOne({ where: { username } });
+
+router.post('/api/auth/userAccount/register', async (ctx) => {
+    const { username, email, password } = ctx.request.body;
+
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
         ctx.status = 400;
         ctx.body = { message: 'Пользователь уже существует' };
@@ -23,9 +44,27 @@ router.post('/api/auth/userAccount/register', async (ctx) => {
     }
 
     const hashedPassword = await argon2.hash(password);
-    const newUser = await User.create({ username, password: hashedPassword });
+    const newUser = await User.create({ username, email, password: hashedPassword });
 
-    // await client.set(username, JSON.stringify(newUser));
+    amqp.connect('amqp://localhost:5672', function(error0, connection) {
+        if (error0) {
+            throw error0;
+        }
+        connection.createChannel(function(error1, channel) {
+            if (error1) {
+                throw error1;
+            }
+
+            const queue = 'userRegistered';
+            const msg = JSON.stringify(newUser);
+
+            channel.assertQueue(queue, {
+                durable: false
+            });
+
+            channel.sendToQueue(queue, Buffer.from(msg));
+        });
+    });
 
     ctx.status = 201;
     ctx.body = { message: 'Пользователь успешно зарегистрирован', user: newUser.username };
