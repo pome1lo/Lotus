@@ -15,19 +15,21 @@ header {
 .theme-switch {
     position: relative;
     display: inline-block;
-    width: 35px;
-    height: 30px;
-    margin: 0px 5px;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 7px;
 }
 
 .theme-switch input {
     display: none;
 }
-
+nav.header {
+    padding: 0 !important;
+}
 .slider {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     margin-top: 3px;
     background-image: url('../images/icons/sun.png');
     background-repeat: no-repeat;
@@ -36,21 +38,35 @@ header {
 
     transition:  0.3s;
 }
-.slider:hover {
-    width: 33px;
-    height: 33px;
-}
 .theme-switch input:checked ~ .slider {
     background-image: url('../images/icons/moon.png');
 }
+
 
 
 .show-display {
     display: none;
 }
 
-@media (max-width: 767px) {
+
+@media (max-width: 992px) {
+    ul.person {
+        transform: translate(0px, 0px) !important;
+    }
+
+    .bottomBlock {
+        display: flex !important;
+    }
     .show-display {
         display: block;
     }
+}
+
+
+ul.person {
+    position: absolute;
+    inset: 0px 0px auto auto;
+    margin: 0px;
+    z-index: 6000;
+    transform: translate(-100px, -5px);
 }

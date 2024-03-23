@@ -53,7 +53,7 @@ const Login = () => {
         setStyle(prev =>
             prev === 'changePasswordBorder' ? '' : 'changePasswordBorder'
         );
-        navigate('/'); // Перенаправление на главную страницу
+        navigate('/');
     };
     return (
         <form className="text-center form-signin" onSubmit={fetchData}>

@@ -3,7 +3,7 @@
 }
 
 
-.nav-pills > .nav-item > a.nav-link.active {
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     background: var(--bs-secondary-bg) !important;
 }
 
@@ -22,6 +22,5 @@ div.otherLink {
 }
 
 .imageHover:hover {
-    width: 30px;
-    margin: 51px;
+    transform: scale(1.4);
 }

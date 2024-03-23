@@ -1,0 +1,7 @@
+.news-item-tab {
+    color: #da3b51 !important;
+}
+
+.news-item-tab.active {
+    color: inherit !important;
+}

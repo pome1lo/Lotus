@@ -1,10 +1,13 @@
 import '../../assets/css/Sidebar.css';
 import logo from '../../assets/images/logo/big_logo.svg';
-import home from '../../assets/images/icons/icon _home_.svg';
+import home from '../../assets/images/icons/icon_home.svg';
+import news from '../../assets/images/icons/icon_news.svg';
 import twitter from '../../assets/images/icons/twitter_logo.svg';
 import telegram from '../../assets/images/icons/telegram_logo.svg';
 import facebook from '../../assets/images/icons/facebook_logo.svg';
 import instagram from '../../assets/images/icons/instagram_logo.svg';
+import {Link, NavLink} from "react-router-dom";
+import React from "react";
 
 const Sidebar = () => {
     return (
@@ -15,16 +18,16 @@ const Sidebar = () => {
                         <hr/>
                         <ul className="nav nav-pills flex-column mb-auto">
                             <li className="nav-item">
-                                <a href="#" className="nav-link active link-body-emphasis" aria-current="page">
+                                <NavLink to="/home" className="nav-link link-body-emphasis" aria-current="page">
                                     <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
                                     Home
-                                </a>
+                                </NavLink>
                             </li>
                             <li>
-                                <a href="#" className="nav-link link-body-emphasis">
-                                    <img src={home} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
-                                    Dashboard
-                                </a>
+                                <NavLink to="/news" className="nav-link link-body-emphasis" aria-current="page">
+                                    <img src={news} alt={"icon"} className="bi pe-none me-2 negative" width="16" height="16"/>
+                                    News
+                                </NavLink>
                             </li>
                             <li>
                                 <a href="#" className="nav-link link-body-emphasis">
