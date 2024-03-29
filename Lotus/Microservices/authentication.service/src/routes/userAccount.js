@@ -4,33 +4,15 @@ const koaJwt = require('koa-jwt');
 const argon2 = require('argon2');
 const redis = require('redis');
 const { promisify } = require('util');
+const crypto = require('crypto');
 const { USER: User } = require('../database/models/user');
 const amqp = require('amqplib/callback_api');
 
 const router = new Router();
 const secretKey = 'your-secret-key'; // docker
 
-// const client = redis.createClient("redis://localhost:6379");
-// client.connect();
-
-// router.post('/api/auth/userAccount/register', async (ctx) => {
-//     const { username, password } = ctx.request.body;
-//
-//     const existingUser = await User.findOne({ where: { username } });
-//     if (existingUser) {
-//         ctx.status = 400;
-//         ctx.body = { message: 'Пользователь уже существует' };
-//         return;
-//     }
-//
-//     const hashedPassword = await argon2.hash(password);
-//     const newUser = await User.create({ username, password: hashedPassword });
-//
-//     // await client.set(username, JSON.stringify(newUser));
-//
-//     ctx.status = 201;
-//     ctx.body = { message: 'Пользователь успешно зарегистрирован', user: newUser.username };
-// });
+const client = redis.createClient("redis://localhost:6379");
+client.connect();
 
 
 router.post('/api/auth/userAccount/register', async (ctx) => {
@@ -43,8 +25,10 @@ router.post('/api/auth/userAccount/register', async (ctx) => {
         return;
     }
 
-    const hashedPassword = await argon2.hash(password);
-    const newUser = await User.create({ username, email, password: hashedPassword });
+    const salt = crypto.randomBytes(32).toString('hex');
+    const hashedPassword = await argon2.hash(password + salt);
+
+    const newUser = await User.create({ username, email, password: hashedPassword, salt });
 
     amqp.connect('amqp://localhost:5672', function(error0, connection) {
         if (error0) {
@@ -73,20 +57,17 @@ router.post('/api/auth/userAccount/register', async (ctx) => {
 router.post('/api/auth/userAccount/auth', async (ctx) => {
     const { username, password } = ctx.request.body;
 
-    console.log("TEST " + username);
-    console.log("TEST " + password);
-    ctx.body = { message: "ИДИ НАХУЙ" };
+    ctx.body = { message: "error" };
 
-    let user = null;//JSON.parse(await client.get(username));
-
+    let user = JSON.parse(await client.get(username));
     if (!user) {
         user = await User.findOne({ where: { username } });
-        // if (user) {
-        //     await client.set(username, JSON.stringify(user));
-        // }
+        if (user) {
+            await client.set(username, JSON.stringify(user));
+        }
     }
 
-    if (!user || !(await argon2.verify(user.password, password))) {
+    if (!user || !(await argon2.verify(user.password, password + user.salt))) {
         ctx.status = 401;
         ctx.body = { message: 'Неверное имя пользователя или пароль' };
         return;

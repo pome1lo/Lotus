@@ -4,8 +4,8 @@ const { USER: User } = require('../database/models/user');
 const router = new Router();
 
 
-router.get('/api/getProfile', async (ctx) => {
-    const userName = ctx.query.userName;
+router.get('/api/profile/:userName', async (ctx) => {
+    const userName =  ctx.params.userName;
     console.log(userName);
     const user = await User.findOne({ where: { userName } });
 
@@ -13,22 +13,19 @@ router.get('/api/getProfile', async (ctx) => {
         ctx.body = user;
     } else {
         ctx.status = 404;
-        ctx.body = { message: 'Пользователь не найден' };
+        ctx.body = { message: 'User not found' };
     }
 });
 
-router.get('/api/getAllProfiles', async (ctx) => {
+router.get('/api/profiles', async (ctx) => {
     const users = await User.findAll();
 
     if (users) {
         ctx.body = users;
     } else {
         ctx.status = 404;
-        ctx.body = { message: 'Пользователи не найдены' };
+        ctx.body = { message: 'Users not found' };
     }
 });
-
-router.post('/api/profile/customize', async (ctx) => {  });
-router.post('/api/profile/customize', async (ctx) => {  });
 
 module.exports = router;

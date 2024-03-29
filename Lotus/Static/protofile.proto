@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package authPackage;
+
+// The AuthenticationService is used to interact with user authentication.
+service AuthenticationService {
+  // Method to update password.
+  rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse);
+}
+
+// Request message for updating password.
+message UpdatePasswordRequest {
+  string id = 1;         // User ID.
+  string password = 2;   // New hashed password.
+  string salt = 3;       // Salt used for hashing the password.
+}
+
+// Response message for updating password.
+message UpdatePasswordResponse {
+  bool success = 1;      // Indicates if the update was successful.
+  string message = 2;    // A message about the result.
+}

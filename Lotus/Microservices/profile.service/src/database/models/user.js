@@ -15,6 +15,22 @@ const USER = sequelize.define('USERS', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    FirstName: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    LastName: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    PhoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    BirthDate: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     CountOfPosts: {
         type: DataTypes.INTEGER,
         defaultValue: 0
@@ -45,5 +61,6 @@ const USER = sequelize.define('USERS', {
     timestamps: false,
     freezeTableName: true
 });
+
 
 module.exports = { USER };
