@@ -3,7 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const userAccountRoutes = require('./src/routes/userAccount');
 const port = 31002;
 const grpcPort = 51003;
-const app = new Koa();
+const authApp = new Koa();
 const cors = require('koa2-cors');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
@@ -11,10 +11,10 @@ const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Stat
 const { USER: User } = require('./src/database/models/user');
 const redis = require("redis");
 
-app.use(cors());
-app.use(bodyParser());
+authApp.use(cors());
+authApp.use(bodyParser());
 
-app.use(userAccountRoutes.routes());
+authApp.use(userAccountRoutes.routes());
 
 // Загрузка файла proto
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
@@ -49,9 +49,37 @@ const updatePassword = async (call, callback) => {
     }
 };
 
+const deleteUser = async (call, callback) => {
+    const { id } = call.request;
+
+    try {
+        const user = await User.findByPk(id);
+        if (!user) {
+            return callback({
+                code: grpc.status.NOT_FOUND,
+                details: 'User not found'
+            });
+        }
+
+        const username = user.username;
+
+        await user.destroy();
+        await client.del(username);
+
+        callback(null, { success: true, message: 'User successfully deleted' });
+    }
+    catch (error) {
+        callback({
+            code: grpc.status.INTERNAL,
+            details: 'Internal server error'
+        });
+    }
+};
+
 const server = new grpc.Server();
 server.addService(authPackage.AuthenticationService.service, {
-    UpdatePassword: updatePassword
+    UpdatePassword: updatePassword,
+    DeleteUser: deleteUser
 });
 
 server.bindAsync(`0.0.0.0:${grpcPort}`, grpc.ServerCredentials.createInsecure(), (error, port) => {
@@ -62,4 +90,4 @@ server.bindAsync(`0.0.0.0:${grpcPort}`, grpc.ServerCredentials.createInsecure(),
 });
 
 
-app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+authApp.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const { USER: User } = require('../database/models/user');
-
+const { POST: Post } = require('../database/models/post');
 const router = new Router();
 
 
@@ -27,5 +27,26 @@ router.get('/api/profiles', async (ctx) => {
         ctx.body = { message: 'Users not found' };
     }
 });
+
+router.post('/api/profile/posts/create', async (ctx) => {
+    const { UserId, Title, Content, Image } = ctx.request.body;
+
+    try {
+        const post = await Post.create({
+            UserId,
+            Title,
+            Content,
+            Image
+        });
+
+        ctx.status = 201;
+        ctx.body = { message: 'Post created successfully', post };
+    } catch (error) {
+        ctx.status = 500;
+        console.log(error.message);
+        ctx.body = { error: 'Something went wrong' };
+    }
+});
+
 
 module.exports = router;

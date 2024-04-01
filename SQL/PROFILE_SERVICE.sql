@@ -1,26 +1,44 @@
-CREATE DATABASE PROFILE_SERVICE;
+--CREATE DATABASE PROFILE_SERVICE;
 USE PROFILE_SERVICE
 
 CREATE TABLE USERS (
-    id INT IDENTITY(1,1) PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY,
     UserName NVARCHAR(255) NOT NULL,
     Email NVARCHAR(255) NOT NULL,
     FirstName NVARCHAR(255),
     LastName NVARCHAR(255),
+    PhoneNumber NVARCHAR(255),
     BirthDate DATE,
-	PhoneNumber NVARCHAR(255),
-    CountOfPosts INT DEFAULT 0,
-    SubscribersList NVARCHAR(MAX),
     SubscribersCount INT DEFAULT 0,
-    SubscriptionsList NVARCHAR(MAX)
-)
+    SubscriptionsCount INT DEFAULT 0
+);
 
+CREATE TABLE POSTS (
+    id INT PRIMARY KEY IDENTITY,
+    UserId INT FOREIGN KEY REFERENCES USERS(id),
+    Title NVARCHAR(255) NOT NULL,
+    Content NVARCHAR(MAX) NOT NULL,
+    Image NVARCHAR(255),
+    PublishedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE SUBSCRIPTION (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    subscriberId INT,
+    subscribedToId INT,
+    FOREIGN KEY (subscriberId) REFERENCES USERS(id),
+    FOREIGN KEY (subscribedToId) REFERENCES USERS(id)
+);
+
+
+DROP TABLE SUBSCRIPTION;
+DROP TABLE POSTS;
 DROP TABLE USERS;
 
 DELETE FROM USERS;
 
-
 SELECT * FROM USERS;
+SELECT * FROM Subscription;
 
 -- don't forget to delete the cache in Redis
 -- redis-cli flushall

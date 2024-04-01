@@ -1,19 +1,22 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const userProfileRoutes = require('./src/routes/profile');
-const userAccountRoutes = require('./src/routes/account');
+const ProfileRoutes = require('./src/routes/profile');
+const AccountRoutes = require('./src/routes/account');
+const UserRoutes = require('./src/routes/user');
 const port = 31003;
-const app = new Koa();
+const profileApp = new Koa();
 const cors = require('koa2-cors');
 const amqp = require('amqplib/callback_api');
 const { USER: User } = require('./src/database/models/user');
 
-app.use(cors());
-app.use(bodyParser());
+profileApp.use(cors());
+profileApp.use(bodyParser());
 
-app.use(userProfileRoutes.routes());
-app.use(userAccountRoutes.routes());
-app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+profileApp.use(ProfileRoutes.routes());
+profileApp.use(AccountRoutes.routes());
+profileApp.use(UserRoutes.routes());
+
+profileApp.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
 
 
 amqp.connect('amqp://localhost:5672', function(error0, connection) {

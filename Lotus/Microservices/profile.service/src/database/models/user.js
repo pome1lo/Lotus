@@ -1,6 +1,11 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config.js');
 
+// sequelize.sync({ force: true })
+//     .then(() => console.log('Database & tables created!'))
+//     .catch(error => console.log('This error occurred', error));
+
+
 const USER = sequelize.define('USERS', {
     id: {
         type: DataTypes.INTEGER,
@@ -31,36 +36,17 @@ const USER = sequelize.define('USERS', {
         type: DataTypes.DATE,
         allowNull: true
     },
-    CountOfPosts: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
-    },
-    SubscribersList: {
-        type: DataTypes.TEXT,
-        get: function() {
-            return JSON.parse(this.getDataValue('SubscribersList'));
-        },
-        set: function(val) {
-            return this.setDataValue('SubscribersList', JSON.stringify(val));
-        }
-    },
     SubscribersCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    SubscriptionsList: {
-        type: DataTypes.TEXT,
-        get: function() {
-            return JSON.parse(this.getDataValue('SubscriptionsList'));
-        },
-        set: function(val) {
-            return this.setDataValue('SubscriptionsList', JSON.stringify(val));
-        }
+    SubscriptionsCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
     timestamps: false,
     freezeTableName: true
 });
-
 
 module.exports = { USER };

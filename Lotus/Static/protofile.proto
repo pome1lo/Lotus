@@ -6,6 +6,7 @@ package authPackage;
 service AuthenticationService {
   // Method to update password.
   rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse);
+  rpc DeleteUser (UpdatePasswordRequest) returns (UpdatePasswordResponse);
 }
 
 // Request message for updating password.
@@ -15,8 +16,18 @@ message UpdatePasswordRequest {
   string salt = 3;       // Salt used for hashing the password.
 }
 
+message DeleteUser {
+  string id = 1;         // User ID.
+}
+
 // Response message for updating password.
 message UpdatePasswordResponse {
   bool success = 1;      // Indicates if the update was successful.
   string message = 2;    // A message about the result.
+}
+
+// Response message for deleting user.
+message DeleteUserResponse {
+  bool success = 1;
+  string message = 2;
 }
