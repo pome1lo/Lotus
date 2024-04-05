@@ -22,6 +22,22 @@ const USER = sequelize.define('USERS', {
     salt: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    isEmailVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    verificationToken: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    resetPasswordToken: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    resetPasswordExpires: {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 }, {
     timestamps: false,

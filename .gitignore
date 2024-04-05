@@ -2,7 +2,7 @@ Discovers-chat/
 IMG/
 .garbage
 .garbage/
-
+mail_params.json
 # dependencies
 /node_modules
 /.pnp
