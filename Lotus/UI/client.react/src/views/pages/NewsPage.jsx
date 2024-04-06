@@ -11,7 +11,7 @@ const NewsPage = () => {
     useEffect(() => {
         fetch(`http://localhost:31001/api/news`)
             .then(res => {
-                if (!res.ok && res.status === 404) {
+                if (!res.ok || res.status === 404) {
                     navigate('/not-found');
                 }
                 return res.json();
@@ -47,7 +47,7 @@ const NewsPage = () => {
                         <div className="tab-pane fade active show" id="nav-home" role="tabpanel"
                              aria-labelledby="nav-home-tab">
                             <p>Тут должен быть топик <strong>Главная</strong></p>
-                            {
+                            {news.length > 0 ? (
                                 news.sort((a, b) => b.ID - a.ID).map(item => (
                                     <div className="mt-3 mb-3" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
                                         <NewsItem
@@ -57,37 +57,46 @@ const NewsPage = () => {
                                             Date={item.Date}
                                         />
                                     </div>
-
                                 ))
-                            }
+                            ) : (
+                                <span className="spinner-border spinner-border-sm resize" role="status" aria-hidden="true"></span>
+                            )}
                         </div>
                         <div className="tab-pane fade" id="nav-profile" role="tabpanel"
                              aria-labelledby="nav-profile-tab">
                             <p>Тут должен быть топик <strong>ЕДА</strong></p>
-                            {
+                            {news.length > 0 ? (
                                 news.sort((a, b) => b.ID - a.ID).map(item => (
-                                    <NewsItem
-                                        ID={item.ID}
-                                        Heading={item.Heading}
-                                        Paragraph={item.Paragraph}
-                                        Date={item.Date}
-                                    />
+                                    <div className="mt-3 mb-3" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
+                                        <NewsItem
+                                            ID={item.ID}
+                                            Heading={item.Heading}
+                                            Paragraph={item.Paragraph}
+                                            Date={item.Date}
+                                        />
+                                    </div>
                                 ))
-                            }
+                            ) : (
+                                <span className="spinner-border spinner-border-sm resize" role="status" aria-hidden="true"></span>
+                            )}
                         </div>
                         <div className="tab-pane fade" id="nav-contact" role="tabpanel"
                              aria-labelledby="nav-contact-tab">
                             <p>Тут должен быть топик <strong>СПОРТ</strong></p>
-                            {
+                            {news.length > 0 ? (
                                 news.sort((a, b) => b.ID - a.ID).map(item => (
-                                    <NewsItem
-                                        ID={item.ID}
-                                        Heading={item.Heading}
-                                        Paragraph={item.Paragraph}
-                                        Date={item.Date}
-                                    />
+                                    <div className="mt-3 mb-3" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
+                                        <NewsItem
+                                            ID={item.ID}
+                                            Heading={item.Heading}
+                                            Paragraph={item.Paragraph}
+                                            Date={item.Date}
+                                        />
+                                    </div>
                                 ))
-                            }
+                            ) : (
+                                <span className="spinner-border spinner-border-sm resize" role="status" aria-hidden="true"></span>
+                            )}
                         </div>
                     </div>
                 </div>

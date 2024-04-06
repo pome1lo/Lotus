@@ -5,3 +5,7 @@
 .news-item-tab.active {
     color: inherit !important;
 }
+
+.spinner-border.spinner-border-sm.resize {
+    font-size: larger;
+}

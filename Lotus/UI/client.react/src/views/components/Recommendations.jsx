@@ -7,6 +7,7 @@ import img5 from "../../assets/images/content/5.png";
 import Logo from "../../assets/images/logo/logo.png";
 import Avatar from "../../assets/images/content/test_Avatar.png";
 import {Publisher} from "./Publisher";
+import {Link} from "react-router-dom";
 
 const Recommendations = () => {
     return (
@@ -59,19 +60,19 @@ const Recommendations = () => {
 
                     <div className="d-flex justify-content-between align-items-center">
                         <Publisher avatar={Avatar} nickname="Travis Scott" info="31 Jan. 15:23"/>
-                        <a href="#">Subscribe</a>
+                        <Link to="#">Subscribe</Link>
                     </div>
                     <div className="d-flex justify-content-between align-items-center">
                         <Publisher avatar={Avatar} nickname="Travis Scott" info="31 Jan. 15:23"/>
-                        <a href="#">Subscribe</a>
+                        <Link to="#">Subscribe</Link>
                     </div>
                     <div className="d-flex justify-content-between align-items-center">
                         <Publisher avatar={Avatar} nickname="Travis Scott" info="31 Jan. 15:23"/>
-                        <a href="#">Subscribe</a>
+                        <Link to="#">Subscribe</Link>
                     </div>
                     <div className="d-flex justify-content-between align-items-center">
                         <Publisher avatar={Avatar} nickname="Travis Scott" info="31 Jan. 15:23"/>
-                        <a href="#">Subscribe</a>
+                        <Link to="#">Subscribe</Link>
                     </div>
                 </div>
             </aside>

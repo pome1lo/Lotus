@@ -1,16 +1,8 @@
 import "../../assets/css/Post.css";
-// import Avatar from "../../assets/images/content/test_Avatar.png";
 import React from "https://esm.run/react@18";
-import confetti from "https://esm.run/canvas-confetti@1";
-// import content from "../../assets/images/content/content.jpg";
 import {Publisher} from "./Publisher";
 const Post =  ({ avatar, nickname, info, content, text, likes }) => {
-    function onClick() {
-        confetti({
-            particleCount: 150,
-            spread: 60
-        });
-    }
+
     return (
         <div data-aos="fade-up" data-aos-anchor-placement="center-bottom" className="post two" data-aos-duration="750">
             <div>
@@ -28,7 +20,7 @@ const Post =  ({ avatar, nickname, info, content, text, likes }) => {
                        <input type="checkbox" id="checkbox"/>
                        <label htmlFor="checkbox">
                            <svg id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
-                               <g id="Group" fill="none" fill-rule="evenodd" transform="translate(467 392)">
+                               <g id="Group" fill="none" transform="translate(467 392)">
                                    <path
                                        d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z"
                                        id="heart" fill="#C2C2C2"/>

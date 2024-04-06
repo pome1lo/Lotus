@@ -47,6 +47,7 @@ const RegistrationPage = () => {
         if (response.ok) {
             console.log("TOKEN", data.token);
             sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('username', data.username);
             navigate('/');
         } else {
             console.error('Ошибка входа:', data.message);
@@ -60,12 +61,12 @@ const RegistrationPage = () => {
                 <form className="text-center form-signin">
                     <h2 className="h4 mb-3 fw-medium">Please join</h2>
                     <div className="form-floating username">
-                        <input type="username" className="form-control" id="floatingInput" placeholder="text" required
+                        <input type="text" className="form-control" id="floatingInput" placeholder="User name" required
                                value={inputUsername} onChange={(e) => setUsername(e.target.value)}/>
                         <label htmlFor="floatingPassword">User name</label>
                     </div>
                     <div className="form-floating password changePasswordBorder">
-                        <input type="username" className="form-control" id="floatingInput" placeholder="name@example.com" required
+                        <input type="email" className="form-control" id="floatingInput" placeholder="Email address" required
                                value={inputEmail} onChange={(e) => setEmail(e.target.value)}/>
                         <label htmlFor="floatingInput">Email address</label>
                     </div>

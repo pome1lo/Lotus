@@ -1,5 +1,4 @@
 .form-floating.username input {
-
     border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
@@ -16,7 +15,7 @@
 }
 
 .redHover:hover,
-button.btn.w-auto.rememberMe:hover {
+.btn.w-auto.rememberMe:hover {
     color: #da5c69;
 }
 .changePasswordBorder input {

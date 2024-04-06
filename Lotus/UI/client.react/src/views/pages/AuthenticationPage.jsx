@@ -27,10 +27,10 @@ const AuthenticationPage = () => {
         if (response.ok) {
             console.log("TOKEN", data.token);
             sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('username', data.username);
             navigate('/');
         } else {
             console.error('Ошибка входа:', data.message);
-
         }
     }
 
@@ -39,14 +39,12 @@ const AuthenticationPage = () => {
             <main className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
                 <img className="mb-3" src={Logo} alt="" width="72"/>
 
-                <form className="text-center form-signin" onSubmit={fetchData}>
+                <form className="text-center form-signin">
                     <h2 className="h4 mb-3 fw-medium">Please sign in</h2>
                     <div className="form-floating username">
-                        <input type="username" className="form-control" id="floatingInput"
-                               placeholder="name@example.com"
-                               required
+                        <input type="text" className="form-control" id="floatingInput" required placeholder="User name"
                                value={inputUsername} onChange={(e) => setUsername(e.target.value)}/>
-                        <label htmlFor="floatingInput">Email address</label>
+                        <label htmlFor="floatingInput">User name</label>
                     </div>
                     <div className="form-floating password ">
                         <input type="password" className="form-control" id="floatingPassword" placeholder="Password"
@@ -66,7 +64,7 @@ const AuthenticationPage = () => {
                             <Link to="/register" className="w-auto rememberMe my-3">Join</Link>
                         </div>
                     </div>
-                    <button className="btn btn-danger w-100 py-2" type="submit">Sign in</button>
+                    <button className="btn btn-danger w-100 py-2" type="button" onClick={fetchData}>Sign in</button>
                     <p className="mt-5 mb-3 text-body-secondary">© 2024 Lotus</p>
                 </form>
 

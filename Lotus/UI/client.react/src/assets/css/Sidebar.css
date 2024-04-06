@@ -30,7 +30,12 @@ div.otherLink {
     transform: scale(1.4);
 }
 
-
+.nav-link.link-body-emphasis.profile-nav-link img {
+    margin-right: 7px;
+}
+.nav-link.link-body-emphasis.profile-nav-link {
+    padding-left: 25px !important;
+}
 .nav.nav-pills.flex-column i.bi {
     font-size: medium;
     padding: 10px;
