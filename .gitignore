@@ -8,6 +8,7 @@ mail_params.json
 /.pnp
 .pnp.js
 .next
+*/tsconfig.json
 
 # testing
 /coverage

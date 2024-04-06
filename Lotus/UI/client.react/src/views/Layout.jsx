@@ -3,13 +3,12 @@ import {Footer} from "./components/Footer";
 import React from "react";
 import {Outlet} from "react-router-dom";
 import {Sidebar} from "./components/Sidebar";
-import {DOM_KEY_LOCATION} from "@testing-library/user-event/dist/keyboard/types";
-
+import 'bootstrap';
 const Layout = () => {
     return (
         <>
             <Header/>
-            <main className="container-xxl">
+            <main className="container-fluid">
                 <div className="row g-4">
                     <Sidebar/>
                     <Outlet/>

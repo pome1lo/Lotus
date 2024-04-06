@@ -2,7 +2,7 @@ const fs = require('fs');
 const nodemailer = require('nodemailer');
 
 // Синхронное чтение файла параметров
-let rawParams = fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\authentication.service\\src\\services\\mailer\\mail_params.json');
+let rawParams = fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\authentication.service\\tsconfig.json');
 let mailParams = JSON.parse(rawParams);
 
 
@@ -12,8 +12,8 @@ function send(toMail, message) {
         port: 465,
         secure: true,
         auth: {
-            user: mailParams.params.mail,
-            pass: mailParams.params.password
+            user: mailParams.mailer.mail,
+            pass: mailParams.mailer.password
         }
     });
 

@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const userAccountRoutes = require('./src/routes/userAccount');
+const googleRoutes = require('./src/routes/google');
 const port = 31002;
 const grpcPort = 32001;
 const authApp = new Koa();
@@ -15,6 +16,7 @@ authApp.use(cors());
 authApp.use(bodyParser());
 
 authApp.use(userAccountRoutes.routes());
+authApp.use(googleRoutes.routes());
 
 // Загрузка файла proto
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });

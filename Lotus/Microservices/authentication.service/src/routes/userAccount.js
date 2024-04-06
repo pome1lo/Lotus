@@ -15,10 +15,8 @@ const secretKey = 'your-secret-key'; // docker
 const client = redis.createClient("redis://localhost:6379");
 client.connect();
 
-
 router.post('/api/auth/userAccount/register', async (ctx) => {
     const { username, email, password } = ctx.request.body;
-
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
         ctx.status = 400;
@@ -41,7 +39,10 @@ router.post('/api/auth/userAccount/register', async (ctx) => {
             }
 
             const queue = 'userRegistered';
-            const msg = JSON.stringify(newUser);
+            const msg = JSON.stringify( {
+                username: newUser.username,
+                email: newUser.email
+            });
 
             channel.assertQueue(queue, {
                 durable: false
@@ -126,7 +127,6 @@ router.get('/api/auth/userAccount/verify-email', async (ctx) => {
     }
 });
 
-
 router.post('/api/auth/userAccount/reset-password', async (ctx) => {
     const { username, password } = ctx.request.body;
 
@@ -159,5 +159,7 @@ router.post('/api/auth/userAccount/reset-password', async (ctx) => {
 router.get('/api/auth/userAccount/protected', koaJwt({ secret: secretKey }), async (ctx) => {
     ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
 });
+
+
 
 module.exports = router;
