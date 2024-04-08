@@ -2,11 +2,10 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const session = require('koa-session');
 const passport = require('koa-passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const { USER: User } = require('../database/models/user');
 
 const router = new Router();
-
 
 const fs = require('fs');
 const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
@@ -23,27 +22,26 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-
-passport.use(new GoogleStrategy({
-        clientID: Params.google.clientID,
-        clientSecret: Params.google.clientSecret,
-        callbackURL: "http://localhost:31002/api/auth/google/callback"
+passport.use(new GitHubStrategy({
+        clientID: Params.github.clientID,
+        clientSecret: Params.github.clientSecret,
+        callbackURL: "http://localhost:31002/api/auth/github/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
-        const email = profile.emails[0].value;
-        let user = await User.findOne({ where: { googleId: profile.id } });
+        let user = await User.findOne({ where: { githubId: profile.id } });
 
         if (!user) {
             user = await User.create({
-                googleId: profile.id,
-                username: profile.displayName,
-                email: email,
+                githubId: profile.id,
+                username: profile.username,
+                email: profile.emails[0].value, // can be null!
                 isEmailVerified: true
             });
         }
+
         let userData = {
             UserName: profile.displayName,
-            Email: email
+            Email: profile.emails[0].value
         }
 
         sendToQueue('userRegistered', userData);
@@ -52,22 +50,19 @@ passport.use(new GoogleStrategy({
     }
 ));
 
+router.get('/api/auth/github',
+    passport.authenticate('github', { scope: ['user:email'] }));
 
 
-
-
-router.get('/api/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-router.get('/api/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
+router.get('/api/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/login' }),
     (ctx) => {
-        console.log("✅✅✅✅\t success verification");
+        console.log("✅✅✅✅t success verification");
         ctx.redirect('/');
     }
 );
 
-router.get('api/auth/google/logout', (ctx) => {
+router.get('/api/auth/github/logout', (ctx) => {
     ctx.logout();
     ctx.redirect('/');
 });

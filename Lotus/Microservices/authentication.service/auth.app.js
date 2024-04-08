@@ -2,6 +2,7 @@ const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const userAccountRoutes = require('./src/routes/userAccount');
 const googleRoutes = require('./src/routes/google');
+const githubRoutes = require('./src/routes/github');
 const port = 31002;
 const grpcPort = 32001;
 const authApp = new Koa();
@@ -11,12 +12,20 @@ const protoLoader = require('@grpc/proto-loader');
 const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protofile.proto';
 const { USER: User } = require('./src/database/models/user');
 const redis = require("redis");
+const session = require("koa-session");
+const passport = require("koa-passport");
+
+authApp.keys = ['your-secret'];
+authApp.use(session({}, authApp));
+authApp.use(passport.initialize());
+authApp.use(passport.session());
 
 authApp.use(cors());
 authApp.use(bodyParser());
 
 authApp.use(userAccountRoutes.routes());
 authApp.use(googleRoutes.routes());
+authApp.use(githubRoutes.routes());
 
 // Загрузка файла proto
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });

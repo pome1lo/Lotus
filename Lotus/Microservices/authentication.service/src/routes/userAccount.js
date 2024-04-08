@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const { USER: User } = require('../database/models/user');
 const amqp = require('amqplib/callback_api');
 const { send } = require('../services/mailer/config');
+const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 
 const router = new Router();
 const secretKey = 'your-secret-key'; // docker
@@ -29,31 +30,44 @@ router.post('/api/auth/userAccount/register', async (ctx) => {
 
     const newUser = await User.create({ username, email, password: hashedPassword, salt });
 
-    amqp.connect('amqp://localhost:5672', function(error0, connection) {
-        if (error0) {
-            throw error0;
-        }
-        connection.createChannel(function(error1, channel) {
-            if (error1) {
-                throw error1;
-            }
+    // amqp.connect('amqp://localhost:5672', function(error0, connection) {
+    //     if (error0) {
+    //         throw error0;
+    //     }
+    //     connection.createChannel(function(error1, channel) {
+    //         if (error1) {
+    //             throw error1;
+    //         }
+    //
+    //         const queue = 'userRegistered';
+    //         const msg = JSON.stringify( {
+    //             username: newUser.username,
+    //             email: newUser.email
+    //         });
+    //
+    //         channel.assertQueue(queue, {
+    //             durable: false
+    //         });
+    //
+    //         channel.sendToQueue(queue, Buffer.from(msg));
+    //     });
+    // });
 
-            const queue = 'userRegistered';
-            const msg = JSON.stringify( {
-                username: newUser.username,
-                email: newUser.email
-            });
+    let userData = {
+        username: newUser.username,
+        email: newUser.email
+    }
 
-            channel.assertQueue(queue, {
-                durable: false
-            });
+    sendToQueue('userRegistered', userData);
 
-            channel.sendToQueue(queue, Buffer.from(msg));
-        });
-    });
+    const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
 
     ctx.status = 201;
-    ctx.body = { message: 'Пользователь успешно зарегистрирован', user: newUser.username };
+    ctx.body = {
+        message: 'Пользователь успешно зарегистрирован',
+        username: newUser.username,
+        token: token
+    };
 });
 
 router.post('/api/auth/userAccount/auth', async (ctx) => {
@@ -76,7 +90,7 @@ router.post('/api/auth/userAccount/auth', async (ctx) => {
     }
 
     const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
-    ctx.body = { token };
+    ctx.body = { token, username: user.username };
 });
 
 router.post('/api/auth/userAccount/verifyEmail', async (ctx) => {

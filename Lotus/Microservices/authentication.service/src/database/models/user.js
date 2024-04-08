@@ -7,6 +7,14 @@ const USER = sequelize.define('USERS', {
         primaryKey: true,
         autoIncrement: true
     },
+    googleId: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    githubId: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     username: {
         type: DataTypes.STRING,
         allowNull: false
@@ -17,11 +25,11 @@ const USER = sequelize.define('USERS', {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     salt: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     isEmailVerified: {
         type: DataTypes.BOOLEAN,

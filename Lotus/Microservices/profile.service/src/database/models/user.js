@@ -1,11 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config.js');
 
-// sequelize.sync({ force: true })
-//     .then(() => console.log('Database & tables created!'))
-//     .catch(error => console.log('This error occurred', error));
-
-
 const USER = sequelize.define('USERS', {
     id: {
         type: DataTypes.INTEGER,
@@ -43,6 +38,10 @@ const USER = sequelize.define('USERS', {
     SubscriptionsCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+    },
+    ProfilePicture: {
+        type: DataTypes.STRING,
+        defaultValue: '/static/media/default_profile.587c4b6422f165a03c3f.png'
     }
 }, {
     timestamps: false,

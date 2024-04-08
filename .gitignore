@@ -8,7 +8,8 @@ mail_params.json
 /.pnp
 .pnp.js
 .next
-*/tsconfig.json
+Lotus/Microservices/authentication.service/tsconfig.json
+
 
 # testing
 /coverage

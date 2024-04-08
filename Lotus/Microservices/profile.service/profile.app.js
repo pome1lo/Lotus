@@ -36,7 +36,7 @@ amqp.connect('amqp://localhost:5672', function(error0, connection) {
 
         channel.consume(queue, async function (msg) {
             const user = JSON.parse(msg.content.toString());
-            await User.create({UserName: user.username, Email: user.email});
+            await User.create({UserName: user.UserName, Email: user.Email});
         }, {
             noAck: true
         });
