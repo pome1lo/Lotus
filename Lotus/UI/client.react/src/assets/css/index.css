@@ -6,7 +6,6 @@
   font-optical-sizing: auto;
 }
 
-
 body {
   margin: 0;
   padding: 0;
@@ -21,7 +20,6 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1 ; /* Цвет фона трека */

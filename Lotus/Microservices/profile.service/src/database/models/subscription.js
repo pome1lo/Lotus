@@ -3,18 +3,18 @@ const sequelize = require('../config.js');
 const { USER } = require('./user');
 
 const SUBSCRIPTION = sequelize.define('SUBSCRIPTION', {
-    subscriberId: {
+    SUBSCRIBER_ID: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'User',
-            key: 'id'
+            model: 'USER',
+            key: 'ID'
         }
     },
-    subscribedToId: {
+    SUBSCRIBED_TO_ID: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'User',
-            key: 'id'
+            model: 'USER',
+            key: 'ID'
         }
     }
 }, {
@@ -22,8 +22,8 @@ const SUBSCRIPTION = sequelize.define('SUBSCRIPTION', {
     freezeTableName: true
 });
 
-USER.hasMany(SUBSCRIPTION, { as: 'Subscriptions', foreignKey: 'subscriberId' });
-USER.hasMany(SUBSCRIPTION, { as: 'Subscribers', foreignKey: 'subscribedToId' });
+USER.hasMany(SUBSCRIPTION, { as: 'SUBSCRIPTIONS', foreignKey: 'SUBSCRIBER_ID' });
+USER.hasMany(SUBSCRIPTION, { as: 'SUBSCRIBERS', foreignKey: 'SUBSCRIBED_TO_ID' });
 
 
 module.exports = { SUBSCRIPTION };

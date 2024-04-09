@@ -17,13 +17,13 @@ div.otherLink {
 
 .imageHover .bi {
     font-size: x-large;
-    color: #ff2525;
+    color: #DA3545FF;
 }
 
 .imageHover {
     width: 25px;
     margin: 4px;
-    transition: 0.5s;
+    transition: .3s;
 }
 
 .imageHover:hover {

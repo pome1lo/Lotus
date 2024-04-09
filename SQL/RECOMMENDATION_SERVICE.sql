@@ -1,20 +1,20 @@
 
 CREATE DATABASE RECOMMENDATION_SERVICE;
 
-CREATE TABLE NEWS (
-    ID INT PRIMARY KEY IDENTITY,
-    Heading NVARCHAR(255) NOT NULL,
-    Paragraph NVARCHAR(MAX) NOT NULL,
-    Date NVARCHAR(255) NOT NULL,
-    TopicId INT,
-    FOREIGN KEY (TopicId) REFERENCES TOPICS(ID)
+create table news (
+    id int primary key identity,
+    heading nvarchar(255) not null,
+    paragraph nvarchar(max) not null,
+    date nvarchar(255) not null,
+    topicid int,
+    foreign key (topicid) references topics(id)
 );
 
 
-CREATE TAble topics
+create table topics
 (
-    ID        INT PRIMARY KEY IDENTITY (1,1),
-    TopicName NVARCHAR(255) NOT NULL,
+    id        int primary key identity (1,1),
+    topicname nvarchar(255) not null,
 )
 
 DELETE FROM NEWS;

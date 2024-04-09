@@ -5,20 +5,22 @@ const argon2 = require('argon2');
 const redis = require('redis');
 const { promisify } = require('util');
 const crypto = require('crypto');
-const { USER: User } = require('../database/models/user');
+const { USER } = require('../database/models/user');
 const amqp = require('amqplib/callback_api');
 const { send } = require('../services/mailer/config');
 const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
+const client = redis.createClient("redis://localhost:6379");
 
 const router = new Router();
-const secretKey = 'your-secret-key'; // docker
+const secretKey = 'your-secret-key'; //todo add data in config | docker
 
-const client = redis.createClient("redis://localhost:6379");
 client.connect();
 
-router.post('/api/auth/userAccount/register', async (ctx) => {
+
+
+router.post('/api/auth/account/register', async (ctx) => {
     const { username, email, password } = ctx.request.body;
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await USER.findOne({ where: { EMAIL: email } });
     if (existingUser) {
         ctx.status = 400;
         ctx.body = { message: 'Пользователь уже существует' };
@@ -28,34 +30,16 @@ router.post('/api/auth/userAccount/register', async (ctx) => {
     const salt = crypto.randomBytes(32).toString('hex');
     const hashedPassword = await argon2.hash(password + salt);
 
-    const newUser = await User.create({ username, email, password: hashedPassword, salt });
-
-    // amqp.connect('amqp://localhost:5672', function(error0, connection) {
-    //     if (error0) {
-    //         throw error0;
-    //     }
-    //     connection.createChannel(function(error1, channel) {
-    //         if (error1) {
-    //             throw error1;
-    //         }
-    //
-    //         const queue = 'userRegistered';
-    //         const msg = JSON.stringify( {
-    //             username: newUser.username,
-    //             email: newUser.email
-    //         });
-    //
-    //         channel.assertQueue(queue, {
-    //             durable: false
-    //         });
-    //
-    //         channel.sendToQueue(queue, Buffer.from(msg));
-    //     });
-    // });
+    const newUser = await USER.create({
+        USERNAME: username,
+        EMAIL: email,
+        PASSWORD: hashedPassword,
+        SALT: salt
+    });
 
     let userData = {
-        username: newUser.username,
-        email: newUser.email
+        USERNAME: newUser.USERNAME,
+        EMAIL: newUser.EMAIL
     }
 
     sendToQueue('userRegistered', userData);
@@ -65,35 +49,35 @@ router.post('/api/auth/userAccount/register', async (ctx) => {
     ctx.status = 201;
     ctx.body = {
         message: 'Пользователь успешно зарегистрирован',
-        username: newUser.username,
+        username: newUser.USERNAME,
         token: token
     };
 });
 
-router.post('/api/auth/userAccount/auth', async (ctx) => {
+router.post('/api/auth/account/auth', async (ctx) => {
     const { username, password } = ctx.request.body;
 
     ctx.body = { message: "error" };
 
     let user = JSON.parse(await client.get(username));
     if (!user) {
-        user = await User.findOne({ where: { username } });
+        user = await USER.findOne({ where: { USERNAME: username } });
         if (user) {
             await client.set(username, JSON.stringify(user));
         }
     }
 
-    if (!user || !(await argon2.verify(user.password, password + user.salt))) {
+    if (!user || !(await argon2.verify(user.PASSWORD, password + user.SALT))) {
         ctx.status = 401;
         ctx.body = { message: 'Неверное имя пользователя или пароль' };
         return;
     }
 
     const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
-    ctx.body = { token, username: user.username };
+    ctx.body = { token, username: user.USERNAME };
 });
 
-router.post('/api/auth/userAccount/verifyEmail', async (ctx) => {
+router.post('/api/auth/account/verifyEmail', async (ctx) => {
     const { username, email } = ctx.request.body;
 
     try {
@@ -102,8 +86,8 @@ router.post('/api/auth/userAccount/verifyEmail', async (ctx) => {
 
         await send(email, `Hello ${username}, please verify your email by clicking on the following link: ${verificationLink}`);
 
-        const user = await User.findOne({ where: { username: username } });
-        user.verificationToken = token;
+        const user = await USER.findOne({ where: { USERNAME: username } });
+        user.VERIFICATION_TOKEN = token;
         await user.save();
 
         ctx.status = 200;
@@ -114,13 +98,13 @@ router.post('/api/auth/userAccount/verifyEmail', async (ctx) => {
     }
 });
 
-router.get('/api/auth/userAccount/verify-email', async (ctx) => {
+router.get('/api/auth/account/verify-email', async (ctx) => {
     const token = ctx.query.token;
 
     try {
         console.log("token " + token);
 
-        const user = await User.findOne({ where: { verificationToken: token } });
+        const user = await USER.findOne({ where: { VERIFICATION_TOKEN: token } });
 
         if (!user) {
             ctx.status = 400;
@@ -128,8 +112,8 @@ router.get('/api/auth/userAccount/verify-email', async (ctx) => {
             return;
         }
 
-        user.isEmailVerified = true;
-        user.verificationToken = null;
+        user.IS_EMAIL_VERIFIED = true;
+        user.VERIFICATION_TOKEN = null;
         await user.save();
 
         ctx.status = 200;
@@ -141,11 +125,11 @@ router.get('/api/auth/userAccount/verify-email', async (ctx) => {
     }
 });
 
-router.post('/api/auth/userAccount/reset-password', async (ctx) => {
+router.post('/api/auth/account/reset-password', async (ctx) => {
     const { username, password } = ctx.request.body;
 
     try {
-        const user = await User.findOne({ where: { username: username } });
+        const user = await USER.findOne({ where: { USERNAME: username } });
 
         if (!user) {
             ctx.status = 400;
@@ -156,8 +140,8 @@ router.post('/api/auth/userAccount/reset-password', async (ctx) => {
         const salt = crypto.randomBytes(32).toString('hex');
         const hashedPassword = await argon2.hash(password + salt);
 
-        user.password = hashedPassword;
-        user.salt = salt;
+        user.PASSWORD = hashedPassword;
+        user.SALT = salt;
         await user.save();
         await client.del(username);
 
@@ -170,7 +154,7 @@ router.post('/api/auth/userAccount/reset-password', async (ctx) => {
     }
 });
 
-router.get('/api/auth/userAccount/protected', koaJwt({ secret: secretKey }), async (ctx) => {
+router.get('/api/auth/account/protected', koaJwt({ secret: secretKey }), async (ctx) => {
     ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
 });
 

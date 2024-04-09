@@ -15,6 +15,20 @@ router.get('/api/news', async (ctx) => {
 router.get('/api/news/:id', async (ctx) => {
     const id = ctx.params.id;
     console.log(id);
+    const news = await NEWS.findOne({ where: { TopicId: id } });
+
+    if (news) {
+        ctx.body = news;
+    } else {
+        ctx.status = 404;
+        ctx.body = { message: 'News not found :(' };
+    }
+});
+
+
+router.get('/api/news/topic/:topic', async (ctx) => {
+    const id = ctx.params.topic;
+    console.log(id);
     const news = await NEWS.findOne({ where: { id } });
 
     if (news) {

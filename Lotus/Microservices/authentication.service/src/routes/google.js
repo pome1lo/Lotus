@@ -3,20 +3,20 @@ const Router = require('koa-router');
 const session = require('koa-session');
 const passport = require('koa-passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const { USER: User } = require('../database/models/user');
+const { USER } = require('../database/models/user');
+const fs = require('fs');
+const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
+
 
 const router = new Router();
 
-
-const fs = require('fs');
-const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 let rawParams = fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\authentication.service\\tsconfig.json');
 let Params = JSON.parse(rawParams);
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await User.findByPk(id);
+        const user = await USER.findByPk(id);
         done(null, user);
     } catch (err) {
         done(err);
@@ -31,19 +31,19 @@ passport.use(new GoogleStrategy({
     },
     async (accessToken, refreshToken, profile, done) => {
         const email = profile.emails[0].value;
-        let user = await User.findOne({ where: { googleId: profile.id } });
+        let user = await USER.findOne({ where: { GOOGLE_ID: profile.id } });
 
         if (!user) {
-            user = await User.create({
-                googleId: profile.id,
-                username: profile.displayName,
-                email: email,
-                isEmailVerified: true
+            user = await USER.create({
+                GOOGLE_ID: profile.id,
+                USERNAME: profile.displayName,
+                EMAIL: email,
+                IS_EMAIL_VERIFIED: true
             });
         }
         let userData = {
-            UserName: profile.displayName,
-            Email: email
+            USERNAME: profile.displayName,
+            EMAIL: email
         }
 
         sendToQueue('userRegistered', userData);
@@ -52,24 +52,19 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-
-
-
-
 router.get('/api/auth/google',
     passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/api/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (ctx) => {
-        console.log("✅✅✅✅\t success verification");
-        ctx.redirect('/');
+        ctx.redirect('http://localhost:3000/');
     }
 );
 
 router.get('api/auth/google/logout', (ctx) => {
     ctx.logout();
-    ctx.redirect('/');
+    ctx.redirect('http://localhost:3000/');
 });
 
 module.exports = router;

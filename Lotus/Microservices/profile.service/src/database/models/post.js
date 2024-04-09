@@ -2,32 +2,32 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config.js');
 
 const POST = sequelize.define('POSTS', {
-    id: {
+    ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    UserId: {
+    USER_ID: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'USERS',
-            key: 'id'
+            key: 'ID'
         }
     },
-    Title: {
+    TITLE: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    Content: {
+    CONTENT: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    Image: {
+    IMAGE: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    PublishedAt: {
+    PUBLISHED_AT: {
         type: DataTypes.DATE,
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     }

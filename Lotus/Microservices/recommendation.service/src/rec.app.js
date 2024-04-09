@@ -1,6 +1,6 @@
 'use strict';
 const Koa = require('koa');
-const app = new Koa();
+const recApp = new Koa();
 const Router = require('@koa/router');
 const router = new Router();
 const axios = require('axios');
@@ -11,7 +11,7 @@ const port = 31001;
 const NEWS = require('./database/models/news');
 const cors = require('koa2-cors');
 
-app.use(cors());
+recApp.use(cors());
 
 const job = schedule.scheduleJob('0 * * * *', async function(){
     const response = await axios.get('https://www.rt.com/news/');
@@ -31,6 +31,11 @@ const job = schedule.scheduleJob('0 * * * *', async function(){
     console.log('✅ log: successful news parsing.');
 });
 
-app.use(router.routes());
-app.use(newsRoutes.routes());
-app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+
+
+
+
+
+recApp.use(router.routes());
+recApp.use(newsRoutes.routes());
+recApp.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

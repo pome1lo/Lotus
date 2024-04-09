@@ -2,8 +2,6 @@ import {Link, useParams, useNavigate} from "react-router-dom";
 import React, {useEffect, useState,} from "react";
 import "../../assets/css/Profile.css";
 import SubscriptionButton from "../components/SubscriptionButton";
-import {CreatePostPage} from "./CreatePostPage";
-import DefaultProfileImage from "../../assets/images/content/default_profile.png";
 
 const ProfilePage = () => {
     const {posts, setPosts} = useState(null);
@@ -28,18 +26,18 @@ const ProfilePage = () => {
             {user && (
                 <>
                     <div className="d-flex">
-                        <img src={user.ProfilePicture} alt="" height="210" className="mr-4"/>
-                        <div className="w-100 d-flex align-items-center flex-wrap" >
+                        <img src={user.PROFILE_PICTURE} alt="" height="210" className="mr-4"/>
+                        <div className="w-100 d-flex align-items-center flex-wrap">
                             <div className="d-flex align-items-center w-100">
                                 <div className="mr-2">
                                     <h1 className="fw-bold display-4">{user.UserName}</h1>
                                 </div>
                                 <SubscriptionButton
                                     styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>
-                                <Link to={`/prmr-2ofile/${username}/edit`}
+                                <Link to={`/profile/${username}/edit`}
                                       className=" mr-2 btn btn-outline-secondary d-inline-flex align-items-center">Edit
                                 </Link>
-                                <Link to={`/`} className="mr-2">
+                                <Link to={`/profile/${username}/edit`} className="mr-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
                                          className="bi bi-gear rotate hover-size" viewBox="0 0 16 16">
                                         <path
@@ -55,7 +53,9 @@ const ProfilePage = () => {
                                 <p className="mr-2">{user.SubscriptionsCount} subscriptions</p>
                             </div>
                             <div>
-                                This is some additional paragraph placeholder content. It has been written to fill the available space  of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.
+                                This is some additional paragraph placeholder content. It has been written to fill the
+                                available space of text affects the surrounding content. We'll repeat it often to keep
+                                the demonstration flowing, so be on the lookout for this exact same string of text.
                             </div>
                         </div>
                     </div>
@@ -65,32 +65,35 @@ const ProfilePage = () => {
                         <h2>{user.LastName}</h2>
                     </div>
 
-
                     <div className="d-flex align-items-center w-100 justify-content-between text-muted">
                         <div className="d-flex">
-                            <img src={`${user.ProfilePicture}`} height="30" alt="" className="mr-2"/>
+                            <img src={`${user.PROFILE_PICTURE}`} height="30" alt="" className="mr-2"/>
                             <p className="m-auto">What's new with you?</p>
                         </div>
-                        <Link to="post/create" className="btn btn-outline-secondary d-inline-flex align-items-center mr-2" data-bs-toggle="modal"
+                        <Link to="post/create"
+                              className="btn btn-outline-secondary d-inline-flex align-items-center mr-2"
+                              data-bs-toggle="modal"
                               data-bs-target="#staticBackdrop">
                             Create post
                         </Link>
                     </div>
-
                     <hr/>
                     {/*{posts && (*/}
                     {/*    <>*/}
-                    <div
-                        className="position-relative p-5 text-center text-muted bg-body">
-                        <i className="bi bi-check2-circle display-3"></i>
-                        <h1 className="text-body-emphasis">Create your first post!</h1>
-                        <p className="col-lg-6 mx-auto mb-4">
-                            Other users who subscribe to you will see it in their news feed.
-                        </p>
-                        <Link to="post/create" className="btn btn-danger py-2 px-5 mb-5" data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop">
-                            Create post
-                        </Link>
+                        <div className="position-relative p-5 text-center text-muted">
+                            <i className="bi bi-check2-circle display-3"></i>
+                            <h1 className="text-body-emphasis">Create your first post!</h1>
+                            <p className="col-lg-6 mx-auto mb-4">
+                                Other users who subscribe to you will see it in their news feed.
+                            </p>
+                            <Link to="post/create" className="btn btn-danger py-2 px-5 mb-5" data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop">
+                                Create post
+                            </Link>
+                        </div>
+                        {/*</>
+                    )}*/}
+
 
                         <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static"
                              data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel"
@@ -98,7 +101,8 @@ const ProfilePage = () => {
                             <div className="modal-dialog">
                                 <div className="modal-content">
                                     <div className="modal-header">
-                                        <h5 className="modal-title" id="staticBackdropLabel">Create new post</h5>
+                                        <h5 className="modal-title" id="staticBackdropLabel">Create new
+                                            post</h5>
                                         <button type="button" className="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Закрыть"></button>
                                     </div>
@@ -115,7 +119,8 @@ const ProfilePage = () => {
                                                     </div>
                                                 </div>
 
-                                                <label htmlFor="content" className="form-label mt-3">Content</label>
+                                                <label htmlFor="content"
+                                                       className="form-label mt-3">Content</label>
                                                 <textarea className="form-control mb-3" id="content"
                                                           aria-label="With textarea"></textarea>
 
@@ -126,13 +131,14 @@ const ProfilePage = () => {
 
                                                 <div className="input-group has-validation">
                                                     <span className="input-group-text">Publication date</span>
-                                                    <input type="text" className="form-control" id="heading" required disabled
+                                                    <input type="text" className="form-control" id="heading"
+                                                           required disabled
                                                            placeholder={`${new Date().toLocaleString("en", {
                                                                day: '2-digit',
                                                                month: 'short',
                                                                hour: '2-digit',
                                                                minute: '2-digit'
-                                                           })}`} />
+                                                           })}`}/>
                                                     <div className="invalid-feedback"></div>
                                                 </div>
 
@@ -147,10 +153,9 @@ const ProfilePage = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
 
                     </div>
-
                 </>
             )}
         </div>

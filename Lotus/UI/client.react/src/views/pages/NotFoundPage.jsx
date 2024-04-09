@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../assets/css/NotFoundPage.css';
+
 const NotFoundPage = () => {
     return (
         <div className="d-flex flex-column align-items-center justify-content-center text-center" style={{ height: '100vh' }}>

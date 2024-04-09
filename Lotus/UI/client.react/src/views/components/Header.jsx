@@ -36,7 +36,7 @@ const Header = () => {
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <Link to="/" className="navbar-brand">
-                        <img className="bi pe-none me-2" width="40" src={Logo} alt={"logo"}/>
+                        <img className="bi pe-none me-2" width="40" src={`${Logo}`} alt={"logo"}/>
                     </Link>
                     <div className="collapse navbar-collapse d-lg-flex justify-content-lg-end" id="navbarsExample11">
 

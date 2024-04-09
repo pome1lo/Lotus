@@ -1,15 +1,15 @@
 const Router = require('koa-router');
-const { USER: User } = require('../database/models/user');
-const { POST: Post } = require('../database/models/post');
-const { SUBSCRIPTION: Subscription } = require('../database/models/subscription');
+const { USER } = require('../database/models/user');
+const { POST } = require('../database/models/post');
+const { SUBSCRIPTION } = require('../database/models/subscription');
 const router = new Router();
 
 router.post('/api/user/subscribe', async (ctx) => {
-    const { UserId, SubscribeToId } = ctx.request.body;
+    const { user_id, subscribe_to_id } = ctx.request.body;
 
     try {
-        const user = await User.findByPk(UserId);
-        const subscribeToUser = await User.findByPk(SubscribeToId);
+        const user = await USER.findByPk(user_id);
+        const subscribeToUser = await USER.findByPk(subscribe_to_id);
 
         if (!user || !subscribeToUser) {
             ctx.status = 404;
@@ -17,8 +17,7 @@ router.post('/api/user/subscribe', async (ctx) => {
             return;
         }
 
-
-        const existingSubscription = await Subscription.findOne({ where: { subscriberId: UserId, subscribedToId: SubscribeToId } });
+        const existingSubscription = await SUBSCRIPTION.findOne({ where: { SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: subscribe_to_id } });
         if (existingSubscription) {
             ctx.status = 400;
             ctx.body = { message: 'You are already subscribed to this user' };
@@ -26,29 +25,28 @@ router.post('/api/user/subscribe', async (ctx) => {
         }
 
 
-        await Subscription.create({ subscriberId: UserId, subscribedToId: SubscribeToId });
+        await SUBSCRIPTION.create({ SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: subscribe_to_id });
 
-        user.SubscriptionsCount += 1;
+        user.SUBSCRIPTIONS_COUNT += 1;
         await user.save();
 
-        subscribeToUser.SubscribersCount += 1;
+        subscribeToUser.SUBSCRIBERS_COUNT += 1;
         await subscribeToUser.save();
 
         ctx.status = 200;
         ctx.body = { message: 'Subscribed successfully' };
     } catch (error) {
         ctx.status = 500;
-        console.log(error.message);
         ctx.body = { error: 'Something went wrong' };
     }
 });
 
 router.post('/api/user/unsubscribe', async (ctx) => {
-    const { UserId, UnsubscribeFromId } = ctx.request.body;
+    const { user_id, unsubscribe_from_id } = ctx.request.body;
 
     try {
-        const user = await User.findByPk(UserId);
-        const unsubscribeFromUser = await User.findByPk(UnsubscribeFromId);
+        const user = await USER.findByPk(user_id);
+        const unsubscribeFromUser = await USER.findByPk(unsubscribe_from_id);
 
         if (!user || !unsubscribeFromUser) {
             ctx.status = 404;
@@ -56,7 +54,7 @@ router.post('/api/user/unsubscribe', async (ctx) => {
             return;
         }
 
-        const subscription = await Subscription.findOne({ where: { subscriberId: UserId, subscribedToId: UnsubscribeFromId } });
+        const subscription = await SUBSCRIPTION.findOne({ where: { SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: unsubscribe_from_id } });
         if (!subscription) {
             ctx.status = 400;
             ctx.body = { message: 'You are not subscribed to this user' };
@@ -65,10 +63,10 @@ router.post('/api/user/unsubscribe', async (ctx) => {
 
         await subscription.destroy();
 
-        user.SubscriptionsCount -= 1;
+        user.SUBSCRIPTIONS_COUNT -= 1;
         await user.save();
 
-        unsubscribeFromUser.SubscribersCount -= 1;
+        unsubscribeFromUser.SUBSCRIBER_COUNT -= 1;
         await unsubscribeFromUser.save();
 
         ctx.status = 200;

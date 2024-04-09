@@ -16,7 +16,6 @@ const SelectedNews = () => {
             })
             .then(data => setNews(data))
     }, [id, navigate]);
-
     return (
         <>
             <div className="col-md-7 order-md-1 two">

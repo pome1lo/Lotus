@@ -25,17 +25,8 @@
     display: none;
 }
 
-/*.form-floating.password input:focus,*/
-/*.form-floating.username input:focus {*/
-/*    border-color: #EA638C;*/
-/*}*/
-
-/*.form-floating.password input:valid,*/
-/*.form-floating.username input:valid {*/
-/*    border-color: #2b7a0e;*/
-/*}*/
-
-/*.form-floating.password input:invalid,*/
-/*.form-floating.username input:invalid {*/
-/*    border-color: darkred;*/
-/*}*/
+.social-networks-block {
+    position: absolute;
+    right: 20px;
+    top: 40%;
+}

@@ -1,5 +1,5 @@
 import Logo from "../../assets/images/logo/logo.png";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 
 const AuthenticationPage = () => {
@@ -14,8 +14,8 @@ const AuthenticationPage = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: inputUsername,
-                password: inputPassword
+                USERNAME: inputUsername,
+                PASSWORD: inputPassword
             })
         });
         if (!response.ok) {
@@ -25,9 +25,9 @@ const AuthenticationPage = () => {
 
         const data = await response.json();
         if (response.ok) {
-            console.log("TOKEN", data.token);
-            sessionStorage.setItem('token', data.token);
-            sessionStorage.setItem('username', data.username);
+            console.log("TOKEN", data.TOKEN);
+            sessionStorage.setItem('token', data.TOKEN);
+            sessionStorage.setItem('username', data.USERNAME);
             navigate('/');
         } else {
             console.error('Ошибка входа:', data.message);
@@ -36,8 +36,9 @@ const AuthenticationPage = () => {
 
     return (
         <>
-            <main className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
-                <img className="mb-3" src={Logo} alt="" width="72"/>
+            <main
+                className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
+                <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
 
                 <form className="text-center form-signin">
                     <h2 className="h4 mb-3 fw-medium">Please sign in</h2>
@@ -65,10 +66,20 @@ const AuthenticationPage = () => {
                         </div>
                     </div>
                     <button className="btn btn-danger w-100 py-2" type="button" onClick={fetchData}>Sign in</button>
-                    <p className="mt-5 mb-3 text-body-secondary">© 2024 Lotus</p>
-                </form>
 
+
+                    <p className="mt-3 mb-3 text-body-secondary">© 2024 Lotus</p>
+                </form>
             </main>
+
+            <div className="d-flex flex-column social-networks-block">
+                <NavLink to="http://localhost:31002/api/auth/google" className="imageHover">
+                    <i className="bi bi-google"></i>
+                </NavLink>
+                <NavLink to="http://localhost:31002/api/auth/github" className="imageHover">
+                    <i className="bi bi-github"></i>
+                </NavLink>
+            </div>
         </>
     );
 }

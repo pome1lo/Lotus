@@ -2,44 +2,44 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config.js');
 
 const USER = sequelize.define('USERS', {
-    id: {
+    ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    UserName: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    Email: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    FirstName: {
+    USERNAME: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    LastName: {
+    EMAIL: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    PhoneNumber: {
+    FIRSTNAME: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    BirthDate: {
+    LASTNAME: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    PHONE_NUMBER: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    BIRTH_DATE: {
         type: DataTypes.DATE,
         allowNull: true
     },
-    SubscribersCount: {
+    SUBSCRIBERS_COUNT: {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    SubscriptionsCount: {
+    SUBSCRIPTIONS_COUNT: {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    ProfilePicture: {
+    PROFILE_PICTURE: {
         type: DataTypes.STRING,
         defaultValue: '/static/media/default_profile.587c4b6422f165a03c3f.png'
     }

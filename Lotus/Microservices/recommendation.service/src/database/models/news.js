@@ -8,17 +8,24 @@ const NEWS = sequelize.define('NEWS', {
         primaryKey: true,
         autoIncrement: true
     },
-    Heading: {
+    HEADING: {
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    Paragraph: {
+    PARAGRAPH: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    Date: {
+    DATE: {
         type: DataTypes.STRING(255),
         allowNull: false
+    },
+    TOPIC_ID: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'TOPICS',
+            key: 'ID'
+        }
     }
 }, {
     timestamps: false,

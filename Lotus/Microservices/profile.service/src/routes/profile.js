@@ -1,13 +1,13 @@
 const Router = require('koa-router');
-const { USER: User } = require('../database/models/user');
-const { POST: Post } = require('../database/models/post');
+const { USER} = require('../database/models/user');
+const { POST } = require('../database/models/post');
 const router = new Router();
 
 
-router.get('/api/profile/:userName', async (ctx) => {
-    const userName =  ctx.params.userName;
-    console.log(userName);
-    const user = await User.findOne({ where: { userName } });
+router.get('/api/profile/:username', async (ctx) => {
+    const username =  ctx.params.username;
+    console.log(username);
+    const user = await USER.findOne({ where: { USERNAME: username } });
 
     if (user) {
         ctx.body = user;
@@ -18,7 +18,7 @@ router.get('/api/profile/:userName', async (ctx) => {
 });
 
 router.get('/api/profiles', async (ctx) => {
-    const users = await User.findAll();
+    const users = await USER.findAll();
 
     if (users) {
         ctx.body = users;
@@ -29,21 +29,20 @@ router.get('/api/profiles', async (ctx) => {
 });
 
 router.post('/api/profile/posts/create', async (ctx) => {
-    const { UserId, Title, Content, Image } = ctx.request.body;
+    const { user_id, title, content, image } = ctx.request.body;
 
     try {
-        const post = await Post.create({
-            UserId,
-            Title,
-            Content,
-            Image
+        const post = await POST.create({
+            USER_ID: user_id,
+            TITLE: title,
+            CONTENT: content,
+            IMAGE: image
         });
 
         ctx.status = 201;
         ctx.body = { message: 'Post created successfully', post };
     } catch (error) {
         ctx.status = 500;
-        console.log(error.message);
         ctx.body = { error: 'Something went wrong' };
     }
 });

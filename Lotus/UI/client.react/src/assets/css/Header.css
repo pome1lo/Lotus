@@ -42,12 +42,9 @@ nav.header {
     background-image: url('../images/icons/moon.png');
 }
 
-
-
 .show-display {
     display: none;
 }
-
 
 @media (max-width: 992px) {
     ul.person {
@@ -61,7 +58,6 @@ nav.header {
         display: block;
     }
 }
-
 
 ul.person {
     position: absolute;

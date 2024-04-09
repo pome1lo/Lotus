@@ -1,6 +1,6 @@
 const Router = require('koa-router');
-const { USER: User } = require('../database/models/user');
-const { POST: Post } = require('../database/models/post');
+const { USER } = require('../database/models/user');
+const { POST } = require('../database/models/post');
 const util = require('util');
 const crypto = require('crypto');
 const argon2 = require('argon2');
@@ -19,10 +19,10 @@ const client = new authPackage.AuthenticationService('localhost:32001', grpc.cre
 
 
 router.post('/api/account/personal', async (ctx) => {
-    const { id, UserName, FirstName, LastName, BirthDate } = ctx.request.body;
+    const { id, username, firstname, lastname, birth_date } = ctx.request.body;
 
     try {
-        const user = await User.findByPk(id);
+        const user = await USER.findByPk(id);
 
         if (!user) {
             ctx.status = 404;
@@ -30,10 +30,10 @@ router.post('/api/account/personal', async (ctx) => {
             return;
         }
 
-        user.UserName = UserName || user.UserName;
-        user.FirstName = FirstName || user.FirstName;
-        user.LastName = LastName || user.LastName;
-        user.BirthDate = BirthDate || user.BirthDate;
+        user.USERNAME = username || user.USERNAME;
+        user.FIRSTNAME = firstname || user.FIRSTNAME;
+        user.LASTNAME = lastname || user.LASTNAME;
+        user.BIRTH_DATE = birth_date || user.BIRTH_DATE;
 
         await user.save();
 
@@ -46,21 +46,21 @@ router.post('/api/account/personal', async (ctx) => {
 });
 
 router.post('/api/account/security', async (ctx) => {
-    const { id, Email, PhoneNumber, Password } = ctx.request.body;
+    const { id, email, phone_number, password } = ctx.request.body;
 
     try {
-        const user = await User.findByPk(id);
+        const user = await USER.findByPk(id);
         if (!user) {
             ctx.status = 404;
             ctx.body = { error: 'User not found' };
             return;
         }
 
-        user.Email = Email || user.Email;
-        user.PhoneNumber = PhoneNumber || user.PhoneNumber;
+        user.EMAIL = email || user.EMAIL;
+        user.PHONE_NUMBER = phone_number || user.PHONE_NUMBER;
 
         const salt = crypto.randomBytes(32).toString('hex');
-        const hashedPassword = await argon2.hash(Password + salt);
+        const hashedPassword = await argon2.hash(password + salt);
 
 
         client.UpdatePassword({ id: id, password: hashedPassword, salt: salt }, (error, response) => {
@@ -93,7 +93,7 @@ router.delete('/api/account/delete', async (ctx) => {
     const { id } = ctx.request.body;
 
     try {
-        const user = await User.findByPk(id);
+        const user = await USER.findByPk(id);
 
         if (!user) {
             ctx.status = 404;
@@ -110,7 +110,7 @@ router.delete('/api/account/delete', async (ctx) => {
             }
         });
 
-        const posts = await Post.findAll({ where: { UserId: { [Op.eq]: id } } });
+        const posts = await POST.findAll({ where: { USER_ID: { [Op.eq]: id } } });
         for (let post of posts) {
             await post.destroy();
         }

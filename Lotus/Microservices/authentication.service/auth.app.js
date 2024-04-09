@@ -1,6 +1,6 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const userAccountRoutes = require('./src/routes/userAccount');
+const userAccountRoutes = require('./src/routes/account');
 const googleRoutes = require('./src/routes/google');
 const githubRoutes = require('./src/routes/github');
 const port = 31002;
@@ -10,12 +10,12 @@ const cors = require('koa2-cors');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protofile.proto';
-const { USER: User } = require('./src/database/models/user');
+const { USER } = require('./src/database/models/user');
 const redis = require("redis");
 const session = require("koa-session");
 const passport = require("koa-passport");
 
-authApp.keys = ['your-secret'];
+authApp.keys = ['your-secret']; //todo add secret in config
 authApp.use(session({}, authApp));
 authApp.use(passport.initialize());
 authApp.use(passport.session());
@@ -36,7 +36,7 @@ const updatePassword = async (call, callback) => {
     const { id, password, salt } = call.request;
 
     try {
-        const user = await User.findByPk(id);
+        const user = await USER.findByPk(id);
         if (!user) {
             return callback({
                 code: grpc.status.NOT_FOUND,
@@ -44,10 +44,10 @@ const updatePassword = async (call, callback) => {
             });
         }
 
-        const username = user.username;
+        const username = user.USERNAME;
 
-        user.password = password;
-        user.salt = salt;
+        user.PASSWORD = password;
+        user.SALT = salt;
         await user.save();
         await client.del(username);
 
@@ -64,7 +64,7 @@ const deleteUser = async (call, callback) => {
     const { id } = call.request;
 
     try {
-        const user = await User.findByPk(id);
+        const user = await USER.findByPk(id);
         if (!user) {
             return callback({
                 code: grpc.status.NOT_FOUND,
@@ -72,7 +72,7 @@ const deleteUser = async (call, callback) => {
             });
         }
 
-        const username = user.username;
+        const username = user.USERNAME;
 
         await user.destroy();
         await client.del(username);

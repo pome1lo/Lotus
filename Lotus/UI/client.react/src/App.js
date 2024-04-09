@@ -14,6 +14,8 @@ import 'bootstrap';
 import {Layout} from "./views/Layout";
 import {AuthenticationPage} from "./views/pages/AuthenticationPage";
 import {RegistrationPage} from "./views/pages/RegistrationPage";
+import {ChangePasswordPage} from "./views/pages/ChangePasswordPage";
+import {SupportPage} from "./views/pages/SupportPage";
 
 function App() {
   useEffect(() => AOS.init , []);
@@ -26,8 +28,10 @@ function App() {
               <Route index path="home" element={<HomePage/>} />
               <Route path="news" element={<NewsPage/>} />
               <Route path="news/:id" element={<SelectedNews/>} />
+              <Route path="support" element={<SupportPage/>} />
               <Route path="profile/:username" element={<ProfilePage/>} />
               <Route path="profile/:username/edit" element={<ProfileEditPage/>} />
+              <Route path="profile/:username/change-password" element={<ChangePasswordPage/>} />
             </Route>
             {/*<Route path="login" element={<FormPage/>} />*/}
             {/*<Route path="*" element={<AuthorizationPage />} />*/}

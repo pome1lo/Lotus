@@ -20,7 +20,6 @@ function sendToQueue(queue, message) {
             channel.sendToQueue(queue, msgBuffer);
             console.log("Сообщение отправлено в очередь", queue);
 
-            // Закрытие соединения и канала после отправки сообщения
             setTimeout(() => {
                 channel.close();
                 connection.close();

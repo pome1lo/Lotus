@@ -24,7 +24,7 @@ const RegistrationPage = () => {
             return;
         }
 
-        const response = await fetch('http://localhost:31002/api/auth/userAccount/register', {
+        const response = await fetch('http://localhost:31002/api/auth/account/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ const RegistrationPage = () => {
     return (
         <>
             <main className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
-                <img className="mb-3" src={Logo} alt="" width="72"/>
+                <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
 
                 <form className="text-center form-signin">
                     <h2 className="h4 mb-3 fw-medium">Please join</h2>

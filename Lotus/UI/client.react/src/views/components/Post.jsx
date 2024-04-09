@@ -1,6 +1,7 @@
 import "../../assets/css/Post.css";
 import React from "https://esm.run/react@18";
 import {Publisher} from "./Publisher";
+
 const Post =  ({ avatar, nickname, info, content, text, likes }) => {
 
     return (

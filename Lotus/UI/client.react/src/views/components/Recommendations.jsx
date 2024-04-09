@@ -14,7 +14,7 @@ const Recommendations = () => {
         <div className="col-md-4 order-md-3 three">
             <aside className="bd-aside sticky-xl-top">
                 <div className="themes">
-                    <img src={Logo} alt={"logo"}/>
+                    <img src={`${Logo}`} alt={"logo"}/>
                     <h3>Themes in the Lotus</h3>
                 </div>
                 <div className="row">

@@ -2,48 +2,48 @@ const { DataTypes} = require('sequelize');
 const sequelize = require('../config.js');
 
 const USER = sequelize.define('USERS', {
-    id: {
+    ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    googleId: {
+    GOOGLE_ID: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    githubId: {
+    GITHUB_ID: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    username: {
+    USERNAME: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    email: {
+    EMAIL: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    password: {
+    PASSWORD: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    salt: {
+    SALT: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    isEmailVerified: {
+    IS_EMAIL_VERIFIED: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
-    verificationToken: {
+    VERIFICATION_TOKEN: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    resetPasswordToken: {
+    RESET_PASSWORD_TOKEN: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    resetPasswordExpires: {
+    RESET_PASSWORD_EXPIRES: {
         type: DataTypes.DATE,
         allowNull: true
     }

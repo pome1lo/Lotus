@@ -1,3 +1,12 @@
+[data-bs-theme=dark] {
+  --bs-body-bg: #1e2121;
+  --bs-tertiary-bg-rgb: 24, 26, 26;
+  --bs-secondary-bg: #313131
+}
+[data-bs-theme=light] {
+  --bs-body-bg: #ffffff;
+}
+
 .topFixed {
   top: 3rem;
 }
@@ -37,8 +46,6 @@
   }
 }
 
-
-
 @media (max-width: 770px) {
   .two {
     flex: 0 0 100% !important;
@@ -54,8 +61,6 @@
     display: flex;
     flex-direction: column;
   }
-
-
 
   .row {
     display: flex;

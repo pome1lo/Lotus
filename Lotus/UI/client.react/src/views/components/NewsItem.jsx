@@ -1,4 +1,3 @@
-import "../../assets/css/NewsItem.css";
 import {Link} from "react-router-dom";
 
 const NewsItem =  ({ ID, Heading, Paragraph, Date })  => {
