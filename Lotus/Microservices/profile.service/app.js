@@ -18,9 +18,8 @@ app.use(UserRoutes.routes());
 
 app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
 
-
-const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
-const RABBITMQ_PORT = process.env.RABBITMQ_PORT;
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST == null ? "localhost" : process.env.RABBITMQ_HOST;
+const RABBITMQ_PORT = process.env.RABBITMQ_PORT == null ? 5672 : process.env.RABBITMQ_PORT;
 
 amqp.connect(`amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}`, function(error0, connection) {
     if (error0) {

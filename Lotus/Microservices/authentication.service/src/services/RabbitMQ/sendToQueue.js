@@ -1,10 +1,10 @@
 const amqp = require('amqplib/callback_api');
 
-const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
-const RABBITMQ_PORT = process.env.RABBITMQ_PORT;
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST == null ? "localhost" : process.env.RABBITMQ_HOST;
+const RABBITMQ_PORT = process.env.RABBITMQ_PORT == null ? 5672 : process.env.RABBITMQ_PORT;
 
 function sendToQueue(queue, message) {
-    amqp.connect('amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}', function(error0, connection) {
+    amqp.connect(`amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}`, function(error0, connection) {
         if (error0) {
             console.error("Ошибка подключения к RabbitMQ:", error0);
             return;

@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const argon2 = require('argon2');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
-const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protofile.proto';
+const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/auth.proto';
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 

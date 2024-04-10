@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package authPackage;
+
+service AuthenticationService {
+  rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse);
+  rpc DeleteUser (UpdatePasswordRequest) returns (UpdatePasswordResponse);
+}
+
+message UpdatePasswordRequest {
+  string id = 1;
+  string password = 2;
+  string salt = 3;
+}
+
+message DeleteUser {
+  string id = 1;
+}
+
+message UpdatePasswordResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+  string message = 2;
+}

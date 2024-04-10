@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package notifyPackage;
+
+service NotificationService {
+  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
+}
+
+message VerifyEmailRequest {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+}
+
+message VerifyEmailResponse {
+  bool success = 1;
+  string message = 2;
+}
