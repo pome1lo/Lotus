@@ -5,7 +5,7 @@ const googleRoutes = require('./src/routes/google');
 const githubRoutes = require('./src/routes/github');
 const port = 31002;
 const grpcPort = 32001;
-const authApp = new Koa();
+const app = new Koa();
 const cors = require('koa2-cors');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
@@ -15,22 +15,26 @@ const redis = require("redis");
 const session = require("koa-session");
 const passport = require("koa-passport");
 
-authApp.keys = ['your-secret']; //todo add secret in config
-authApp.use(session({}, authApp));
-authApp.use(passport.initialize());
-authApp.use(passport.session());
+app.keys = ['your-secret']; //todo add secret in config
+app.use(session({}, app));
+app.use(passport.initialize());
+app.use(passport.session());
 
-authApp.use(cors());
-authApp.use(bodyParser());
+app.use(cors());
+app.use(bodyParser());
 
-authApp.use(userAccountRoutes.routes());
-authApp.use(googleRoutes.routes());
-authApp.use(githubRoutes.routes());
+app.use(userAccountRoutes.routes());
+app.use(googleRoutes.routes());
+app.use(githubRoutes.routes());
 
 // Загрузка файла proto
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
-const client = redis.createClient("redis://localhost:6379");
+
+const REDIS_HOST = process.env.REDIS_HOST;
+const REDIS_PORT = process.env.REDIS_PORT;
+
+const client = redis.createClient(`redis://${REDIS_HOST}:${REDIS_PORT}`);
 client.connect();
 const updatePassword = async (call, callback) => {
     const { id, password, salt } = call.request;
@@ -101,4 +105,4 @@ server.bindAsync(`0.0.0.0:${grpcPort}`, grpc.ServerCredentials.createInsecure(),
 });
 
 
-authApp.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

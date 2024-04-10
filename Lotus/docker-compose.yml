@@ -1,0 +1,151 @@
+version: '3.4'
+
+networks:
+  backend:
+  frontend:
+
+services:
+  webuireact:
+    container_name: web-ui-react
+    build:
+      context: ./UI/client.react
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - notificationwebapi
+      - authenticationwebapi
+      - profilewebapi
+      - recommendationwebapi
+      - authdb
+
+  notificationwebapi:
+    container_name: notification-web-api
+    image: ${DOCKER_REGISTRY-}notificationwebapi
+    build:
+      context: ./Microservices/notification.service/
+      dockerfile: ./Dockerfile
+    environment:
+      - APP_PORT=40004
+    ports:
+      - "40004:31004"
+    networks:
+    - backend
+    depends_on:
+      - redis
+      - rabbitmq
+
+  authenticationwebapi:
+    container_name: authentication-web-api
+    image: ${DOCKER_REGISTRY-}authenticationwebapi
+    build:
+      context: ./Microservices/authentication.service
+      dockerfile: ./Dockerfile
+    environment:
+      - DB_HOST=authdb
+      - DB_NAME=AUTHENTICATION_SERVICE
+      - DB_PORT=40005
+      - DB_PASSWORD=password@12345
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - APP_PORT=40002
+    ports:
+      - "40002:31002"
+    networks:
+      - backend
+    depends_on:
+      - redis
+      - rabbitmq
+
+  profilewebapi:
+    container_name: profile-web-api
+    image: ${DOCKER_REGISTRY-}profilewebapi
+    build:
+      context: ./Microservices/profile.service
+      dockerfile: ./Dockerfile
+    environment:
+      - DB_HOST=profiledb
+      - DB_NAME=PROFILE_SERVICE
+      - DB_PORT=40006
+      - DB_PASSWORD=password@12345
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - APP_PORT=40003
+    ports:
+      - "40003:31003"
+    networks:
+      - backend
+
+  recommendationwebapi:
+    container_name: recommendation-web-api
+    image: ${DOCKER_REGISTRY-}recommendationwebapi
+    build:
+      context: ./Microservices/recommendation.service
+      dockerfile: ./Dockerfile
+    environment:
+      - DB_HOST=recommendationdb
+      - DB_NAME=RECOMMENDATION_SERVICE
+      - DB_PORT=40007
+      - DB_PASSWORD=password@12345
+      - APP_PORT=40001
+    ports:
+      - "40001:31001"
+    networks:
+      - backend
+
+  authdb:
+    container_name: auth-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=password@12345
+    networks:
+      - backend
+    ports:
+      - "40005:1433"
+
+  profiledb:
+    container_name: profile-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=password@12345
+    networks:
+      - backend
+    ports:
+      - "40006:1433"
+
+  recommendationdb:
+    container_name: recommendation-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=password@12345
+    networks:
+      - backend
+    ports:
+      - "40007:1433"
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+    networks:
+      - backend
+
+#  redis:
+#    container_name: redis-db
+#    image:

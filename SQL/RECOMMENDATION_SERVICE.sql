@@ -1,6 +1,11 @@
 
 CREATE DATABASE RECOMMENDATION_SERVICE;
+use RECOMMENDATION_SERVICE
 
+create table topics (
+    id        int primary key identity (1,1),
+    topicname nvarchar(255) not null,
+)
 create table news (
     id int primary key identity,
     heading nvarchar(255) not null,
@@ -11,11 +16,6 @@ create table news (
 );
 
 
-create table topics
-(
-    id        int primary key identity (1,1),
-    topicname nvarchar(255) not null,
-)
 
 DELETE FROM NEWS;
 
