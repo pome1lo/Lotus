@@ -10,6 +10,8 @@ const newsRoutes = require('./src/routes/news');
 const port = 31001;
 const NEWS = require('./src/database/models/news');
 const cors = require('koa2-cors');
+const fs = require("fs");
+const https = require("https");
 
 app.use(cors());
 
@@ -33,9 +35,14 @@ const job = schedule.scheduleJob('0 * * * *', async function(){
 
 
 
-
-
-
 app.use(router.routes());
 app.use(newsRoutes.routes());
-app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+
+
+const options = {
+    key:  fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl\\LAB.key'),
+    cert: fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl\\LAB.crt')
+};
+
+const server = https.createServer(options, app.callback());
+server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

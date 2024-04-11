@@ -1,12 +1,12 @@
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
-const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/notify.proto';
+const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/notify.proto';
 
 const verifyEmail = async (call, callback) => {
-    const { id, password, salt } = call.request;
+    const {  username, email, message } = call.request;
 
     try {
-        callback(null, { success: true, message: 'Password updated successfully' });
+        callback(null, { success: true, message: `successfully ${message}` });
     } catch (error) {
         callback({
             code: grpc.status.INTERNAL,

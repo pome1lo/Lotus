@@ -1,7 +1,7 @@
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 
-let rawParams = fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\authentication.service\\tsconfig.json');
+let rawParams = fs.readFileSync('./../../../tsconfig.json');
 let mailParams = JSON.parse(rawParams);
 
 

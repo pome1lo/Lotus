@@ -5,6 +5,8 @@ const emailRoutes = require('./src/routes/email');
 const grpc = require('@grpc/grpc-js');
 const grpcServer = require('./src/services/gRPC/grpcServer');
 const grpcPort = 32001;
+const fs = require('fs');
+const https = require('https');
 
 const app = new Koa();
 
@@ -16,4 +18,13 @@ grpcServer.bindAsync(`0.0.0.0:${grpcPort}`, grpc.ServerCredentials.createInsecur
     grpcServer.start();
 });
 
-app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+
+const options = {
+    key:  fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl\\LAB.key'),
+    cert: fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl\\LAB.crt')
+};
+
+const server = https.createServer(options, app.callback());
+server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+
+//app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

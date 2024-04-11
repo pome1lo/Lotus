@@ -4,7 +4,7 @@ import "../../assets/css/Profile.css";
 import SubscriptionButton from "../components/SubscriptionButton";
 
 const ProfilePage = () => {
-    const {posts, setPosts} = useState(null);
+    //const {posts, setPosts} = useState(null);
     const {username} = useParams();
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ const ProfilePage = () => {
                         <div className="w-100 d-flex align-items-center flex-wrap">
                             <div className="d-flex align-items-center w-100">
                                 <div className="mr-2">
-                                    <h1 className="fw-bold display-4">{user.UserName}</h1>
+                                    <h1 className="fw-bold display-4">{user.username}</h1>
                                 </div>
                                 <SubscriptionButton
                                     styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>

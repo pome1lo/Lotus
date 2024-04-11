@@ -2,6 +2,9 @@ Discovers-chat/
 IMG/
 .garbage
 .garbage/
+*.key
+*.csr
+
 mail_params.json
 # dependencies
 /node_modules
