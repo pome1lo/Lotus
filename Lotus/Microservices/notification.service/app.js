@@ -14,7 +14,8 @@ app.use(cors());
 app.use(emailRoutes.routes());
 
 grpcServer.bindAsync(`0.0.0.0:${grpcPort}`, grpc.ServerCredentials.createInsecure(), (error, port) => {
-    if (error) console.error(`Server error: ${error.message}`);
+    if (error) console.error(`🟥 gRPC server error: ${error.message}`);
+    console.log(`🟩 gRPC server Successful`);
     grpcServer.start();
 });
 
@@ -25,6 +26,5 @@ const options = {
 };
 
 const server = https.createServer(options, app.callback());
-server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+server.listen(port, () => console.log(`🟩 Authentication server running: port-${port}`));
 
-//app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));

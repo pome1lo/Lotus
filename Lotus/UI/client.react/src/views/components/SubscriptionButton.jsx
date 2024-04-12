@@ -6,8 +6,8 @@ const SubscriptionButton = ({styles}) => {
     const handleSubscriptionToggle = async () => {
         try {
             const endpoint = isSubscribed
-                ? 'http://localhost:31003/api/user/unsubscribe'
-                : 'http://localhost:31003/api/user/subscribe';
+                ? 'https://localhost:31003/api/user/unsubscribe'
+                : 'https://localhost:31003/api/user/subscribe';
 
             styles =
                 styles == null ?

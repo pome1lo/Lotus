@@ -2,17 +2,18 @@ const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const { USER } = require('../../database/models/user');
 const redis = require("redis");
-const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/auth.proto';
+const PROTO_PATH = './../../Static/protos/auth.proto';
 
-// Загрузка файла proto
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
 
-const REDIS_HOST = process.env.REDIS_HOST;
-const REDIS_PORT = process.env.REDIS_PORT;
-
+const REDIS_HOST = process.env.REDIS_HOST == null ? "localhost" : process.env.REDIS_HOST;
+const REDIS_PORT = process.env.REDIS_PORT == null ? 6379 : process.env.REDIS_PORT;
 const client = redis.createClient(`redis://${REDIS_HOST}:${REDIS_PORT}`);
+
 client.connect();
+client.on('error', function(error) { console.error(`🟥 REDIS: ${REDIS_HOST} Error: `, error); });
+client.on('connect', async function() { console.log(`🟩 REDIS: ${REDIS_HOST} Successful`); });
 
 const updatePassword = async (call, callback) => {
     const { id, password, salt } = call.request;
@@ -70,20 +71,18 @@ const deleteUser = async (call, callback) => {
 };
 
 const server = new grpc.Server();
+
 server.addService(authPackage.AuthenticationService.service, {
     UpdatePassword: updatePassword,
     DeleteUser: deleteUser
 });
 
-
-
 module.exports = {
     startServer: (grpcPort) => {
-        const TARGET = process.env.APP_PORT == null ? `profilewebapi:${grpcPort}` : `0.0.0.0:${grpcPort}`;
+        const TARGET = process.env.APP_PORT == null ? `0.0.0.0:${grpcPort}` : `0.0.0.0:${grpcPort}`; //todo ???
         server.bindAsync(TARGET, grpc.ServerCredentials.createInsecure(), (error, port) => {
-            if (error) {
-                console.error(`Server error: ${error.message}`);
-            }
+            if (error) console.error(`🟥 gRPC server error: ${error.message}`);
+            console.log(`🟩 gRPC server Successful`);
             server.start();
         });
     }

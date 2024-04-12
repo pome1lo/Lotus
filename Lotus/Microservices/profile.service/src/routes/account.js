@@ -15,7 +15,9 @@ const router = new Router();
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
 
-const client = new authPackage.AuthenticationService('localhost:32001', grpc.credentials.createInsecure());
+const TARGET = process.env.APP_PORT == null ? `0.0.0.0:32001` : `authenticationwebapi:${grpcPort}`; //todo ???
+const client = new authPackage.AuthenticationService(TARGET, grpc.credentials.createInsecure());
+
 
 
 router.post('/api/account/personal', async (ctx) => {
@@ -65,10 +67,7 @@ router.post('/api/account/security', async (ctx) => {
 
         client.UpdatePassword({ id: id, password: hashedPassword, salt: salt }, (error, response) => {
             if (error) {
-                console.log("📛📛📛");
                 throw new Error(error.message);
-            } else {
-                console.log("✅✅✅");
             }
         });
         await user.save();
@@ -103,10 +102,7 @@ router.delete('/api/account/delete', async (ctx) => {
 
         client.DeleteUser({ id: id }, (error, response) => {
             if (error) {
-                console.log("📛📛📛");
                 throw new Error(error.message);
-            } else {
-                console.log("✅✅✅");
             }
         });
 

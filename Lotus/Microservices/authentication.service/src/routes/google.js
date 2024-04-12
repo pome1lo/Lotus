@@ -1,6 +1,4 @@
-const Koa = require('koa');
 const Router = require('koa-router');
-const session = require('koa-session');
 const passport = require('koa-passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { USER } = require('../database/models/user');
@@ -27,7 +25,7 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GoogleStrategy({
         clientID: Params.google.clientID,
         clientSecret: Params.google.clientSecret,
-        callbackURL: "http://localhost:31002/api/auth/google/callback"
+        callbackURL: "https://localhost:31002/api/auth/google/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
         const email = profile.emails[0].value;
@@ -58,13 +56,13 @@ router.get('/api/auth/google',
 router.get('/api/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (ctx) => {
-        ctx.redirect('http://localhost:3000/');
+        ctx.redirect('https://localhost:3000/');
     }
 );
 
 router.get('api/auth/google/logout', (ctx) => {
     ctx.logout();
-    ctx.redirect('http://localhost:3000/');
+    ctx.redirect('https://localhost:3000/');
 });
 
 module.exports = router;

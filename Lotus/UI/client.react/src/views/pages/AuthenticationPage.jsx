@@ -8,7 +8,7 @@ const AuthenticationPage = () => {
     const [inputPassword, setPassword] = useState('');
 
     async function fetchData() {
-        const response = await fetch('http://localhost:31002/api/auth/userAccount/auth', {
+        const response = await fetch('https://localhost:31002/api/auth/userAccount/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

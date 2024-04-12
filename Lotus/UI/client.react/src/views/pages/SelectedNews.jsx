@@ -7,7 +7,7 @@ const SelectedNews = () => {
     const [news, setNews] = useState([]);
 
     useEffect(() => {
-        fetch(`http://localhost:31001/api/news/${id}`)
+        fetch(`https://localhost:31001/api/news/${id}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');

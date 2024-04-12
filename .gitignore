@@ -19,7 +19,7 @@ Lotus/Microservices/authentication.service/tsconfig.json
 
 # production
 /build
-
+*.vs
 # misc
 .DS_Store
 .env

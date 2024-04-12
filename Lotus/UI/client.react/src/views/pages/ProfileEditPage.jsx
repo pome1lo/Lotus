@@ -9,7 +9,7 @@ const ProfileEditPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:31003/api/profile/${username}`)
+        fetch(`https://localhost:31003/api/profile/${username}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');

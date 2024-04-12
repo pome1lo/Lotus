@@ -4,6 +4,10 @@ networks:
   backend:
   frontend:
 
+volumes:
+  auth_proto_volume:
+  notify_proto_volume:
+
 services:
   webuireact:
     container_name: web-ui-react
@@ -46,13 +50,16 @@ services:
       - DB_NAME=AUTHENTICATION_SERVICE
       - DB_PORT=40005
       - DB_PASSWORD=password@12345
-      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_HOST=rabbitmq.js
       - RABBITMQ_PORT=5672
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - APP_PORT=40002
     ports:
       - "40002:31002"
+    volumes:
+      - auth_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/auth.proto
+      - notify_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/notify.proto
     networks:
       - backend
     depends_on:
@@ -70,11 +77,14 @@ services:
       - DB_NAME=PROFILE_SERVICE
       - DB_PORT=40006
       - DB_PASSWORD=password@12345
-      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_HOST=rabbitmq.js
       - RABBITMQ_PORT=5672
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - APP_PORT=40003
+    volumes:
+      - auth_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/auth.proto
+      - notify_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/notify.proto
     ports:
       - "40003:31003"
     networks:
@@ -139,7 +149,7 @@ services:
       - backend
 
   rabbitmq:
-    container_name: rabbitmq
+    container_name: rabbitmq.js
     image: rabbitmq:latest
     ports:
       - "5672:5672"

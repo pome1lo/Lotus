@@ -1,14 +1,12 @@
-const Koa = require('koa');
 const Router = require('koa-router');
-const session = require('koa-session');
 const passport = require('koa-passport');
 const GitHubStrategy = require('passport-github').Strategy;
 const { USER } = require('../database/models/user');
+const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 const fs = require('fs');
 
 const router = new Router();
 
-const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 let rawParams = fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\authentication.service\\tsconfig.json');
 let Params = JSON.parse(rawParams);
 
@@ -25,7 +23,7 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GitHubStrategy({
         clientID: Params.github.clientID,
         clientSecret: Params.github.clientSecret,
-        callbackURL: "http://localhost:31002/api/auth/github/callback"
+        callbackURL: "https://localhost:31002/api/auth/github/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
         let user = await USER.findOne({ where: { GITHUB_ID: profile.id } });
