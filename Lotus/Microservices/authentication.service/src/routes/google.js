@@ -4,11 +4,15 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { USER } = require('../database/models/user');
 const fs = require('fs');
 const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
+const path = require("path");
 
 
 const router = new Router();
 
-let rawParams = fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\authentication.service\\tsconfig.json');
+const isDocker = process.env.APP_PORT == null;
+const PathToConfig = isDocker ? '/app' : 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\configs';
+
+let rawParams = fs.readFileSync(path.join(PathToConfig, 'tsconfig_auth.json'));
 let Params = JSON.parse(rawParams);
 
 passport.serializeUser((user, done) => done(null, user.id));
@@ -56,7 +60,7 @@ router.get('/api/auth/google',
 router.get('/api/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (ctx) => {
-        ctx.redirect('https://localhost:3000/');
+        ctx.redirect('https://lotus:3000/');
     }
 );
 

@@ -1,7 +1,7 @@
 const schedule = require('node-schedule');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const NEWS = require('./src/database/models/news');
+const NEWS = require('./../../database/models/news');
 
 function scheduleJob() {
     schedule.scheduleJob('0 * * * *', async function(){

@@ -13,7 +13,7 @@ const REDIS_PORT = process.env.REDIS_PORT == null ? 6379 : process.env.REDIS_POR
 const client = redis.createClient(`redis://${REDIS_HOST}:${REDIS_PORT}`);
 
 const router = new Router();
-const secretKey = 'your-secret-key'; //todo add data in config | docker
+const secretKey =  process.env.SECRET_KEY == null ? 'secret_key' : process.env.SECRET_KEY;
 
 client.connect();
 client.on('error', function(error) { console.error(`🟥 REDIS: ${REDIS_HOST} Error: `, error); });

@@ -6,19 +6,26 @@ const crypto = require('crypto');
 const argon2 = require('argon2');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
-const PROTO_PATH = 'D:/FILES/University/3 course/2term/Course Project/Lotus/Static/auth.proto';
+const koaJwt = require('koa-jwt');
+const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./../../app/auth.proto";
+const GRPC_PORT_AUTH_SERVICE = process.env.GRPC_PORT_AUTH_SERVICE == null ? 19001 : process.env.GRPC_PORT_AUTH_SERVICE;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+
+const secretKey = 'your-secret-key'; //todo add data in config | docker
 
 const router = new Router();
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
 
-const TARGET = process.env.APP_PORT == null ? `0.0.0.0:32001` : `authenticationwebapi:${grpcPort}`; //todo ???
+const TARGET = process.env.APP_PORT == null ? `0.0.0.0:${GRPC_PORT_AUTH_SERVICE}` : `authenticationwebapi:${GRPC_PORT_AUTH_SERVICE}`; //todo ???
 const client = new authPackage.AuthenticationService(TARGET, grpc.credentials.createInsecure());
 
 
+router.get('/api/account/protected', koaJwt({ secret: secretKey }), async (ctx) => {
+    ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
+});
 
 router.post('/api/account/personal', async (ctx) => {
     const { id, username, firstname, lastname, birth_date } = ctx.request.body;

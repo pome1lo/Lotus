@@ -4,10 +4,14 @@ const GitHubStrategy = require('passport-github').Strategy;
 const { USER } = require('../database/models/user');
 const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 const fs = require('fs');
+const path = require("path");
 
 const router = new Router();
 
-let rawParams = fs.readFileSync('D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\authentication.service\\tsconfig.json');
+const isDocker = process.env.APP_PORT == null;
+const PathToConfig = isDocker ? '/app' : 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\configs';
+
+let rawParams = fs.readFileSync(path.join(PathToConfig, 'tsconfig_auth.json'));
 let Params = JSON.parse(rawParams);
 
 passport.serializeUser((user, done) => done(null, user.id));

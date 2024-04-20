@@ -14,6 +14,9 @@ services:
     build:
       context: ./UI/client.react
       dockerfile: ./Dockerfile
+    volumes:
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
     ports:
       - "3000:3000"
     depends_on:
@@ -30,11 +33,16 @@ services:
       context: ./Microservices/notification.service/
       dockerfile: ./Dockerfile
     environment:
-      - APP_PORT=40004
+      - APP_PORT=31902
+      - GRPC_PORT=19002
+      - GRPC_PORT_AUTH_SERVICE=19001
     ports:
-      - "40004:31004"
+      - "31902:31902"
     networks:
     - backend
+    volumes:
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
     depends_on:
       - redis
       - rabbitmq
@@ -54,12 +62,17 @@ services:
       - RABBITMQ_PORT=5672
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - APP_PORT=40002
+      - APP_PORT=31901
+      - GRPC_PORT=19001
+      - SECRET_KEY=12AASF213ASDMaMDSKASK123ksmdaasl0o4askmd123k9asdfja
     ports:
-      - "40002:31002"
+      - "31901:31901"
     volumes:
-      - auth_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/auth.proto
-      - notify_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/notify.proto
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/auth.proto:/app/auth.proto
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/notify.proto:/app/notify.proto
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/configs/tsconfig_auth.json:/app/tsconfig_auth.json
     networks:
       - backend
     depends_on:
@@ -81,12 +94,14 @@ services:
       - RABBITMQ_PORT=5672
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - APP_PORT=40003
+      - APP_PORT=31903
     volumes:
-      - auth_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/auth.proto
-      - notify_proto_volume:D:/FILES/University/3 course/2term/Course Project/Lotus/Static/notify.proto
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/auth.proto:/app/auth.proto
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/notify.proto:/app/notify.proto
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
     ports:
-      - "40003:31003"
+      - "31903:31903"
     networks:
       - backend
 
@@ -101,9 +116,12 @@ services:
       - DB_NAME=RECOMMENDATION_SERVICE
       - DB_PORT=40007
       - DB_PASSWORD=password@12345
-      - APP_PORT=40001
+      - APP_PORT=31904
+    volumes:
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
     ports:
-      - "40001:31001"
+      - "31904:31904"
     networks:
       - backend
 
@@ -149,13 +167,9 @@ services:
       - backend
 
   rabbitmq:
-    container_name: rabbitmq.js
+    container_name: rabbitmq
     image: rabbitmq:latest
     ports:
       - "5672:5672"
     networks:
       - backend
-
-#  redis:
-#    container_name: redis-db
-#    image:
