@@ -9,7 +9,7 @@ const path = require("path");
 const router = new Router();
 
 const isDocker = process.env.APP_PORT == null;
-const PathToConfig = isDocker ? '/app' : 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\configs';
+const PathToConfig = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\configs' : '/app';
 
 let rawParams = fs.readFileSync(path.join(PathToConfig, 'tsconfig_auth.json'));
 let Params = JSON.parse(rawParams);

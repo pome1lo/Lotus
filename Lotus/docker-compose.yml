@@ -9,22 +9,22 @@ volumes:
   notify_proto_volume:
 
 services:
-  webuireact:
-    container_name: web-ui-react
-    build:
-      context: ./UI/client.react
-      dockerfile: ./Dockerfile
-    volumes:
-      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
-      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
-    ports:
-      - "3000:3000"
-    depends_on:
-      - notificationwebapi
-      - authenticationwebapi
-      - profilewebapi
-      - recommendationwebapi
-      - authdb
+  # webuireact:
+  #   container_name: web-ui-react
+  #   build:
+  #     context: ./UI/client.react
+  #     dockerfile: ./Dockerfile
+  #   volumes:
+  #     - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
+  #     - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - notificationwebapi
+  #     - authenticationwebapi
+  #     - profilewebapi
+  #     - recommendationwebapi
+  #     - authdb
 
   notificationwebapi:
     container_name: notification-web-api
@@ -112,7 +112,7 @@ services:
       context: ./Microservices/recommendation.service
       dockerfile: ./Dockerfile
     environment:
-      - DB_HOST=recommendationdb
+      - DB_HOST=recommendation-db
       - DB_NAME=RECOMMENDATION_SERVICE
       - DB_PORT=40007
       - DB_PASSWORD=password@12345

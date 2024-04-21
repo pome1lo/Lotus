@@ -83,7 +83,7 @@ blockquote:before {
     width: 25px;
     height: 25px;
     margin-top: 3px;
-    background-image: url('../images/icons/fav.png');
+    content: '\F7C5';
     background-repeat: no-repeat;
     background-size: cover;
     cursor: pointer;
@@ -91,7 +91,7 @@ blockquote:before {
     transition:  0.3s;
 }
 .fav-switch input:checked ~ .icon {
-    background-image: url('../images/icons/unfav.png');
+    content: '\F7D8';
 }
 
 

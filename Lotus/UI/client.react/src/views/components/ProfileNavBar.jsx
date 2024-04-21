@@ -12,7 +12,7 @@ const ProfileNavBar = () => {
 
   return (
       <>
-          <div className="col-md-2 order-md-3 profile-nav-bar">
+          <div className="col-md-2 order-md-last profile-nav-bar">
               <nav className="">
                   {isAuthenticated
                       ? <ul className="list-unstyled d-flex flex-column gap-2">

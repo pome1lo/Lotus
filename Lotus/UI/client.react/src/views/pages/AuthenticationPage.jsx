@@ -8,14 +8,14 @@ const AuthenticationPage = () => {
     const [inputPassword, setPassword] = useState('');
 
     async function fetchData() {
-        const response = await fetch('https://localhost:31002/api/auth/userAccount/auth', {
+        const response = await fetch('https://localhost:31901/api/auth/account/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                USERNAME: inputUsername,
-                PASSWORD: inputPassword
+                username: inputUsername,
+                password: inputPassword
             })
         });
         if (!response.ok) {
@@ -25,9 +25,8 @@ const AuthenticationPage = () => {
 
         const data = await response.json();
         if (response.ok) {
-            console.log("TOKEN", data.TOKEN);
-            sessionStorage.setItem('token', data.TOKEN);
-            sessionStorage.setItem('username', data.USERNAME);
+            sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('username', data.username);
             navigate('/');
         } else {
             console.error('Ошибка входа:', data.message);

@@ -21,7 +21,7 @@ grpcServer.bindAsync(`0.0.0.0:${grpcPort}`, grpc.ServerCredentials.createInsecur
 
 
 const isDocker = process.env.APP_PORT == null;
-const PathToLAB = isDocker ? '/app' : 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl';
+const PathToLAB = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl' : '/app' ;
 
 const options = {
     key:  fs.readFileSync(path.join(PathToLAB, 'LAB.key')),

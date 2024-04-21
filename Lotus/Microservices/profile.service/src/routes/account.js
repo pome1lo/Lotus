@@ -7,7 +7,7 @@ const argon2 = require('argon2');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const koaJwt = require('koa-jwt');
-const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./../../app/auth.proto";
+const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
 const GRPC_PORT_AUTH_SERVICE = process.env.GRPC_PORT_AUTH_SERVICE == null ? 19001 : process.env.GRPC_PORT_AUTH_SERVICE;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -28,7 +28,7 @@ router.get('/api/account/protected', koaJwt({ secret: secretKey }), async (ctx) 
 });
 
 router.post('/api/account/personal', async (ctx) => {
-    const { id, username, firstname, lastname, birth_date } = ctx.request.body;
+    const { id, username, firstname, lastname } = ctx.request.body;
 
     try {
         const user = await USER.findByPk(id);
@@ -42,7 +42,6 @@ router.post('/api/account/personal', async (ctx) => {
         user.USERNAME = username || user.USERNAME;
         user.FIRSTNAME = firstname || user.FIRSTNAME;
         user.LASTNAME = lastname || user.LASTNAME;
-        user.BIRTH_DATE = birth_date || user.BIRTH_DATE;
 
         await user.save();
 
@@ -55,7 +54,7 @@ router.post('/api/account/personal', async (ctx) => {
 });
 
 router.post('/api/account/security', async (ctx) => {
-    const { id, email, phone_number, password } = ctx.request.body;
+    const { id, password } = ctx.request.body;
 
     try {
         const user = await USER.findByPk(id);
@@ -66,7 +65,7 @@ router.post('/api/account/security', async (ctx) => {
         }
 
         user.EMAIL = email || user.EMAIL;
-        user.PHONE_NUMBER = phone_number || user.PHONE_NUMBER;
+        //user.PHONE_NUMBER = phone_number || user.PHONE_NUMBER; /// todo check
 
         const salt = crypto.randomBytes(32).toString('hex');
         const hashedPassword = await argon2.hash(password + salt);

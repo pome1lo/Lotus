@@ -1,6 +1,6 @@
 .hover-size {
     font-size: medium;
-
+    transition: .3s;
     fill: var(--bs-body-color);
 }
 
@@ -34,4 +34,8 @@
 
 .profile-nav-bar > nav > ul > li a i {
     font-size: x-large;
+}
+
+.red-color {
+    color: #da3b51;
 }

@@ -10,16 +10,22 @@ const fs = require("fs");
 const https = require("https");
 const connectRabbitMQ = require('./src/services/RabbitMQ/rabbitmq');
 const path = require("path");
+const serve = require("koa-static");
+const Router = require('koa-router');
+const router = new Router();
 
-app.use(cors());
+const imagesPath = path.join(__dirname, './src/data/users/posts/images');
+app.use(serve(imagesPath));
+app.use(cors({ origin: '*' }));
 app.use(bodyParser());
 
 app.use(ProfileRoutes.routes());
 app.use(AccountRoutes.routes());
 app.use(UserRoutes.routes());
+app.use(router.routes());
 
 const isDocker = process.env.APP_PORT == null;
-const PathToLAB = isDocker ? '/app' : 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl';
+const PathToLAB = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl' : '/app';
 
 const options = {
     key:  fs.readFileSync(path.join(PathToLAB, 'LAB.key')),

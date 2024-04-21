@@ -27,15 +27,15 @@ const USER = sequelize.define('USERS', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    BIRTH_DATE: {
-        type: DataTypes.DATE,
-        allowNull: true
-    },
     SUBSCRIBERS_COUNT: {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
     SUBSCRIPTIONS_COUNT: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    POSTS_COUNT: {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
