@@ -1,18 +1,11 @@
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const { USER } = require('../../database/models/user');
-const redis = require("redis");
+const { redisClient } = require('./../Redis/redisClient');
+const {sendToQueue} = require("../RabbitMQ/sendToQueue");
 const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
-
-const REDIS_HOST = process.env.REDIS_HOST == null ? "localhost" : process.env.REDIS_HOST;
-const REDIS_PORT = process.env.REDIS_PORT == null ? 6379 : process.env.REDIS_PORT;
-const client = redis.createClient(`redis://${REDIS_HOST}:${REDIS_PORT}`);
-
-client.connect();
-client.on('error', function(error) { console.error(`🟥 REDIS: ${REDIS_HOST} Error: `, error); });
-client.on('connect', async function() { console.log(`🟩 REDIS: ${REDIS_HOST} Successful`); });
 
 const updatePassword = async (call, callback) => {
     const { id, password, salt } = call.request;
@@ -31,7 +24,7 @@ const updatePassword = async (call, callback) => {
         user.PASSWORD = password;
         user.SALT = salt;
         await user.save();
-        await client.del(username);
+        await redisClient.del(username);
 
         callback(null, { success: true, message: 'Password updated successfully' });
     } catch (error) {
@@ -56,8 +49,21 @@ const deleteUser = async (call, callback) => {
 
         const username = user.USERNAME;
 
+        let messageData = {
+            USERNAME: username,
+            EMAIL: user.EMAIL,
+            USER_ID: user.ID,
+            MESSAGE: `Dear ${username},\n\nWe have received your request to delete your account in our application. We are very sorry that you have decided to leave us.\n\n` +
+                "Your account has been successfully deleted and all your personal data has been completely deleted from our system in accordance with our privacy policy.\n" +
+                "\nIf you accidentally requested account deletion or changed your mind, please contact us as soon as possible and we will try to help you.\n\n" +
+                "We thank you for being with us and hope to see you again in the future. If you have any feedback or suggestions, we will be glad to hear them.\n\n" +
+                "With respect,\nThe Lotus team"
+        }
+
+        sendToQueue('LastEmailNotificationQueue', messageData);
+
         await user.destroy();
-        await client.del(username);
+        await redisClient.del(username);
 
         callback(null, { success: true, message: 'User successfully deleted' });
     }

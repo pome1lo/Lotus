@@ -2,22 +2,14 @@ const Router = require('koa-router');
 const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
 const argon2 = require('argon2');
-const redis = require('redis');
 const crypto = require('crypto');
 const { USER } = require('../database/models/user');
-// const { send } = require('../services/mailer/config');
 const { sendToQueue} = require("../services/RabbitMQ/sendToQueue");
-
-const REDIS_HOST = process.env.REDIS_HOST == null ? "localhost" : process.env.REDIS_HOST;
-const REDIS_PORT = process.env.REDIS_PORT == null ? 6379 : process.env.REDIS_PORT;
-const client = redis.createClient(`redis://${REDIS_HOST}:${REDIS_PORT}`);
+const { redisClient } = require('./../services/Redis/redisClient');
+const {verifyEmail} = require("../services/gRPC/NotifyServer");
 
 const router = new Router();
 const secretKey =  process.env.SECRET_KEY == null ? 'secret_key' : process.env.SECRET_KEY;
-
-client.connect();
-client.on('error', function(error) { console.error(`🟥 REDIS: ${REDIS_HOST} Error: `, error); });
-client.on('connect', async function() { console.log(`🟩 REDIS: ${REDIS_HOST} Successful`); });
 
 
 router.post('/api/auth/account/register', async (ctx) => {
@@ -46,10 +38,8 @@ router.post('/api/auth/account/register', async (ctx) => {
         USER_ID: newUser.ID
     }
 
-
     sendToQueue('UserRegisteredQueue', userRegistered);
     sendToQueue('NotifyUserRegisteredQueue', userRegistered);
-
 
     const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
 
@@ -62,16 +52,16 @@ router.post('/api/auth/account/register', async (ctx) => {
     };
 });
 
-router.post('/api/auth/account/auth', async (ctx) => {
+router.post('/api/auth/account/login', async (ctx) => {
     const { username, password } = ctx.request.body;
 
     ctx.body = { message: "error" };
 
-    let user = JSON.parse(await client.get(username));
+    let user = JSON.parse(await redisClient.get(username));
     if (!user) {
         user = await USER.findOne({ where: { USERNAME: username } });
         if (user) {
-            await client.set(username, JSON.stringify(user));
+            await redisClient.set(username, JSON.stringify(user));
         }
     }
 
@@ -85,14 +75,14 @@ router.post('/api/auth/account/auth', async (ctx) => {
     ctx.body = { token, username: user.USERNAME, user_id: user.ID };
 });
 
-router.post('/api/auth/account/verifyEmail', async (ctx) => {
+router.post('/api/auth/account/verify-email', async (ctx) => {
     const { username, email } = ctx.request.body;
 
     try {
         const token = crypto.randomBytes(20).toString('hex');
-        const verificationLink = `https://localhost:31002/api/auth/account/verify-email?token=${token}`;
+        const verificationLink = `https://localhost:31901/api/auth/account/verify-email?token=${token}`;
 
-        await send(email, `Hello ${username}, please verify your email by clicking on the following link: ${verificationLink}`);
+        verifyEmail(username, email,`please verify your email by clicking on the following link: ${verificationLink}`);
 
         const user = await USER.findOne({ where: { USERNAME: username } });
         user.VERIFICATION_TOKEN = token;
@@ -123,9 +113,7 @@ router.get('/api/auth/account/verify-email', async (ctx) => {
         user.IS_EMAIL_VERIFIED = true;
         user.VERIFICATION_TOKEN = null;
         await user.save();
-
-        ctx.status = 200;
-        ctx.body = { message: 'Email verified successfully' };
+        ctx.redirect('https://localhost:3000');
     } catch (error) {
         console.log(error.message);
         ctx.status = 500;
@@ -150,7 +138,7 @@ router.post('/api/auth/account/reset-password', async (ctx) => {
         user.SALT = salt;
 
         await user.save();
-        await client.del(username);
+        await redisClient.del(username);
 
         ctx.status = 200;
         ctx.body = { message: 'Password reset successfully' };

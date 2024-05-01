@@ -20,17 +20,21 @@ function connectRabbitMQ() {
             const UserNotificationQueue = 'UserNotificationQueue';
             const SystemNotificationQueue = 'SystemNotificationQueue';
             const EmailNotificationQueue = 'EmailNotificationQueue';
+            const LastEmailNotificationQueue = 'LastEmailNotificationQueue';
 
             channel.assertQueue(UserNotificationQueue, {
                 durable: false
             });
             channel.assertQueue(SystemNotificationQueue, {
-            durable: false
-        });
+                durable: false
+            });
             channel.assertQueue(EmailNotificationQueue, {
-            durable: false
-        });
+                durable: false
+            });
             channel.assertQueue(NotifyUserRegisteredQueue, {
+                durable: false
+            });
+            channel.assertQueue(LastEmailNotificationQueue, {
                 durable: false
             });
 
@@ -86,6 +90,22 @@ function connectRabbitMQ() {
                 const username = data.USERNAME;
                 const message = data.MESSAGE;
                 Mailer.sendEmailMessage(email, username, message);
+            }, {
+                noAck: true
+            });
+
+            channel.consume(LastEmailNotificationQueue, async function (msg) {
+                const data = JSON.parse(msg.content.toString());
+                const email = data.EMAIL;
+                const user_id = data.USER_ID;
+                const username = data.USERNAME;
+                const message = data.MESSAGE;
+                Mailer.sendEmailMessage(email, username, message);
+                await NOTIFICATION.destroy({
+                    where: {
+                        USER_ID: user_id
+                    }
+                });
             }, {
                 noAck: true
             });
