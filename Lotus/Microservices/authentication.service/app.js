@@ -9,10 +9,11 @@ const app = new Koa();
 const cors = require('koa2-cors');
 const session = require("koa-session");
 const passport = require("koa-passport");
-const grpcServer = require('./src/services/gRPC/grpcServer');
+const grpcServer = require('./src/services/gRPC/AuthServer');
 const fs = require("fs");
 const https = require("https");
 const path = require("path");
+const {sendToQueue} = require("./src/services/RabbitMQ/sendToQueue");
 
 app.keys =  [ process.env.SECRET_KEY == null ? 'secret_key' : process.env.SECRET_KEY ];
 
@@ -40,4 +41,3 @@ const options = {
 
 const server = https.createServer(options, app.callback());
 server.listen(port, () => console.log(`🟩 Authentication server running: port-${port}`));
-

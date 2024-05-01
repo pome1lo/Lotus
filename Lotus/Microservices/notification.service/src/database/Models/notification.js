@@ -1,22 +1,18 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes} = require('sequelize');
 const sequelize = require('../config.js');
 
-const POST = sequelize.define('POSTS', {
+const NOTIFICATION = sequelize.define('NOTIFICATIONS', {
     ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
+    AUTHOR: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     USER_ID: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'USERS',
-            key: 'ID'
-        }
-    },
-    TITLE: {
-        type: DataTypes.STRING,
         allowNull: false
     },
     CONTENT: {
@@ -25,7 +21,7 @@ const POST = sequelize.define('POSTS', {
     },
     IMAGE: {
         type: DataTypes.STRING,
-        allowNull: true,
+        defaultValue: 'default_profile.png'
     },
     PUBLISHED_AT: {
         type: DataTypes.DATE,
@@ -36,4 +32,4 @@ const POST = sequelize.define('POSTS', {
     freezeTableName: true
 });
 
-module.exports = { POST };
+module.exports = { NOTIFICATION };

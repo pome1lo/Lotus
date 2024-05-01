@@ -36,6 +36,8 @@ services:
       - APP_PORT=31902
       - GRPC_PORT=19002
       - GRPC_PORT_AUTH_SERVICE=19001
+      - RABBITMQ_HOST=sendToQueue.js
+      - RABBITMQ_PORT=5672
     ports:
       - "31902:31902"
     networks:
@@ -58,12 +60,13 @@ services:
       - DB_NAME=AUTHENTICATION_SERVICE
       - DB_PORT=40005
       - DB_PASSWORD=password@12345
-      - RABBITMQ_HOST=rabbitmq.js
+      - RABBITMQ_HOST=sendToQueue.js
       - RABBITMQ_PORT=5672
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - APP_PORT=31901
       - GRPC_PORT=19001
+      - GRPC_PORT_NOTIFY_SERVICE=19002
       - SECRET_KEY=12AASF213ASDMaMDSKASK123ksmdaasl0o4askmd123k9asdfja
     ports:
       - "31901:31901"
@@ -90,7 +93,7 @@ services:
       - DB_NAME=PROFILE_SERVICE
       - DB_PORT=40006
       - DB_PASSWORD=password@12345
-      - RABBITMQ_HOST=rabbitmq.js
+      - RABBITMQ_HOST=sendToQueue.js
       - RABBITMQ_PORT=5672
       - REDIS_HOST=redis
       - REDIS_PORT=6379

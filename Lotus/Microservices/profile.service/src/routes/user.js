@@ -5,11 +5,11 @@ const { SUBSCRIPTION } = require('../database/models/subscription');
 const router = new Router();
 
 router.post('/api/user/subscribe', async (ctx) => {
-    const { user_id, subscribe_to_id } = ctx.request.body;
+    const { user_id, to_id } = ctx.request.body;
 
     try {
         const user = await USER.findByPk(user_id);
-        const subscribeToUser = await USER.findByPk(subscribe_to_id);
+        const subscribeToUser = await USER.findByPk(to_id);
 
         if (!user || !subscribeToUser) {
             ctx.status = 404;
@@ -17,7 +17,7 @@ router.post('/api/user/subscribe', async (ctx) => {
             return;
         }
 
-        const existingSubscription = await SUBSCRIPTION.findOne({ where: { SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: subscribe_to_id } });
+        const existingSubscription = await SUBSCRIPTION.findOne({ where: { SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: to_id } });
         if (existingSubscription) {
             ctx.status = 400;
             ctx.body = { message: 'You are already subscribed to this user' };
@@ -25,7 +25,7 @@ router.post('/api/user/subscribe', async (ctx) => {
         }
 
 
-        await SUBSCRIPTION.create({ SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: subscribe_to_id });
+        await SUBSCRIPTION.create({ SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: to_id });
 
         user.SUBSCRIPTIONS_COUNT += 1;
         await user.save();
@@ -42,11 +42,11 @@ router.post('/api/user/subscribe', async (ctx) => {
 });
 
 router.post('/api/user/unsubscribe', async (ctx) => {
-    const { user_id, unsubscribe_from_id } = ctx.request.body;
+    const { user_id, to_id } = ctx.request.body;
 
     try {
         const user = await USER.findByPk(user_id);
-        const unsubscribeFromUser = await USER.findByPk(unsubscribe_from_id);
+        const unsubscribeFromUser = await USER.findByPk(to_id);
 
         if (!user || !unsubscribeFromUser) {
             ctx.status = 404;
@@ -54,7 +54,7 @@ router.post('/api/user/unsubscribe', async (ctx) => {
             return;
         }
 
-        const subscription = await SUBSCRIPTION.findOne({ where: { SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: unsubscribe_from_id } });
+        const subscription = await SUBSCRIPTION.findOne({ where: { SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: to_id } });
         if (!subscription) {
             ctx.status = 400;
             ctx.body = { message: 'You are not subscribed to this user' };

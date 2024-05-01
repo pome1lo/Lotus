@@ -4,23 +4,24 @@ const { POST } = require('../database/models/post');
 const util = require('util');
 const crypto = require('crypto');
 const argon2 = require('argon2');
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
+// const grpc = require('@grpc/grpc-js');
+// const protoLoader = require('@grpc/proto-loader');
 const koaJwt = require('koa-jwt');
-const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
-const GRPC_PORT_AUTH_SERVICE = process.env.GRPC_PORT_AUTH_SERVICE == null ? 19001 : process.env.GRPC_PORT_AUTH_SERVICE;
+// const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
+// const GRPC_PORT_AUTH_SERVICE = process.env.GRPC_PORT_AUTH_SERVICE == null ? 19001 : process.env.GRPC_PORT_AUTH_SERVICE;
 const Sequelize = require('sequelize');
+const {updatePassword, deleteUser} = require("../services/gRPC/AuthServer");
 const Op = Sequelize.Op;
 
 const secretKey = 'your-secret-key'; //todo add data in config | docker
 
 const router = new Router();
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
-const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
-
-const TARGET = process.env.APP_PORT == null ? `0.0.0.0:${GRPC_PORT_AUTH_SERVICE}` : `authenticationwebapi:${GRPC_PORT_AUTH_SERVICE}`; //todo ???
-const client = new authPackage.AuthenticationService(TARGET, grpc.credentials.createInsecure());
+// const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
+// const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
+//
+// const TARGET = process.env.APP_PORT == null ? `0.0.0.0:${GRPC_PORT_AUTH_SERVICE}` : `authenticationwebapi:${GRPC_PORT_AUTH_SERVICE}`; //todo ???
+// const client = new authPackage.AuthenticationService(TARGET, grpc.credentials.createInsecure());
 
 
 router.get('/api/account/protected', koaJwt({ secret: secretKey }), async (ctx) => {
@@ -71,11 +72,12 @@ router.post('/api/account/security', async (ctx) => {
         const hashedPassword = await argon2.hash(password + salt);
 
 
-        client.UpdatePassword({ id: id, password: hashedPassword, salt: salt }, (error, response) => {
-            if (error) {
-                throw new Error(error.message);
-            }
-        });
+        updatePassword(id, hashedPassword, salt)
+        // client.UpdatePassword({ id: id, password: hashedPassword, salt: salt }, (error, response) => {
+        //     if (error) {
+        //         throw new Error(error.message);
+        //     }
+        // });
         await user.save();
 
         ctx.status = 200;
@@ -106,11 +108,12 @@ router.delete('/api/account/delete', async (ctx) => {
             return;
         }
 
-        client.DeleteUser({ id: id }, (error, response) => {
-            if (error) {
-                throw new Error(error.message);
-            }
-        });
+        deleteUser(id);
+        // client.DeleteUser({ id: id }, (error, response) => {
+        //     if (error) {
+        //         throw new Error(error.message);
+        //     }
+        // });
 
         const posts = await POST.findAll({ where: { USER_ID: { [Op.eq]: id } } });
         for (let post of posts) {

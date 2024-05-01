@@ -5,7 +5,7 @@ const argon2 = require('argon2');
 const redis = require('redis');
 const crypto = require('crypto');
 const { USER } = require('../database/models/user');
-const { send } = require('../services/mailer/config');
+// const { send } = require('../services/mailer/config');
 const { sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 
 const REDIS_HOST = process.env.REDIS_HOST == null ? "localhost" : process.env.REDIS_HOST;
@@ -40,12 +40,16 @@ router.post('/api/auth/account/register', async (ctx) => {
         SALT: salt
     });
 
-    let userData = {
+    let userRegistered = {
         USERNAME: newUser.USERNAME,
-        EMAIL: newUser.EMAIL
+        EMAIL: newUser.EMAIL,
+        USER_ID: newUser.ID
     }
 
-    sendToQueue('userRegistered', userData);
+
+    sendToQueue('UserRegisteredQueue', userRegistered);
+    sendToQueue('NotifyUserRegisteredQueue', userRegistered);
+
 
     const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
 
@@ -53,7 +57,8 @@ router.post('/api/auth/account/register', async (ctx) => {
     ctx.body = {
         message: 'The user has been successfully registered',
         username: newUser.USERNAME,
-        token: token
+        token: token,
+        user_id: newUser.ID
     };
 });
 
@@ -77,7 +82,7 @@ router.post('/api/auth/account/auth', async (ctx) => {
     }
 
     const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
-    ctx.body = { token, username: user.USERNAME };
+    ctx.body = { token, username: user.USERNAME, user_id: user.ID };
 });
 
 router.post('/api/auth/account/verifyEmail', async (ctx) => {

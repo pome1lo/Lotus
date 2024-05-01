@@ -41,7 +41,7 @@ const USER = sequelize.define('USERS', {
     },
     PROFILE_PICTURE: {
         type: DataTypes.STRING,
-        defaultValue: '/static/media/default_profile.587c4b6422f165a03c3f.png'
+        defaultValue: 'default_profile.png'
     }
 }, {
     timestamps: false,

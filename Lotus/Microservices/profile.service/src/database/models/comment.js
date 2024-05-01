@@ -1,7 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config.js');
+const {POST} = require("./post");
+const {USER} = require("./user");
 
-const POST = sequelize.define('POSTS', {
+const COMMENT = sequelize.define('COMMENTS', {
     ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -9,25 +11,31 @@ const POST = sequelize.define('POSTS', {
     },
     USER_ID: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         references: {
-            model: 'USERS',
+            model: USER,
             key: 'ID'
         }
     },
-    TITLE: {
-        type: DataTypes.STRING,
-        allowNull: false
+    POST_ID: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: POST,
+            key: 'ID'
+        }
     },
-    CONTENT: {
+    USERNAME: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    USER_PICTURE: {
+        type: DataTypes.STRING,
+        defaultValue: 'default_profile.png'
+    },
+    COMMENT: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    IMAGE: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    PUBLISHED_AT: {
+    CREATED_AT: {
         type: DataTypes.DATE,
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     }
@@ -36,4 +44,4 @@ const POST = sequelize.define('POSTS', {
     freezeTableName: true
 });
 
-module.exports = { POST };
+module.exports = { COMMENT };

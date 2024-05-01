@@ -8,16 +8,19 @@ const app = new Koa();
 const cors = require('koa2-cors');
 const fs = require("fs");
 const https = require("https");
-const connectRabbitMQ = require('./src/services/RabbitMQ/rabbitmq');
+const connectRabbitMQ = require('./src/services/RabbitMQ/connectRabbitMQ');
 const path = require("path");
 const serve = require("koa-static");
 const Router = require('koa-router');
+const {COMMENT} = require("./src/database/models/comment");
 const router = new Router();
 
 const imagesPath = path.join(__dirname, './src/data/users/posts/images');
 app.use(serve(imagesPath));
 app.use(cors({ origin: '*' }));
 app.use(bodyParser());
+
+
 
 app.use(ProfileRoutes.routes());
 app.use(AccountRoutes.routes());

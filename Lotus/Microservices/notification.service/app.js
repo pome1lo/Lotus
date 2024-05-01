@@ -7,6 +7,7 @@ const grpcPort = process.env.GRPC_PORT == null ? 19002 : process.env.GRPC_PORT;
 const fs = require('fs');
 const https = require('https');
 const path = require("path");
+const connectRabbitMQ = require("./src/services/RabbitMQ/connectRabbitMQ");
 const port = process.env.APP_PORT == null ? 31902 : process.env.APP_PORT;
 const app = new Koa();
 
@@ -32,3 +33,5 @@ const options = {
 const server = https.createServer(options, app.callback());
 server.listen(port, () => console.log(`🟩 Authentication server running: port-${port}`));
 
+
+connectRabbitMQ();

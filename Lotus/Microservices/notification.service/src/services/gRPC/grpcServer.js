@@ -1,6 +1,7 @@
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/notify.proto" : "./app/notify.proto";
+
 const verifyEmail = async (call, callback) => {
     const {  username, email, message } = call.request;
 
@@ -9,7 +10,7 @@ const verifyEmail = async (call, callback) => {
     } catch (error) {
         callback({
             code: grpc.status.INTERNAL,
-            details: 'Internal server error'
+            details: 'GRPC: Internal server error'
         });
     }
 };

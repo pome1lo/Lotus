@@ -14,7 +14,7 @@ function connectRabbitMQ() {
                 throw error1;
             }
 
-            const queue = 'userRegistered';
+            const queue = 'UserRegisteredQueue';
 
             channel.assertQueue(queue, {
                 durable: false
