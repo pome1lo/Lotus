@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 const NEWS = require('./../../database/models/news');
 
 function scheduleJob() {
-    schedule.scheduleJob('0 * * * *', async function(){
+    schedule.scheduleJob('* * * * *', async function(){
         const response = await axios.get('https://www.rt.com/news/');
         const $ = cheerio.load(response.data);
         $('li.listCard-rows__item').each(async (i, element) => {

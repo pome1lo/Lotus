@@ -50,3 +50,6 @@ yarn-error.log*
 /.changelog
 .npm/
 dist
+Lotus/Static/configs/tsconfig_notify.json
+Lotus/Static/configs/tsconfig_auth.json
+Lotus/Microservices/profile.service/src/data/users/posts/images/

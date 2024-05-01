@@ -1,7 +1,8 @@
 import "../../assets/css/Post.css";
 import React from "https://esm.run/react@18";
 import {Publisher} from "./Publisher";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {useState} from "react";
 
 const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, content_text, likes_count }) => {
     const navigate = useNavigate();
@@ -27,6 +28,12 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
             console.error('Error:', data.message);
         }
     }
+
+    const [isFilled, setIsFilled] = useState(true);
+
+    const handleClick = () => {
+        setIsFilled(!isFilled);
+    };
 
     return (
         <>
@@ -59,59 +66,83 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                         </div>
                     </blockquote>
                     <div className="footer-panel d-flex align-items-center justify-content-between">
-                        <div className="like">
-                            <input type="checkbox" id="checkbox"/>
-                            <label htmlFor="checkbox">
-                                <svg id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="Group" fill="none" transform="translate(467 392)">
-                                        <path
-                                            d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z"
-                                            id="heart" fill="#C2C2C2"/>
-                                        <circle id="main-circ" fill="#E2264D" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
+                        <div className="d-flex align-items-center">
+                            <div className="like">
+                                <input type="checkbox" id="checkbox"/>
+                                <label htmlFor="checkbox">
+                                    <svg id="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="Group" fill="none" transform="translate(467 392)">
+                                            <path
+                                                d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z"
+                                                id="heart" fill="#C2C2C2"/>
+                                            <circle id="main-circ" fill="#E2264D" opacity="0" cx="29.5" cy="29.5" r="1.5"/>
 
-                                        <g id="grp7" opacity="0" transform="translate(7 6)">
-                                            <circle id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
-                                            <circle id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
-                                        </g>
+                                            <g id="grp7" opacity="0" transform="translate(7 6)">
+                                                <circle id="oval1" fill="#9CD8C3" cx="2" cy="6" r="2"/>
+                                                <circle id="oval2" fill="#8CE8C3" cx="5" cy="2" r="2"/>
+                                            </g>
 
-                                        <g id="grp6" opacity="0" transform="translate(0 28)">
-                                            <circle id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
-                                            <circle id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
-                                        </g>
+                                            <g id="grp6" opacity="0" transform="translate(0 28)">
+                                                <circle id="oval1" fill="#CC8EF5" cx="2" cy="7" r="2"/>
+                                                <circle id="oval2" fill="#91D2FA" cx="3" cy="2" r="2"/>
+                                            </g>
 
-                                        <g id="grp3" opacity="0" transform="translate(52 28)">
-                                            <circle id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
-                                            <circle id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
-                                        </g>
+                                            <g id="grp3" opacity="0" transform="translate(52 28)">
+                                                <circle id="oval2" fill="#9CD8C3" cx="2" cy="7" r="2"/>
+                                                <circle id="oval1" fill="#8CE8C3" cx="4" cy="2" r="2"/>
+                                            </g>
 
-                                        <g id="grp2" opacity="0" transform="translate(44 6)">
-                                            <circle id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
-                                            <circle id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
-                                        </g>
+                                            <g id="grp2" opacity="0" transform="translate(44 6)">
+                                                <circle id="oval2" fill="#CC8EF5" cx="5" cy="6" r="2"/>
+                                                <circle id="oval1" fill="#CC8EF5" cx="2" cy="2" r="2"/>
+                                            </g>
 
-                                        <g id="grp5" opacity="0" transform="translate(14 50)">
-                                            <circle id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
-                                            <circle id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
-                                        </g>
+                                            <g id="grp5" opacity="0" transform="translate(14 50)">
+                                                <circle id="oval1" fill="#91D2FA" cx="6" cy="5" r="2"/>
+                                                <circle id="oval2" fill="#91D2FA" cx="2" cy="2" r="2"/>
+                                            </g>
 
-                                        <g id="grp4" opacity="0" transform="translate(35 50)">
-                                            <circle id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
-                                            <circle id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
-                                        </g>
+                                            <g id="grp4" opacity="0" transform="translate(35 50)">
+                                                <circle id="oval1" fill="#F48EA7" cx="6" cy="5" r="2"/>
+                                                <circle id="oval2" fill="#F48EA7" cx="2" cy="2" r="2"/>
+                                            </g>
 
-                                        <g id="grp1" opacity="0" transform="translate(24)">
-                                            <circle id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
-                                            <circle id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
+                                            <g id="grp1" opacity="0" transform="translate(24)">
+                                                <circle id="oval1" fill="#9FC7FA" cx="2.5" cy="3" r="2"/>
+                                                <circle id="oval2" fill="#9FC7FA" cx="7.5" cy="2" r="2"/>
+                                            </g>
                                         </g>
-                                    </g>
-                                </svg>
-                            </label>
-                            <span>{likes_count}</span>
+                                    </svg>
+                                </label>
+                                <span>{likes_count}</span>
+                            </div>
+                            <div className="comments">
+                                <Link to={`/${username}/${post_id}/comments`} className="btn btn-outline-secondary">
+                                    Comments
+                                </Link>
+                            </div>
                         </div>
-                        <label className="fav-switch">
-                            <input type="checkbox"/>
-                            <span className="negative icon"></span>
-                        </label>
+                        <div>
+                            <button type="button" className="mr-4 border-0 bg-transparent" onClick={handleClick}>
+                                {isFilled ?
+                                    (<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                          className="bi bi-floppy hover-size" viewBox="0 0 16 16">
+                                        <path d="M11 2H9v3h2z"/>
+                                        <path
+                                            d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/>
+                                    </svg>) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                                             fill="currentColor" className="bi bi-floppy-fill hover-size" viewBox="0 0 16 16">
+                                            <path
+                                                d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>
+                                            <path
+                                                d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>
+                                        </svg>
+                                    )
+                                }
+
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -122,7 +153,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="postEditModalLabel">Post settings</h5>
-                            <button type="button" className="btn-close btn-sm"  data-bs-dismiss="modal"
+                            <button type="button" className="btn-close btn-sm" data-bs-dismiss="modal"
                                     aria-label="Закрыть"></button>
                         </div>
                         <div className="modal-body">

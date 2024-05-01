@@ -8,6 +8,13 @@ const Header = () => {
     const [showButton, setShowButton] = useState(false);
     const navigate = useNavigate();
 
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    useEffect(() => {
+        const username = sessionStorage.getItem('username');
+        setIsAuthenticated(!!username);
+    }, []);
+
     const toggleTheme = () => {
         if (theme === 'light') {
             setTheme('dark');
@@ -22,6 +29,7 @@ const Header = () => {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('username');
         navigate(`/`);
+        window.location.reload();
     };
 
     useEffect(() => {
@@ -92,13 +100,17 @@ const Header = () => {
 
                         </div>
                         <div className="bottomBlock d-lg-flex col-lg-3 justify-content-lg-end align-items-center">
-                            <button className="border-0 bg-transparent mr-2" type="button"  onClick={handleClick}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
-                                     className="bi bi-box-arrow-right hover-size" viewBox="0 0 16 16">
-                                    <path d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-                                    <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-                                </svg>
-                            </button>
+                            {isAuthenticated ? (
+                                <button className="border-0 bg-transparent mr-2" type="button"  onClick={handleClick}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                         className="bi bi-box-arrow-right hover-size" viewBox="0 0 16 16">
+                                        <path d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                                        <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                                    </svg>
+                                </button>
+                            ) : (
+                                <></>
+                            ) }
                             <label className="theme-switch">
                                 <input type="checkbox" onChange={toggleTheme}/>
                                 <span className="slider"></span>

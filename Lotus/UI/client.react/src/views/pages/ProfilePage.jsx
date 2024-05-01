@@ -12,15 +12,14 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const fileInput = useRef();
 
-    const [currentUsername, setCurrentUsername] = useState('');
-
+    const [currentUsername, setCurrentUsername] = useState(sessionStorage.getItem('username'));
+    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
 
     const [inputHeading, setHeading] = useState('');
     const [inputContent, setContent] = useState('');
     const [inputDate, setDate] = useState('');
 
     useEffect(() => {
-        setCurrentUsername(sessionStorage.getItem('username'));
         fetch(`https://localhost:31903/api/profile/${username}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
@@ -68,16 +67,21 @@ const ProfilePage = () => {
             {user && (
                 <>
                 <div className="row">
-                    <div className="col-md-4 text-center mb-4">
-                        <img src={user.PROFILE_PICTURE} alt="" className="w-50"/>
+                    <div className="col-md-4 text-center mb-4 d-flex align-items-center justify-content-center">
+                        <img src={user.PROFILE_PICTURE} alt="" className="w-50 border-radius"/>
                     </div>
                     <div className="col-md-8 mb-4 d-flex align-items-center flex-wrap">
                         <div className="d-flex align-items-center w-100 justify-content-start">
                             <div className="mr-2">
                                 <h1 className="fw-bold display-4">{user.USERNAME}</h1>
                             </div>
-                            <SubscriptionButton
-                                styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>
+                            {(currentUsername === null || user.USERNAME !== currentUsername) ? (
+                                <SubscriptionButton
+                                    user_id={currentUserId} to_id={user.ID}
+                                    styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>
+                            ) : (<></>)
+                            }
+
                             <Link to={`/profile/${username}/edit`}
                                   className=" mr-2 btn btn-outline-secondary d-inline-flex align-items-center">Edit
                             </Link>
@@ -92,7 +96,7 @@ const ProfilePage = () => {
                             </Link>
                         </div>
                         <div className="d-flex align-items-center w-100">
-                            <p className="mr-2">{posts.lenght} publications</p>
+                            <p className="mr-2">{posts === null ? "0" : posts.length} publications</p>
                             <p className="mr-2">{user.SUBSCRIBERS_COUNT} subscribers</p>
                             <p className="mr-2">{user.SUBSCRIPTIONS_COUNT} subscriptions</p>
                         </div>
@@ -108,8 +112,8 @@ const ProfilePage = () => {
                     <h2>{user.LASTNAME}</h2>
                 </div>
                 <div className="d-flex align-items-center w-100 justify-content-between text-muted">
-                    <div className="d-flex">
-                        <img src={`${user.PROFILE_PICTURE}`} height="30" alt="" className="mr-2"/>
+                    <div className="d-flex" >
+                        {user && <img src={user.PROFILE_PICTURE} width="30px" className="mr-2 border-radius" alt={"content"}/>}
                         <p className="m-auto">What's new with you?</p>
                     </div>
                     <button type="button"

@@ -1,7 +1,9 @@
 [data-bs-theme=dark] {
   --bs-body-bg: #1e2121;
   --bs-tertiary-bg-rgb: 24, 26, 26;
-  --bs-secondary-bg: #313131
+  --bs-secondary-bg: #313131;
+  --bs-pagination-active-bg: #641923;
+  --bs-pagination-active-border-color: #ea001e;
 }
 [data-bs-theme=light] {
   --bs-body-bg: #ffffff;

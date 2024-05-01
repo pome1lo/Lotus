@@ -1,21 +1,21 @@
-import {Link, NavLink, useNavigate, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
 import {ProfileNavBar} from "../components/ProfileNavBar";
 
 const ProfileEditPage = () => {
-    const {posts, setPosts} = useState(null);
     const {username} = useParams();
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const fileInput = useRef();
 
     const [inputUserName, setUserName] = useState('');
     const [inputFirstName, setFirstName] = useState('');
     const [inputLastName, setLastName] = useState('');
     const [inputPhoneNumber, setPhoneNumber] = useState('');
-
-    const CURRENT_USER_ID = sessionStorage.getItem('username');
+    const [currentUserId, setCurrentId] = useState('');
 
     useEffect(() => {
+        // sessionStorage.getItem('username');
         fetch(`https://localhost:31903/api/profile/${username}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
@@ -23,7 +23,9 @@ const ProfileEditPage = () => {
                 }
                 return res.json();
             })
-            .then(data => setUser(data))
+            .then(data => setUser(data)) /// todo data......... json in server ??????
+        setCurrentId(sessionStorage.getItem('user_id'));
+
     }, [username, navigate]);
 
     async function fetchData() {
@@ -52,6 +54,28 @@ const ProfileEditPage = () => {
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('username', data.username);
             navigate(`/profile/${username}`);
+            window.location.reload();
+        } else {
+            console.error('Ошибка входа:', data.message);
+        }
+    }
+
+    async function changeProfileImage() {
+        const file = fileInput.current.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('user_id', currentUserId);
+
+        const response = await fetch('https://localhost:31903/api/profile/image', {
+            method: 'PUT',
+            body: formData
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            return;
+        }
+        if (response.ok) {
+            navigate(`/profile/${username}`);
         } else {
             console.error('Ошибка входа:', data.message);
         }
@@ -65,11 +89,35 @@ const ProfileEditPage = () => {
                       <form className="needs-validation " noValidate="">
                           <div className="row align-items-center">
                               <div className="col-sm-6 d-flex flex-column align-items-center">
-                                  <img src={user.PROFILE_PICTURE} alt="" className="w-50"/>
-                                  <button className="btn btn-outline-secondary  py-2 px-5 mt-3" data-bs-toggle="modal"
-                                          data-bs-target="#staticBackdrop" type="button">Change
+                                  {user && <img src={user.PROFILE_PICTURE} className="w-50" alt={"content"}/>}
+                                  <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal"
+                                          data-bs-target="#exampleModal">
+                                      Change
                                   </button>
 
+                                  <div className="modal fade" id="exampleModal" tabIndex="-1"
+                                       aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div className="modal-dialog">
+                                          <div className="modal-content">
+                                              <div className="modal-header">
+                                                  <h5 className="modal-title" id="exampleModalLabel">Profile image</h5>
+                                                  <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                                          aria-label="Close"></button>
+                                              </div>
+                                              <div className="modal-body">
+                                                  <input type="file" ref={fileInput} className="form-control"
+                                                         aria-label="Large file input example"/>
+                                              </div>
+                                              <div className="modal-footer">
+                                              <button type="button" className="btn btn-outline-secondary  btn-sm"
+                                                          data-bs-dismiss="modal">Close
+                                                  </button>
+                                                  <button type="button" className="btn btn-danger btn-sm" onClick={changeProfileImage}>Save changes
+                                                  </button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
                               </div>
                               <div className="col-sm-6 ">
                                   <div className="row g-3 mb-3">

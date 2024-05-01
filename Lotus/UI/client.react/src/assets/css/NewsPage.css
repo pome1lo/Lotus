@@ -9,3 +9,21 @@
 .spinner-border.spinner-border-sm.resize {
     font-size: larger;
 }
+
+li.page-item a {
+    background-color: transparent !important;
+    color: white !important;
+}
+
+li.page-item a:hover {
+    background-color: #622025 !important;
+}
+li.page-item.active a {
+    background-color: #da3545 !important;
+    color: white;
+
+}
+li.page-item.active,
+.active>.page-link, .page-link.active {
+    border-color: var(--bs-pagination-border-color) !important;;
+}

@@ -46,6 +46,7 @@ const RegistrationPage = () => {
         const data = await response.json();
         if (response.ok) {
             console.log("TOKEN", data.token);
+            sessionStorage.setItem('user_id', data.user_id);
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('username', data.username);
             navigate('/');

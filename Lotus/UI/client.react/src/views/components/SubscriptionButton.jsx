@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-const SubscriptionButton = ({styles}) => {
+const SubscriptionButton = ({styles, user_id, to_id}) => {
     const [isSubscribed, setIsSubscribed] = useState(false);
 
     const handleSubscriptionToggle = async () => {
         try {
             const endpoint = isSubscribed
-                ? 'https://localhost:31003/api/user/unsubscribe'
-                : 'https://localhost:31003/api/user/subscribe';
+                ? 'https://localhost:31903/api/user/unsubscribe'
+                : 'https://localhost:31903/api/user/subscribe';
 
             styles =
                 styles == null ?
@@ -17,8 +17,12 @@ const SubscriptionButton = ({styles}) => {
                 : styles;
 
             const response = await fetch(endpoint, {
-                method: 'POST', // Вы можете настроить метод HTTP по необходимости
-                // Добавьте необходимые заголовки или данные тела запроса здесь
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: user_id,
+                    to_id: to_id
+                })
             });
 
             if (response.ok) {

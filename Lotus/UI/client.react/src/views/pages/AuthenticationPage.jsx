@@ -8,6 +8,7 @@ const AuthenticationPage = () => {
     const [inputPassword, setPassword] = useState('');
 
     async function fetchData() {
+        console.log("asd");
         const response = await fetch('https://localhost:31901/api/auth/account/auth', {
             method: 'POST',
             headers: {
@@ -25,6 +26,7 @@ const AuthenticationPage = () => {
 
         const data = await response.json();
         if (response.ok) {
+            sessionStorage.setItem('user_id', data.user_id);
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('username', data.username);
             navigate('/');
@@ -39,7 +41,7 @@ const AuthenticationPage = () => {
                 className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
                 <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
 
-                <form className="text-center form-signin">
+                <form className="text-center form-signin needs-validation" novalidate>
                     <h2 className="h4 mb-3 fw-medium">Please sign in</h2>
                     <div className="form-floating username">
                         <input type="text" className="form-control" id="floatingInput" required placeholder="User name"
@@ -65,17 +67,15 @@ const AuthenticationPage = () => {
                         </div>
                     </div>
                     <button className="btn btn-danger w-100 py-2" type="button" onClick={fetchData}>Sign in</button>
-
-
                     <p className="mt-3 mb-3 text-body-secondary">© 2024 Lotus</p>
                 </form>
             </main>
 
             <div className="d-flex flex-column social-networks-block">
-                <NavLink to="http://localhost:31002/api/auth/google" className="imageHover">
+                <NavLink to="https://localhost:31901/api/auth/google" className="imageHover">
                     <i className="bi bi-google"></i>
                 </NavLink>
-                <NavLink to="http://localhost:31002/api/auth/github" className="imageHover">
+                <NavLink to="https://localhost:31901/api/auth/github" className="imageHover">
                     <i className="bi bi-github"></i>
                 </NavLink>
             </div>

@@ -1,25 +1,56 @@
-import {Recommendations} from "../components/Recommendations";
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useParams } from "react-router-dom";
 import {NewsItem} from "../components/NewsItem";
 import "../../assets/css/NewsPage.css";
 
 const NewsPage = () => {
-    const navigate = useNavigate();
-    const [news, setNews] = useState([]);
+    const { topic } = useParams();
+    const [articles, setArticles] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const pageSize = 10;
 
     useEffect(() => {
-        fetch(`https://localhost:31001/api/news`)
-            .then(res => {
-                if (!res.ok || res.status === 404) {
-                    navigate('/not-found');
-                }
-                return res.json();
-            })
-            .then(data => setNews(data))
-    }, [navigate]);
+        fetchArticles();
+    }, [currentPage]);
 
-    return(
+    const fetchArticles = async () => {
+        const offset = (currentPage) ;
+        const url = `https://localhost:31904/api/news?topic=${topic}&limit=${pageSize}&offset=${offset}`;
+
+        console.log(url);
+        try {
+            const response = await axios.get(url);
+            setArticles(response.data.articles);
+            setTotalPages(Math.ceil(response.data.totalCount / pageSize));
+        } catch (error) {
+            console.error('Ошибка при получении новостей:', error.message);
+        }
+    };
+
+    const setPage = (page) => {
+        setCurrentPage(page);
+        window.scrollTo(0, 0); // Прокрутка вверх страницы
+        fetchArticles(); // Подгрузка новостей для новой страницы
+    };
+
+    // Рассчитываем диапазон страниц для отображения
+    const pageNumbers = [];
+    const startPage = Math.max(1, currentPage - 1);
+    const endPage = Math.min(totalPages, currentPage + 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(
+            <li key={i} className={`page-item ${i === currentPage ? 'active' : ''}`}>
+                <a className="page-link" href="#" onClick={(e) => { e.preventDefault(); setPage(i); }}>
+                    {i}
+                </a>
+            </li>
+        );
+    }
+
+    return (
         <>
             <div className="col-md-6 order-md-1 two">
                 <div className="bd-example m-0 border-0">
@@ -47,62 +78,192 @@ const NewsPage = () => {
                         <div className="tab-pane fade active show" id="nav-home" role="tabpanel"
                              aria-labelledby="nav-home-tab">
                             <p>Тут должен быть топик <strong>Главная</strong></p>
-                            {news.length > 0 ? (
-                                news.sort((a, b) => b.ID - a.ID).map(item => (
-                                    <div className="mt-3 mb-3" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
+                            {articles.length > 0 ? (
+
+
+                                (articles.map((article, index) => (
                                         <NewsItem
-                                            ID={item.ID}
-                                            Heading={item.Heading}
-                                            Paragraph={item.Paragraph}
-                                            Date={item.Date}
+                                            Topic={"News"}
+                                            Title={article.title}
+                                            Description={article.description}
+                                            Url={article.url}
+                                            UrlToImage={article.urlToImage}
+                                            PublishedAt={article.publishedAt}
+                                            Content={article.content}
                                         />
-                                    </div>
-                                ))
+                                    )))
+                                    (
+                                        <nav aria-label="Standard pagination example">
+                                            <ul className="pagination">
+                                                <li className="page-item">
+                                                    <a className="page-link" href="#" aria-label="Previous"
+                                                       onClick={(e) => {
+                                                           e.preventDefault();
+                                                           if (currentPage > 1) setPage(currentPage - 1);
+                                                       }}>
+                                                        <span aria-hidden="true">«</span>
+                                                    </a>
+                                                </li>
+                                                {pageNumbers}
+                                                <li className="page-item">
+                                                    <a className="page-link" href="#" aria-label="Next"
+                                                       onClick={(e) => {
+                                                           e.preventDefault();
+                                                           if (currentPage < totalPages) setPage(currentPage + 1);
+                                                       }}>
+                                                        <span aria-hidden="true">»</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    )
                             ) : (
-                                <span className="spinner-border spinner-border-sm resize" role="status" aria-hidden="true"></span>
+                                <span className="spinner-border spinner-border-sm resize" role="status"
+                                      aria-hidden="true"></span>
                             )}
                         </div>
                         <div className="tab-pane fade" id="nav-profile" role="tabpanel"
                              aria-labelledby="nav-profile-tab">
-                            <p>Тут должен быть топик <strong>ЕДА</strong></p>
-                            {news.length > 0 ? (
-                                news.sort((a, b) => b.ID - a.ID).map(item => (
-                                    <div className="mt-3 mb-3" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
-                                        <NewsItem
-                                            ID={item.ID}
-                                            Heading={item.Heading}
-                                            Paragraph={item.Paragraph}
-                                            Date={item.Date}
-                                        />
-                                    </div>
-                                ))
+                            <p>Тут должен быть топик <strong>Главная</strong></p>
+                            {articles.length > 0 ? (
+
+
+                                (articles.map((article, index) => (
+                                    <NewsItem
+                                        Topic={"Sport"}
+                                        Title={article.title}
+                                        Description={article.description}
+                                        Url={article.url}
+                                        UrlToImage={article.urlToImage}
+                                        PublishedAt={article.publishedAt}
+                                        Content={article.content}
+                                    />
+                                )))
+                                (
+                                    <nav aria-label="Standard pagination example">
+                                        <ul className="pagination">
+                                            <li className="page-item">
+                                                <a className="page-link" href="#" aria-label="Previous"
+                                                   onClick={(e) => {
+                                                       e.preventDefault();
+                                                       if (currentPage > 1) setPage(currentPage - 1);
+                                                   }}>
+                                                    <span aria-hidden="true">«</span>
+                                                </a>
+                                            </li>
+                                            {pageNumbers}
+                                            <li className="page-item">
+                                                <a className="page-link" href="#" aria-label="Next"
+                                                   onClick={(e) => {
+                                                       e.preventDefault();
+                                                       if (currentPage < totalPages) setPage(currentPage + 1);
+                                                   }}>
+                                                    <span aria-hidden="true">»</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                )
                             ) : (
-                                <span className="spinner-border spinner-border-sm resize" role="status" aria-hidden="true"></span>
+                                <span className="spinner-border spinner-border-sm resize" role="status"
+                                      aria-hidden="true"></span>
                             )}
                         </div>
                         <div className="tab-pane fade" id="nav-contact" role="tabpanel"
                              aria-labelledby="nav-contact-tab">
-                            <p>Тут должен быть топик <strong>СПОРТ</strong></p>
-                            {news.length > 0 ? (
-                                news.sort((a, b) => b.ID - a.ID).map(item => (
-                                    <div className="mt-3 mb-3" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="350">
-                                        <NewsItem
-                                            ID={item.ID}
-                                            Heading={item.Heading}
-                                            Paragraph={item.Paragraph}
-                                            Date={item.Date}
-                                        />
-                                    </div>
-                                ))
+                            <p>Тут должен быть топик <strong>Eat</strong></p>
+                            {articles.length > 0 ? (
+
+
+                                (articles.map((article, index) => (
+                                    <NewsItem
+                                        Topic={"Eat"}
+                                        Title={article.title}
+                                        Description={article.description}
+                                        Url={article.url}
+                                        UrlToImage={article.urlToImage}
+                                        PublishedAt={article.publishedAt}
+                                        Content={article.content}
+                                    />
+                                )))
+                                (
+                                    <nav aria-label="Standard pagination example">
+                                        <ul className="pagination">
+                                            <li className="page-item">
+                                                <a className="page-link" href="#" aria-label="Previous"
+                                                   onClick={(e) => {
+                                                       e.preventDefault();
+                                                       if (currentPage > 1) setPage(currentPage - 1);
+                                                   }}>
+                                                    <span aria-hidden="true">«</span>
+                                                </a>
+                                            </li>
+                                            {pageNumbers}
+                                            <li className="page-item">
+                                                <a className="page-link" href="#" aria-label="Next"
+                                                   onClick={(e) => {
+                                                       e.preventDefault();
+                                                       if (currentPage < totalPages) setPage(currentPage + 1);
+                                                   }}>
+                                                    <span aria-hidden="true">»</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                )
                             ) : (
-                                <span className="spinner-border spinner-border-sm resize" role="status" aria-hidden="true"></span>
+                                <span className="spinner-border spinner-border-sm resize" role="status"
+                                      aria-hidden="true"></span>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
-            <Recommendations/>
+            {/*<Recommendations/>*/}
+
+
+
+
+
+            {/*<div className="col-md-5 order-md-1 two">*/}
+            {/*    <div>*/}
+            {/*        {articles.map((article, index) => (*/}
+            {/*            <NewsItem*/}
+            {/*                Topic={topic}*/}
+            {/*                Title={article.title}*/}
+            {/*                Description={article.description}*/}
+            {/*                Url={article.url}*/}
+            {/*                UrlToImage={article.urlToImage}*/}
+            {/*                PublishedAt={article.publishedAt}*/}
+            {/*                Content={article.content}*/}
+            {/*            />*/}
+            {/*        ))}*/}
+
+            {/*        <nav aria-label="Standard pagination example">*/}
+            {/*            <ul className="pagination">*/}
+            {/*                <li className="page-item">*/}
+            {/*                    <a className="page-link" href="#" aria-label="Previous" onClick={(e) => {*/}
+            {/*                        e.preventDefault();*/}
+            {/*                        if (currentPage > 1) setPage(currentPage - 1);*/}
+            {/*                    }}>*/}
+            {/*                        <span aria-hidden="true">«</span>*/}
+            {/*                    </a>*/}
+            {/*                </li>*/}
+            {/*                {pageNumbers}*/}
+            {/*                <li className="page-item">*/}
+            {/*                    <a className="page-link" href="#" aria-label="Next" onClick={(e) => {*/}
+            {/*                        e.preventDefault();*/}
+            {/*                        if (currentPage < totalPages) setPage(currentPage + 1);*/}
+            {/*                    }}>*/}
+            {/*                        <span aria-hidden="true">»</span>*/}
+            {/*                    </a>*/}
+            {/*                </li>*/}
+            {/*            </ul>*/}
+            {/*        </nav>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
         </>
     );
-}
+};
+
 export {NewsPage};

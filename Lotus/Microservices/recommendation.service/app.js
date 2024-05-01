@@ -27,4 +27,4 @@ const options = {
 const server = https.createServer(options, app.callback());
 server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
 
-scheduleJob();
+// scheduleJob();

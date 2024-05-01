@@ -67,32 +67,6 @@ blockquote:before {
     display: none;
 }
 
-.fav-switch {
-    position: relative;
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-}
-
-.fav-switch input {
-    display: none;
-}
-
-.icon {
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    margin-top: 3px;
-    content: '\F7C5';
-    background-repeat: no-repeat;
-    background-size: cover;
-    cursor: pointer;
-
-    transition:  0.3s;
-}
-.fav-switch input:checked ~ .icon {
-    content: '\F7D8';
-}
 
 
 .footer-panel {

@@ -19,7 +19,18 @@
     to   { transform: rotate(360deg); }
 }
 
-
+.border-radius {
+    border-radius: 100px;
+}
+.border-radius-small {
+    border-radius: 10px;
+}
+.border-radius-medium {
+    border-radius: 25px;
+}
+.justify {
+    text-align:justify !important;
+}
 .mr-2 {
     margin-right: 1em;
 }
@@ -39,3 +50,4 @@
 .red-color {
     color: #da3b51;
 }
+

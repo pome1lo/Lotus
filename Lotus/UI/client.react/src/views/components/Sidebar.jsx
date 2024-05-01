@@ -14,7 +14,7 @@ const Sidebar = () => {
     }, []);
     
     return (
-        <div className="col-md-2 order-md-1 one">
+        <div className="col-md-3 order-md-1 one">
             <aside className="bd-aside sticky-xl-top">
                 <nav className="small" id="toc">
                     <div className="d-flex flex-column flex-shrink-0 p-3  leftBlock">
