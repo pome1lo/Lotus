@@ -79,4 +79,46 @@ router.post('/api/user/unsubscribe', async (ctx) => {
 });
 
 
+router.get('/api/user/:userId/posts', async (ctx) => {
+    try {
+        USER.hasMany(POST, { foreignKey: 'USER_ID' });
+        POST.belongsTo(USER, { foreignKey: 'USER_ID' });
+
+        const userId = ctx.params.userId;
+
+        // Получаем список подписок пользователя
+        const subscriptions = await SUBSCRIPTION.findAll({
+            where: { SUBSCRIBER_ID: userId },
+        });
+
+        // Получаем ID пользователей, на которых подписан пользователь
+        const subscribedToIds = subscriptions.map(sub => sub.SUBSCRIBED_TO_ID);
+
+        // Получаем посты от пользователей, на которых подписан пользователь
+        const posts = await POST.findAll({
+            where: { USER_ID: subscribedToIds },
+            order: [['PUBLISHED_AT', 'DESC']],
+            include: [{
+                model: USER,
+                attributes: ['USERNAME', 'PROFILE_PICTURE']
+            }]
+        });
+
+
+        ctx.body = {
+            posts:posts.map(post => ({
+                ...post.get(),
+                USERNAME: post.USER.USERNAME,
+                PROFILE_PICTURE: post.USER.PROFILE_PICTURE
+            }))
+        };
+    } catch (error) {
+        console.error(error);
+        ctx.status = 500;
+        ctx.body = 'Произошла ошибка при обработке вашего запроса';
+    }
+});
+
+
+
 module.exports = router;

@@ -4,8 +4,9 @@ import {Publisher} from "./Publisher";
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 
-const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, content_text, likes_count }) => {
+const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, user_id, content_text, likes_count }) => {
     const navigate = useNavigate();
+    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
 
     async function deletePost() {
         const response = await fetch('https://localhost:31903/api/profile/posts/delete', {
@@ -43,8 +44,9 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                     <div className="d-flex align-items-center justify-content-between">
                         <Publisher avatar={user_image} nickname={username} info={dop_info}/>
                         <div className="btn-group mr-4">
+
                             <button type="button" className="btn border-0 bg-transparent" data-bs-toggle="modal"
-                                    data-bs-target="#postEditModal">
+                                    style={{display: (user_id === currentUserId ? 'block' : 'none')}} data-bs-target="#postEditModal">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
                                      className="bi bi-gear rotate hover-size" viewBox="0 0 16 16">
                                     <path

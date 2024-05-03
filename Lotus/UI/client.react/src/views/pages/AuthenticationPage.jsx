@@ -8,8 +8,7 @@ const AuthenticationPage = () => {
     const [inputPassword, setPassword] = useState('');
 
     async function fetchData() {
-        console.log("asd");
-        const response = await fetch('https://localhost:31901/api/auth/account/auth', {
+        const response = await fetch('https://localhost:31901/api/auth/account/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -41,8 +40,10 @@ const AuthenticationPage = () => {
                 className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
                 <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
 
-                <form className="text-center form-signin needs-validation" novalidate>
+                <form  className="text-center form-signin needs-validation">
                     <h2 className="h4 mb-3 fw-medium">Please sign in</h2>
+
+
                     <div className="form-floating username">
                         <input type="text" className="form-control" id="floatingInput" required placeholder="User name"
                                value={inputUsername} onChange={(e) => setUsername(e.target.value)}/>

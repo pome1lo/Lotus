@@ -59,7 +59,7 @@ const RegistrationPage = () => {
             <main className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
                 <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
 
-                <form className="text-center form-signin">
+                <form className="text-center form-signin needs-validation">
                     <h2 className="h4 mb-3 fw-medium">Please join</h2>
                     <div className="form-floating username">
                         <input type="text" className="form-control" id="floatingInput" placeholder="User name" required
@@ -93,8 +93,7 @@ const RegistrationPage = () => {
                             <Link className="w-auto rememberMe" to="/login">Sign in</Link>
                         </div>
                     </div>
-                    <button className="btn  btn-danger w-100 py-2" type="button" onClick={fetchData}
-                            disabled={!isFormValid()}>Join
+                    <button className="btn  btn-danger w-100 py-2" type="button" onClick={fetchData} disabled={!isFormValid()}>Join
                     </button>
                     <p className="mt-5 mb-3 text-body-secondary">© 2024 Lotus</p>
                 </form>

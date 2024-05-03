@@ -29,6 +29,7 @@ function App() {
             <Route path="/" element={<Layout/>}>
               <Route index path="home" element={<HomePage/>} />
               {/*<Route path="news" element={<NewsPage/>} />*/}
+              <Route path="news" element={<NewsPage/>} />
               <Route path="news/:topic" element={<NewsPage/>} />
               <Route path="news/:id" element={<SelectedNews/>} />
               <Route path="support" element={<SupportPage/>} />

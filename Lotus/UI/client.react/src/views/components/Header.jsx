@@ -28,6 +28,7 @@ const Header = () => {
     const handleClick = () => {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('username');
+        sessionStorage.removeItem('user_id');
         navigate(`/`);
         window.location.reload();
     };

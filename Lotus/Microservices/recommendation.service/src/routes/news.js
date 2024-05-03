@@ -9,7 +9,7 @@ router.get('/api/news', async (ctx) => {
     const pageOffset = offset ? parseInt(offset, 10) : 1; // Значение по умолчанию, если offset не указан
 
     // Добавляем параметры пагинации в URL запроса
-    const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(topic)}&from=2024-03-29&sortBy=publishedAt&pageSize=${pageSize}&page=${pageOffset}&apiKey=48d693b19a91428ca31c34af0b07d794`;
+    const url = `https://newsapi.org/v2/everything?q=${topic}&sortBy=publishedAt&pageSize=${pageSize}&page=${pageOffset}&apiKey=48d693b19a91428ca31c34af0b07d794`;
 
     try {
         const response = await axios.get(url);
@@ -23,7 +23,6 @@ router.get('/api/news', async (ctx) => {
             content: article.content
         }));
 
-        // Возвращаем статьи и информацию для пагинации
         ctx.body = {
             articles: articles,
             page: pageOffset,
