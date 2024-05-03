@@ -25,5 +25,19 @@ const SUBSCRIPTION = sequelize.define('SUBSCRIPTION', {
 USER.hasMany(SUBSCRIPTION, { as: 'SUBSCRIPTIONS', foreignKey: 'SUBSCRIBER_ID' });
 USER.hasMany(SUBSCRIPTION, { as: 'SUBSCRIBERS', foreignKey: 'SUBSCRIBED_TO_ID' });
 
+USER.belongsToMany(USER, {
+    as: 'Subscriptions',
+    through: SUBSCRIPTION,
+    foreignKey: 'SUBSCRIBER_ID',
+    otherKey: 'SUBSCRIBED_TO_ID'
+});
+
+USER.belongsToMany(USER, {
+    as: 'Subscribers',
+    through: SUBSCRIPTION,
+    foreignKey: 'SUBSCRIBED_TO_ID',
+    otherKey: 'SUBSCRIBER_ID'
+});
+
 
 module.exports = { SUBSCRIPTION };

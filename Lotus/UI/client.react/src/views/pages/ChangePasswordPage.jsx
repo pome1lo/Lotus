@@ -74,7 +74,7 @@ const ChangePasswordPage = () => {
 
     return (
         <>
-            <div className="col-md-8 order-lg-2 row mt-4">
+            <div className="col-md-7 order-lg-2 row mt-4">
                 <form className="col-xl-6">
                     <h4>Change password {username}</h4>
                     <hr className="mb-3 mt-3"/>

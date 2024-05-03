@@ -1,7 +1,7 @@
 import {Link, useParams, useNavigate} from "react-router-dom";
 import React, {useEffect, useRef, useState,} from "react";
 import "../../assets/css/Profile.css";
-import SubscriptionButton from "../components/SubscriptionButton";
+import {SubscriptionButton} from "../components/SubscriptionButton";
 import {NewsItem} from "../components/NewsItem";
 import {Post} from "../components/Post";
 
@@ -63,7 +63,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className={`col-md-8 order-md-2`}>
+        <div className={`col-md-7 order-md-2`}>
             {user && (
                 <>
                 <div className="row">
@@ -78,6 +78,7 @@ const ProfilePage = () => {
                             {(currentUsername === null || user.USERNAME !== currentUsername) ? (
                                 <SubscriptionButton
                                     user_id={currentUserId} to_id={user.ID}
+                                    initiallySubscribed={user.isCurrentUserSubscribedToProfileUser}
                                     styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>
                             ) : (<></>)
                             }

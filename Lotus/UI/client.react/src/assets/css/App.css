@@ -9,6 +9,18 @@
   --bs-body-bg: #ffffff;
 }
 
+.red-link:hover {
+    color: #da3545;
+}
+.link-color {
+    color: RGBA(var(--bs-emphasis-color-rgb), var(--bs-link-opacity, 1)) !important;
+}
+
+
+a {
+  text-decoration: none !important;
+}
+
 .topFixed {
   top: 3rem;
 }

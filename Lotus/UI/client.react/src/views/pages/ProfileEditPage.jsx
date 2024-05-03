@@ -83,7 +83,7 @@ const ProfileEditPage = () => {
 
     return (
       <>
-          <div className={`col-md-8 order-md-3`}>
+          <div className={`col-md-7 order-md-3`}>
               <div className="row g-5">
                   {user && (
                       <form className="needs-validation " noValidate="">

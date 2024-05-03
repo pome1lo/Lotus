@@ -2,6 +2,10 @@ const Router = require('koa-router');
 const { USER } = require('../database/models/user');
 const { POST } = require('../database/models/post');
 const { SUBSCRIPTION } = require('../database/models/subscription');
+const { Op, random } = require('sequelize');
+const {fn} = require("../database/config");
+const sequelize = require("../database/config");
+
 const router = new Router();
 
 router.post('/api/user/subscribe', async (ctx) => {
@@ -86,15 +90,12 @@ router.get('/api/user/:userId/posts', async (ctx) => {
 
         const userId = ctx.params.userId;
 
-        // Получаем список подписок пользователя
         const subscriptions = await SUBSCRIPTION.findAll({
             where: { SUBSCRIBER_ID: userId },
         });
 
-        // Получаем ID пользователей, на которых подписан пользователь
         const subscribedToIds = subscriptions.map(sub => sub.SUBSCRIBED_TO_ID);
 
-        // Получаем посты от пользователей, на которых подписан пользователь
         const posts = await POST.findAll({
             where: { USER_ID: subscribedToIds },
             order: [['PUBLISHED_AT', 'DESC']],
@@ -103,7 +104,6 @@ router.get('/api/user/:userId/posts', async (ctx) => {
                 attributes: ['USERNAME', 'PROFILE_PICTURE']
             }]
         });
-
 
         ctx.body = {
             posts:posts.map(post => ({
@@ -115,10 +115,99 @@ router.get('/api/user/:userId/posts', async (ctx) => {
     } catch (error) {
         console.error(error);
         ctx.status = 500;
-        ctx.body = 'Произошла ошибка при обработке вашего запроса';
+        ctx.body = { error: 'Something went wrong' };
+    }
+});
+
+router.get('/api/user/:userId/subscriptions', async (ctx) => {
+    const subscriberId = parseInt(ctx.params.userId, 10);
+
+    try {
+        const userWithSubscriptions = await USER.findByPk(subscriberId, {
+            include: [{
+                model: USER,
+                as: 'Subscriptions',
+                attributes: ['ID', 'USERNAME', 'EMAIL', 'FIRSTNAME', 'LASTNAME', 'PHONE_NUMBER', 'PROFILE_PICTURE'],
+                through: {
+                    attributes: []
+                }
+            }]
+        });
+
+        if (!userWithSubscriptions) {
+            ctx.status = 404;
+            ctx.body = { error: 'User not found' };
+            return;
+        }
+
+        ctx.body = {
+            subscriptions:  userWithSubscriptions.Subscriptions
+        };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = { error: 'Internal Server Error' };
+        console.error(error);
+    }
+});
+
+router.get('/api/user/:userId/subscribers', async (ctx) => {
+    const userId = parseInt(ctx.params.userId, 10);
+
+    try {
+        const userWithSubscribers = await USER.findByPk(userId, {
+            include: [{
+                model: USER,
+                as: 'Subscribers',
+                attributes: ['ID', 'USERNAME', 'EMAIL', 'FIRSTNAME', 'LASTNAME', 'PHONE_NUMBER', 'PROFILE_PICTURE'],
+                through: {
+                    attributes: []
+                }
+            }]
+        });
+
+        if (!userWithSubscribers) {
+            ctx.status = 404;
+            ctx.body = { error: 'User not found' };
+            return;
+        }
+
+        ctx.body = {
+            subscribers: userWithSubscribers.Subscribers
+        };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = { error: 'Internal Server Error' };
+        console.error(error);
     }
 });
 
 
+router.get('/api/user/suggestions/:userId', async (ctx) => {
+    const excludedUserId = parseInt(ctx.params.userId, 10);
+
+    try {
+        const subscribedIds = (await SUBSCRIPTION.findAll({
+            where: {SUBSCRIBER_ID: excludedUserId},
+            attributes: ['SUBSCRIBED_TO_ID']
+        })).map(sub => sub.SUBSCRIBED_TO_ID);
+
+        ctx.body = {
+            suggestions:  await USER.findAll({
+                where: {
+                    ID: {
+                        [Op.ne]: excludedUserId,
+                        [Op.notIn]: subscribedIds
+                    }
+                },
+                order: sequelize.literal('RAND()'),
+                limit: 5
+            })
+        };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = { error: 'Internal Server Error' };
+        console.error(error);
+    }
+});
 
 module.exports = router;

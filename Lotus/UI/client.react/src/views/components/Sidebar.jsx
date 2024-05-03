@@ -31,8 +31,8 @@ const Sidebar = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/1" className="nav-link link-body-emphasis" aria-current="page">
-                                    <i className="bi bi-emoji-sunglasses"></i>link 1
+                                <NavLink to="/people" className="nav-link link-body-emphasis" aria-current="page">
+                                    <i className="bi bi-people"></i>People
                                 </NavLink>
                             </li>
                             <li>

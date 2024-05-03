@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
 
-const SubscriptionButton = ({styles, user_id, to_id}) => {
-    const [isSubscribed, setIsSubscribed] = useState(false);
+const SubscriptionButton = ({ styles, user_id, to_id, initiallySubscribed }) => {
+    const [isSubscribed, setIsSubscribed] = useState(initiallySubscribed);
+    const [buttonStyles, setButtonStyles] = useState(styles == null
+        ? isSubscribed
+            ? 'btn btn-outline-secondary d-inline-flex align-items-center'
+            : 'btn btn-primary d-inline-flex align-items-center'
+        : styles);
 
     const handleSubscriptionToggle = async () => {
-        try {
-            const endpoint = isSubscribed
-                ? 'https://localhost:31903/api/user/unsubscribe'
-                : 'https://localhost:31903/api/user/subscribe';
+        const endpoint = isSubscribed
+            ? 'https://localhost:31903/api/user/unsubscribe'
+            : 'https://localhost:31903/api/user/subscribe';
 
-            styles =
-                styles == null ?
-                    ( isSubscribed
+        setButtonStyles(
+            styles == null
+                ? isSubscribed
                     ? 'btn btn-outline-secondary d-inline-flex align-items-center'
-                    : 'btn btn-primary d-inline-flex align-items-center')
-                : styles;
-
+                    : 'btn btn-primary d-inline-flex align-items-center'
+                : styles
+        )
+        try {
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     user_id: user_id,
                     to_id: to_id
@@ -36,10 +41,10 @@ const SubscriptionButton = ({styles, user_id, to_id}) => {
     };
 
     return (
-        <button onClick={handleSubscriptionToggle} className={styles}>
+        <button onClick={handleSubscriptionToggle} className={buttonStyles}>
             {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
         </button>
     );
 };
 
-export default SubscriptionButton;
+export { SubscriptionButton };
