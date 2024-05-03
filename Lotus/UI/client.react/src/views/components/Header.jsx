@@ -67,28 +67,19 @@ const Header = () => {
                                 <Link className="nav-link active" aria-current="page" to="#">Home</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="#">Link</Link>
+                                <Link className="nav-link" to="/about">All about Lotus</Link>
                             </li>
                             <li className="nav-item">
                                 <Link to="#" className="nav-link disabled">Disabled</Link>
-                            </li>
-                            <li className="nav-item dropdown">
-                                <Link className="nav-link dropdown-toggle" to="#" data-bs-toggle="dropdown"
-                                   aria-expanded="false">Dropdown</Link>
-                                <ul className="dropdown-menu">
-                                    <li><Link to="#" className="dropdown-item">Action</Link></li>
-                                    <li><Link to="#" className="dropdown-item">Another action</Link></li>
-                                    <li><Link to="#" className="dropdown-item">Something else here</Link></li>
-                                </ul>
                             </li>
                             <li>
                                 <h6 className="pb-2 mb-2 border-bottom show-display"> </h6>
                             </li>
                             <li className="nav-item show-display">
-                                <Link to="#" className="nav-link active" aria-current="page">Home</Link>
+                                <Link to="/home" className="nav-link active" aria-current="page">Home</Link>
                             </li>
                             <li className="nav-item show-display">
-                                <Link to="#" className="nav-link active" aria-current="page">Home</Link>
+                                <Link to="/news" className="nav-link active" aria-current="page">News</Link>
                             </li>
                             <li className="nav-item show-display">
                                 <Link to="#" className="nav-link active" aria-current="page">Home</Link>

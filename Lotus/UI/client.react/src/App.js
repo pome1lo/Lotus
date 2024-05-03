@@ -18,6 +18,7 @@ import {ChangePasswordPage} from "./views/pages/ChangePasswordPage";
 import {SupportPage} from "./views/pages/SupportPage";
 import {Comment} from "./views/components/Comment";
 import {CommentsPage} from "./views/pages/CommentsPage";
+import {AboutPage} from "./views/pages/AboutPage";
 
 function App() {
   useEffect(() => AOS.init , []);
@@ -37,6 +38,7 @@ function App() {
               <Route path="profile/:username/edit" element={<ProfileEditPage/>} />
               <Route path="profile/:username/change-password" element={<ChangePasswordPage/>} />
               <Route path="/:username/:postid/comments" element={<CommentsPage/>} />
+              <Route path="/about" element={<AboutPage/>} />
             </Route>
             {/*<Route path="login" element={<FormPage/>} />*/}
             {/*<Route path="*" element={<AuthorizationPage />} />*/}
