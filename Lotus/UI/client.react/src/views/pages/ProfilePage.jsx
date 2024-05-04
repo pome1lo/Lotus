@@ -8,6 +8,7 @@ import {Post} from "../components/Post";
 const ProfilePage = () => {
     const {username} = useParams();
     const [user, setUser] = useState(null);
+    const [isCurrentUserSubscribedToProfileUser, setIsCurrentUserSubscribedToProfileUser] = useState(null);
     const [posts, setPosts] = useState(null);
     const navigate = useNavigate();
     const fileInput = useRef();
@@ -20,7 +21,7 @@ const ProfilePage = () => {
     const [inputDate, setDate] = useState('');
 
     useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${username}`)
+        fetch(`https://localhost:31903/api/profile/${username}?current_user_id=${currentUserId}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -30,6 +31,7 @@ const ProfilePage = () => {
             .then(data => {
                 setUser(data.user);
                 setPosts(data.posts);
+                setIsCurrentUserSubscribedToProfileUser(data.isCurrentUserSubscribedToProfileUser);
             })
     }, [username, navigate]);
 
@@ -78,7 +80,7 @@ const ProfilePage = () => {
                             {(currentUsername === null || user.USERNAME !== currentUsername) ? (
                                 <SubscriptionButton
                                     user_id={currentUserId} to_id={user.ID}
-                                    initiallySubscribed={user.isCurrentUserSubscribedToProfileUser}
+                                    initiallySubscribed={isCurrentUserSubscribedToProfileUser}
                                     styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>
                             ) : (<></>)
                             }

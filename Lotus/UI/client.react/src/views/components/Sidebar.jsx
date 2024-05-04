@@ -14,7 +14,7 @@ const Sidebar = () => {
     }, []);
     
     return (
-        <div className="col-md-3 order-md-1 one">
+        <div className="col-md-2 order-md-1 one">
             <aside className="bd-aside sticky-xl-top">
                 <nav className="small" id="toc">
                     <div className="d-flex flex-column flex-shrink-0 p-3  leftBlock">
@@ -36,8 +36,8 @@ const Sidebar = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/2" className="nav-link link-body-emphasis" aria-current="page">
-                                    <i className="bi bi-emoji-sunglasses"></i>link 2
+                                <NavLink to="/saved" className="nav-link link-body-emphasis" aria-current="page">
+                                    <i className="bi bi-bookmark"></i>Saved
                                 </NavLink>
                             </li>
                             <li>

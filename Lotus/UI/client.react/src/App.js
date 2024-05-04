@@ -20,6 +20,7 @@ import {Comment} from "./views/components/Comment";
 import {CommentsPage} from "./views/pages/CommentsPage";
 import {AboutPage} from "./views/pages/AboutPage";
 import {PeoplePage} from "./views/pages/PeoplePage";
+import {SavedPage} from "./views/pages/SavedPage";
 
 function App() {
   useEffect(() => AOS.init , []);
@@ -41,6 +42,7 @@ function App() {
               <Route path="/:username/:postid/comments" element={<CommentsPage/>} />
               <Route path="/about" element={<AboutPage/>} />
               <Route path="/people" element={<PeoplePage/>} />
+              <Route path="/saved" element={<SavedPage/>} />
             </Route>
             {/*<Route path="login" element={<FormPage/>} />*/}
             {/*<Route path="*" element={<AuthorizationPage />} />*/}

@@ -11,7 +11,7 @@ const HomePage = () => {
             </div>
             <div className="carousel-inner">
                 <div className="carousel-item active" data-bs-interval="10000">
-                    <img src="https://vosnews.ru/wp-content/uploads/2022/05/k0f-te8rzde-1.jpg" className="d-block w-100"
+                        <img src="https://vosnews.ru/wp-content/uploads/2022/05/k0f-te8rzde-1.jpg" className="d-block w-100"
                          alt="..." style={{height: '50vh', objectFit: 'cover', width: '100%'}}/>
                     <div className="carousel-caption d-none d-md-block">
                         <h1>First slide label</h1>

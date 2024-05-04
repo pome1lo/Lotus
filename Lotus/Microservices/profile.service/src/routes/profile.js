@@ -5,6 +5,7 @@ const { COMMENT} = require("../database/models/comment");
 const router = new Router();
 const path = require('path');
 const multer = require("koa-multer");
+const {SUBSCRIPTION} = require("../database/models/subscription");
 
 
 const storage = multer.diskStorage({
@@ -22,9 +23,39 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
+// router.get('/api/profile/:username', async (ctx) => {
+//     const username = ctx.params.username;
+//     const user = await USER.findOne({ where: { USERNAME: username } });
+//     if (user) {
+//         const posts = await POST.findAll({ where: { USER_ID: user.ID } });
+//         const postsWithImageUrls = posts.map(post => {
+//             return {
+//                 ...post.get({ plain: true }),
+//                 IMAGE: post.IMAGE ? `https://localhost:31903/${post.IMAGE}` : null
+//             };
+//         });
+//         user.PROFILE_PICTURE = user.PROFILE_PICTURE ? `https://localhost:31903/${user.PROFILE_PICTURE}` : null;
+//         ctx.body = {
+//             user: user,
+//             posts: postsWithImageUrls
+//         };
+//     } else {
+//         ctx.status = 404;
+//         ctx.body = { message: 'User not found' };
+//     }
+// });
+
 router.get('/api/profile/:username', async (ctx) => {
+    if (!ctx.query.current_user_id) {
+        ctx.status = 401; // Неавторизованный доступ
+        ctx.body = { message: 'User is not authenticated' };
+        return;
+    }
+
+    const currentUserId = ctx.query.current_user_id;
     const username = ctx.params.username;
     const user = await USER.findOne({ where: { USERNAME: username } });
+
     if (user) {
         const posts = await POST.findAll({ where: { USER_ID: user.ID } });
         const postsWithImageUrls = posts.map(post => {
@@ -34,15 +65,28 @@ router.get('/api/profile/:username', async (ctx) => {
             };
         });
         user.PROFILE_PICTURE = user.PROFILE_PICTURE ? `https://localhost:31903/${user.PROFILE_PICTURE}` : null;
+
+        // Проверяем подписку
+        const subscription = await SUBSCRIPTION.findOne({
+            where: {
+                SUBSCRIBER_ID: currentUserId,
+                SUBSCRIBED_TO_ID: user.ID
+            }
+        });
+        const isCurrentUserSubscribedToProfileUser = subscription !== null;
+
         ctx.body = {
             user: user,
-            posts: postsWithImageUrls
+            posts: postsWithImageUrls,
+            isCurrentUserSubscribedToProfileUser: isCurrentUserSubscribedToProfileUser
         };
     } else {
         ctx.status = 404;
         ctx.body = { message: 'User not found' };
     }
 });
+
+
 
 router.get('/api/profiles', async (ctx) => {
     let users = await USER.findAll();

@@ -32,6 +32,7 @@ const SubscriptionButton = ({ styles, user_id, to_id, initiallySubscribed }) => 
 
             if (response.ok) {
                 setIsSubscribed(!isSubscribed);
+                window.location.reload();
             } else {
                 console.error('Ошибка при переключении подписки:', response.statusText);
             }
