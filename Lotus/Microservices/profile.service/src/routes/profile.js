@@ -23,28 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-// router.get('/api/profile/:username', async (ctx) => {
-//     const username = ctx.params.username;
-//     const user = await USER.findOne({ where: { USERNAME: username } });
-//     if (user) {
-//         const posts = await POST.findAll({ where: { USER_ID: user.ID } });
-//         const postsWithImageUrls = posts.map(post => {
-//             return {
-//                 ...post.get({ plain: true }),
-//                 IMAGE: post.IMAGE ? `https://localhost:31903/${post.IMAGE}` : null
-//             };
-//         });
-//         user.PROFILE_PICTURE = user.PROFILE_PICTURE ? `https://localhost:31903/${user.PROFILE_PICTURE}` : null;
-//         ctx.body = {
-//             user: user,
-//             posts: postsWithImageUrls
-//         };
-//     } else {
-//         ctx.status = 404;
-//         ctx.body = { message: 'User not found' };
-//     }
-// });
-
 router.get('/api/profile/:username', async (ctx) => {
     if (!ctx.query.current_user_id) {
         ctx.status = 401; // Неавторизованный доступ
@@ -142,6 +120,8 @@ router.get('/api/profile/:username/posts', async (ctx) => {
         ctx.body = { message: 'Posts not found' };
     }
 });
+
+
 
 
 

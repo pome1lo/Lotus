@@ -38,7 +38,8 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
 
     return (
         <>
-            <div data-aos="fade-up" data-aos-anchor-placement="center-bottom" className="post two"
+            <div className="post two mt-3"
+                 data-aos="fade-up" data-aos-anchor-placement="center-bottom"
                  data-aos-duration="750">
                 <div>
                     <div className="d-flex align-items-center justify-content-between">

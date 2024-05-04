@@ -7,7 +7,8 @@ const NewsItem =  ({ Topic, Title, Description, Url, UrlToImage, PublishedAt, Co
             <Link to={`/news/${Topic}/asd`} className="mb-4 news-item-card col">
                 <div className="card" >
                     <div className="scale-news-item">
-                        <img src={UrlToImage} alt="content" className="w-100 border-radius-small" style={{maxHeight: 130, borderRadius: 0}}/>
+                        {UrlToImage && <img src={UrlToImage} alt="content" className="w-100 border-radius-small"
+                              style={{maxHeight: 130, borderRadius: 0}}/>}
                     </div>
                     <div className="card-body">
                         <h6 className="card-title small">{Title}</h6>

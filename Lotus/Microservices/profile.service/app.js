@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const ProfileRoutes = require('./src/routes/profile');
 const AccountRoutes = require('./src/routes/account');
 const UserRoutes = require('./src/routes/user');
+const PostRoutes = require('./src/routes/post');
 const port = process.env.APP_PORT == null ? 31903 : process.env.APP_PORT;
 const app = new Koa();
 const cors = require('koa2-cors');
@@ -23,6 +24,7 @@ app.use(bodyParser());
 
 
 app.use(ProfileRoutes.routes());
+app.use(PostRoutes.routes());
 app.use(AccountRoutes.routes());
 app.use(UserRoutes.routes());
 app.use(router.routes());

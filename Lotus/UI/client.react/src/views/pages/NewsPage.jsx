@@ -41,34 +41,7 @@ const NewsPage = () => {
             })
     };
 
-    const fetchPosts = async () => {
-        setPostStatus(false);
-        const url = `https://localhost:31903/api/user/${currentUserId}/posts`;
-        fetch(url)
-            .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (Array.isArray(data.posts)) {
-                    console.log(data.posts.length);
-                    if(data.posts.length === 0) {
-                        setPostStatus(true);
-                    }
-                    console.log(data.posts[0]);
-                    setArticles(data.posts);
 
-                    //setTotalPages(Math.ceil(data.totalCount / pageSize));
-                } else {
-                    setArticles([]);
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка при получении новостей:', error);
-            })
-    }
 
     useEffect(() => {
         const offsett = (currentPage - 1) * pageSize;
@@ -106,14 +79,6 @@ const NewsPage = () => {
                 <div className="bd-example m-0 border-0">
                     <nav>
                         <div className="nav nav-tabs mb-3" id="nav-tab" role="tablist">
-
-                            <button className="nav-link news-item-tab" data-bs-toggle="tab"
-                                    data-bs-target="#nav-subscription" role="tab" aria-controls="nav-subscription"
-                                    style={{display: (currentUserId ? 'block' : 'none')}}
-                                    onClick={() => fetchPosts()}
-                                    type="button">Subscriptions
-                            </button>
-
                             <button className="nav-link news-item-tab active" data-bs-toggle="tab"
                                     data-bs-target="#nav-main" role="tab" aria-controls="nav-main"
                                     onClick={() => fetchArticlesByTopic('last')}
@@ -138,26 +103,7 @@ const NewsPage = () => {
                             {articles && (
                                 (articles.length > 0 ) ? (
                                     <>
-                                        <div className="tab-pane fade" id="nav-subscription" role="tabpanel"
-                                             aria-labelledby="nav-subscription-tab">
-                                            {(articles.map((article, index) => (
-                                                <Post key={index}
-                                                      post_id={article.ID}
-                                                      user_id={article.USER_ID}
-                                                      user_image={'https://localhost:31903/' + article.PROFILE_PICTURE}
-                                                      username={article.USERNAME}
-                                                      content_image={'https://localhost:31903/' + article.IMAGE}
-                                                      content_heading={article.TITLE}
-                                                      content_text={article.CONTENT}
-                                                      dop_info={`${new Date(article.PUBLISHED_AT).toLocaleString("en", {
-                                                          day: '2-digit',
-                                                          month: 'short',
-                                                          hour: '2-digit',
-                                                          minute: '2-digit'
-                                                      })}`}
-                                                />
-                                            )))}
-                                        </div>
+
                                         <div className="tab-pane fade show active" id="nav-main" role="tabpanel"
                                              aria-labelledby="nav-main-tab">
                                             <p>This is the latest news</p>

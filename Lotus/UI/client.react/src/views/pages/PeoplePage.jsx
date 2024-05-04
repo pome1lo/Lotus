@@ -1,8 +1,9 @@
 import {Link, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Publisher} from "../components/Publisher";
 import {SubscriptionButton} from "../components/SubscriptionButton";
 import {Suggestions} from "../components/Suggestions";
+import {RecentPosts} from "../components/RecentPosts";
 
 const PeoplePage = () => {
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ const PeoplePage = () => {
 
     return(
         <>
-            <div className="col-md-5 order-md-2">
+            <div className="col-md-6 order-md-2">
                 <div className="alert alert-danger alert-dismissible fade show" role="alert">
                     On this page you can view the users you are subscribed to and those who are subscribed to you
                     <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -107,6 +108,16 @@ const PeoplePage = () => {
                             )}
                         </div>
                     </div>
+                </div>
+            </div>
+            <div className="position-sticky col-md-4 order-md-2">
+                <div className="sticky-xl-top ">
+                    <div className="alert alert-secondary alert-dismissible fade show" role="alert">
+                        Here you can see the posts of the people you are subscribed to.
+                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <Suggestions/>
+                    <RecentPosts/>
                 </div>
             </div>
         </>

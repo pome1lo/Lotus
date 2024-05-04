@@ -52,8 +52,9 @@ CREATE TABLE COMMENTS (
 DELETE from POSTS;
 
 SELECT * FROM COMMENTS;
-SELECT * FROM USERS;
 SELECT * FROM POSTS;
+
+SELECT * FROM USERS;
 SELECT * FROM Subscription;
 
 -- don't forget to delete the cache in Redis

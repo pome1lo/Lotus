@@ -41,8 +41,8 @@ const Sidebar = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/3" className="nav-link link-body-emphasis" aria-current="page">
-                                    <i className="bi bi-emoji-sunglasses"></i>link 3
+                                <NavLink to="/subscriptions" className="nav-link link-body-emphasis" aria-current="page">
+                                    <i className="bi bi-chat-square-text"></i>Subscriptions
                                 </NavLink>
                             </li>
                             <li>
