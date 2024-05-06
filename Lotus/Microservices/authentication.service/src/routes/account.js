@@ -4,15 +4,15 @@ const koaJwt = require('koa-jwt');
 const argon2 = require('argon2');
 const crypto = require('crypto');
 const { USER } = require('../database/models/user');
-const { sendToQueue} = require("../services/RabbitMQ/sendToQueue");
+const { sendToQueue } = require("../services/RabbitMQ/sendToQueue");
 const { redisClient } = require('./../services/Redis/redisClient');
-const {verifyEmail} = require("../services/gRPC/NotifyServer");
+const { verifyEmail } = require("../services/gRPC/NotifyServer");
 
 const router = new Router();
-const secretKey =  process.env.SECRET_KEY == null ? 'secret_key' : process.env.SECRET_KEY;
+const secretKey = process.env.SECRET_KEY || 'secret_key';
 
 
-router.post('/api/auth/account/register', async (ctx) => {
+async function createUser(ctx) {
     const { username, email, password } = ctx.request.body;
     const existingUser = await USER.findOne({ where: { EMAIL: email } });
 
@@ -50,9 +50,9 @@ router.post('/api/auth/account/register', async (ctx) => {
         token: token,
         user_id: newUser.ID
     };
-});
+}
 
-router.post('/api/auth/account/login', async (ctx) => {
+async function loginUser(ctx) {
     const { username, password } = ctx.request.body;
 
     ctx.body = { message: "error" };
@@ -73,9 +73,9 @@ router.post('/api/auth/account/login', async (ctx) => {
 
     const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
     ctx.body = { token, username: user.USERNAME, user_id: user.ID };
-});
+}
 
-router.post('/api/auth/account/verify-email', async (ctx) => {
+async function verifyUserEmail(ctx) {
     const { username, email } = ctx.request.body;
 
     try {
@@ -94,9 +94,9 @@ router.post('/api/auth/account/verify-email', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
-router.get('/api/auth/account/verify-email', async (ctx) => {
+async function confirmUserEmail(ctx) {
     const token = ctx.query.token;
 
     try {
@@ -119,9 +119,9 @@ router.get('/api/auth/account/verify-email', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
-router.post('/api/auth/account/reset-password', async (ctx) => {
+async function resetUserPassword(ctx) {
     const { username, password } = ctx.request.body;
 
     try {
@@ -147,10 +147,17 @@ router.post('/api/auth/account/reset-password', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
-router.get('/api/auth/account/protected', koaJwt({ secret: secretKey }), async (ctx) => {
+async function protectedRoute(ctx) {
     ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
-});
+}
+
+router.post('/api/auth/account/register', createUser);
+router.post('/api/auth/account/login', loginUser);
+router.post('/api/auth/account/verify-email', verifyUserEmail);
+router.get ('/api/auth/account/verify-email', confirmUserEmail);
+router.post('/api/auth/account/reset-password', resetUserPassword);
+router.get ('/api/auth/account/protected', koaJwt({ secret: secretKey }), protectedRoute);
 
 module.exports = router;

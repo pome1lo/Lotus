@@ -1,15 +1,23 @@
 const amqp = require('amqplib/callback_api');
 
-const RABBITMQ_HOST = process.env.RABBITMQ_HOST == null ? "localhost" : process.env.RABBITMQ_HOST;
-const RABBITMQ_PORT = process.env.RABBITMQ_PORT == null ? 5672 : process.env.RABBITMQ_PORT;
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST || "localhost";
+const RABBITMQ_PORT = process.env.RABBITMQ_PORT || 5672;
+
+function connectToRabbitMQ(callback) {
+    amqp.connect(`amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}`, callback);
+}
+
+function createChannel(connection, callback) {
+    connection.createChannel(callback);
+}
 
 function sendToQueue(queue, message) {
-    amqp.connect(`amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}`, function(error0, connection) {
+    connectToRabbitMQ((error0, connection) => {
         if (error0) {
             console.error("Ошибка подключения к RabbitMQ:", error0);
             return;
         }
-        connection.createChannel(function(error1, channel) {
+        createChannel(connection, (error1, channel) => {
             if (error1) {
                 console.error("Ошибка создания канала в RabbitMQ:", error1);
                 return;
@@ -31,4 +39,4 @@ function sendToQueue(queue, message) {
     });
 }
 
-module.exports = { sendToQueue: sendToQueue };
+module.exports = { sendToQueue };

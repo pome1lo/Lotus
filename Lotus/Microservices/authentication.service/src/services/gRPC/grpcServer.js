@@ -2,12 +2,12 @@ const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const { USER } = require('../../database/models/user');
 const { redisClient } = require('./../Redis/redisClient');
-const {sendToQueue} = require("../RabbitMQ/sendToQueue");
+const { sendToQueue } = require("../RabbitMQ/sendToQueue");
 const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
 
-const updatePassword = async (call, callback) => {
+async function updatePassword(call, callback) {
     const { id, password, salt } = call.request;
 
     try {
@@ -33,9 +33,9 @@ const updatePassword = async (call, callback) => {
             details: 'Internal server error'
         });
     }
-};
+}
 
-const deleteUser = async (call, callback) => {
+async function deleteUser(call, callback) {
     const { id } = call.request;
 
     try {
@@ -73,7 +73,7 @@ const deleteUser = async (call, callback) => {
             details: 'Internal server error'
         });
     }
-};
+}
 
 const server = new grpc.Server();
 
@@ -82,13 +82,15 @@ server.addService(authPackage.AuthenticationService.service, {
     DeleteUser: deleteUser
 });
 
+function startServer(grpcPort) {
+    const TARGET = process.env.APP_PORT == null ? `0.0.0.0:${grpcPort}` : `0.0.0.0:${grpcPort}`; //todo ???
+    server.bindAsync(TARGET, grpc.ServerCredentials.createInsecure(), (error, port) => {
+        if (error) console.error(`🟥 gRPC server error: ${error.message}`);
+        console.log(`🟩 gRPC server Successful`);
+        server.start();
+    });
+}
+
 module.exports = {
-    startServer: (grpcPort) => {
-        const TARGET = process.env.APP_PORT == null ? `0.0.0.0:${grpcPort}` : `0.0.0.0:${grpcPort}`; //todo ???
-        server.bindAsync(TARGET, grpc.ServerCredentials.createInsecure(), (error, port) => {
-            if (error) console.error(`🟥 gRPC server error: ${error.message}`);
-            console.log(`🟩 gRPC server Successful`);
-            server.start();
-        });
-    }
+    startServer
 };
