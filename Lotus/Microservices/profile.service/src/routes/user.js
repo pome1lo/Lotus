@@ -1,6 +1,6 @@
 const Router = require('koa-router');
-const { USER } = require('../database/models/user');
 const { POST } = require('../database/models/post');
+const { USER } = require('../database/models/user');
 const { SUBSCRIPTION } = require('../database/models/subscription');
 const { Op, random } = require('sequelize');
 const {fn} = require("../database/config");
@@ -82,14 +82,11 @@ router.post('/api/user/unsubscribe', async (ctx) => {
     }
 });
 
-
 router.get('/api/user/:userId/posts', async (ctx) => {
     try {
-        USER.hasMany(POST, { foreignKey: 'USER_ID' });
-        POST.belongsTo(USER, { foreignKey: 'USER_ID' });
+        const userId = parseInt(ctx.params.userId, 10); // Убедитесь, что userId является числом
 
-        const userId = ctx.params.userId;
-
+        // Предполагается, что у вас есть модель SUBSCRIPTION, которая определена где-то в коде
         const subscriptions = await SUBSCRIPTION.findAll({
             where: { SUBSCRIBER_ID: userId },
         });
@@ -105,19 +102,26 @@ router.get('/api/user/:userId/posts', async (ctx) => {
             }]
         });
 
-        ctx.body = {
-            posts:posts.map(post => ({
-                ...post.get(),
-                USERNAME: post.USER.USERNAME,
-                PROFILE_PICTURE: post.USER.PROFILE_PICTURE
-            }))
-        };
+        // Убедитесь, что возвращаемые данные корректны
+        if (posts) {
+            ctx.body = {
+                posts: posts.map(post => ({
+                    ...post.get({ plain: true }), // Используйте метод get с опцией plain для получения чистых данных
+                    USERNAME: post.USER?.USERNAME, // Используйте опциональный цепочный оператор для предотвращения ошибки
+                    PROFILE_PICTURE: post.USER?.PROFILE_PICTURE
+                }))
+            };
+        } else {
+            ctx.status = 404;
+            ctx.body = { error: 'Posts not found' };
+        }
     } catch (error) {
         console.error(error);
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
 });
+
 
 router.get('/api/user/:userId/subscriptions', async (ctx) => {
     const subscriberId = parseInt(ctx.params.userId, 10);
@@ -180,7 +184,6 @@ router.get('/api/user/:userId/subscribers', async (ctx) => {
         console.error(error);
     }
 });
-
 
 router.get('/api/user/suggestions/:userId', async (ctx) => {
     const excludedUserId = parseInt(ctx.params.userId, 10);

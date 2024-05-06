@@ -133,9 +133,10 @@ const ProfilePage = () => {
                     : (
                         posts.length > 0 ? (
                         posts.sort((a, b) => b.ID - a.ID).map(item => (
-                            <Post
-                                post_id={item.ID}
+                            <Post key={item.ID}
+                                  post_id={item.ID}
                                 user_image={user.PROFILE_PICTURE}
+                                isAuthor={item.USER_ID == currentUserId}
                                 username={user.USERNAME}
                                 content_image={item.IMAGE}
                                 content_heading={item.TITLE}
@@ -179,7 +180,7 @@ const ProfilePage = () => {
                                         post</h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal"
                                             aria-label="Закрыть"></button>
-                        </div>
+                                </div>
                             <div className="modal-body">
                                 <form>
                                     <div className="col-12 text-start">

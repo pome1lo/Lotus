@@ -24,9 +24,9 @@ app.use(bodyParser());
 
 
 app.use(ProfileRoutes.routes());
-app.use(PostRoutes.routes());
 app.use(AccountRoutes.routes());
 app.use(UserRoutes.routes());
+app.use(PostRoutes.routes());
 app.use(router.routes());
 
 const isDocker = process.env.APP_PORT == null;

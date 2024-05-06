@@ -175,7 +175,6 @@ router.post('/api/profile/posts/create', upload.single('image'), async (ctx) => 
     }
 });
 
-
 router.put('/api/profile/image', upload.single('image'), async (ctx) => {
     const { user_id } = ctx.req.body;
 
@@ -203,6 +202,44 @@ router.put('/api/profile/image', upload.single('image'), async (ctx) => {
     }
 });
 
+
+router.put('/api/profile/posts/update/:id', upload.single('image'), async (ctx) => {
+    const { title, content } = ctx.req.body;
+    const { id } = ctx.params;
+
+    if (!ctx.req.file && !title && !content) {
+        ctx.status = 400;
+        ctx.body = { error: 'No update data provided' };
+        return;
+    }
+
+    try {
+        const post = await POST.findByPk(id);
+        if (!post) {
+            ctx.status = 404;
+            ctx.body = { error: 'Post not found' };
+            return;
+        }
+
+        const updatedData = {
+            TITLE: title || post.TITLE,
+            CONTENT: content || post.CONTENT,
+            IMAGE: ctx.req.file ? ctx.req.file.filename : post.IMAGE
+        };
+
+        await post.update(updatedData);
+
+        ctx.status = 200;
+        ctx.body = { message: 'Post updated successfully', post: updatedData };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = { error: 'Something went wrong' };
+    }
+});
+
+
+
+
 router.delete('/api/profile/posts/delete', async (ctx) => {
     const { id } = ctx.request.body;
 
@@ -225,6 +262,7 @@ router.delete('/api/profile/posts/delete', async (ctx) => {
         ctx.body = { error: 'Something went wrong' };
     }
 });
+
 
 router.delete('/api/profile/:username/:postid/comments/delete', async (ctx) => {
     const { id } = ctx.request.body;
