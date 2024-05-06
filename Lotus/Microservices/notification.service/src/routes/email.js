@@ -1,11 +1,12 @@
 const Router = require('koa-router');
-const {NOTIFICATION} = require("../database/Models/notification");
+const { NOTIFICATION } = require("../database/Models/notification");
+const koaJwt = require('koa-jwt');
 
-
+const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 const router = new Router();
 
-router.get('/api/notify/email/:user_id', async (ctx) => {
-    const user_id = ctx.params.user_id;
+async function notifyUserEmail(ctx) {
+    const { user_id } = ctx.params;
 
     try {
         const notifications = await NOTIFICATION.findAll({ where: { USER_ID: user_id } });
@@ -13,11 +14,12 @@ router.get('/api/notify/email/:user_id', async (ctx) => {
         ctx.status = 200;
         ctx.body = notifications;
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
+router.get ('/api/notify/email/:user_id', koaJwt({ secret: SECRET_KEY }), notifyUserEmail);
 
 module.exports = router;

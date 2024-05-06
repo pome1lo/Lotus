@@ -2,14 +2,12 @@ const fs = require('fs');
 const nodemailer = require('nodemailer');
 const path = require("path");
 
-const isDocker = process.env.APP_PORT == null;
-const PathToConfig = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\configs' : '/app';
+const CONFIG_PATH = process.env.APP_PORT ? '/app' : 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\configs';
+const HTML_PATH = "D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\notification.service\\src\\assets\\html\\";
 
-let rawParams = fs.readFileSync(path.join(PathToConfig, 'tsconfig_notify.json'));
-let mailParams = JSON.parse(rawParams);
+const mailParams = JSON.parse(fs.readFileSync(path.join(CONFIG_PATH, 'tsconfig_notify.json')));
 
-
-let transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
     secure: true,
@@ -19,40 +17,30 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-async function sendHtml(toMail, subject, htmlPage) {
-    const htmlPath = path.join("D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Microservices\\notification.service\\src\\assets\\html\\", htmlPage);
-    console.log(htmlPath);
-    const htmlContent = fs.existsSync(htmlPath) ? fs.readFileSync(htmlPath, 'utf8') : '';
-
+async function sendMail(toMail, subject, content, isHtml = false) {
     let mailOptions = {
         from: mailParams.mail,
         to: toMail,
-        subject: subject,
-        html: htmlContent
+        subject: subject
     };
+
+    if (isHtml) {
+        const htmlPath = path.join(HTML_PATH, content);
+        console.log(htmlPath);
+        mailOptions.html = fs.existsSync(htmlPath) ? fs.readFileSync(htmlPath, 'utf8') : '';
+    } else {
+        mailOptions.text = content;
+    }
 
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
-            if (error) { reject(error);
-            } else { resolve(info.response);}
+            if (error) {
+                reject(error);
+            } else {
+                resolve(info.response);
+            }
         });
     });
 }
 
-async function sendText(toMail, subject, message) {
-    let mailOptions = {
-        from: mailParams.mail,
-        to: toMail,
-        subject: subject,
-        text: message
-    };
-
-    return new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) { reject(error);
-            } else { resolve(info.response);}
-        });
-    });
-}
-
-module.exports = { sendHtml, sendText };
+module.exports = { sendMail };

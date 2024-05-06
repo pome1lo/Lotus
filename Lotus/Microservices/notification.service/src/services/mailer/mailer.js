@@ -1,29 +1,29 @@
 const { sendHtml, sendText } = require('./config');
 
 class Mailer {
-
-    static sendEmailMessage(toMail, subject, username, message) {
-        sendText(toMail, subject, `Hello ${username}, ${message}`)
-            .then(
-                result => { console.log("📭 the message has been sent successfully"); },
-                error => { console.log("Rejected: error sending the message\n" + error); }
-            );
+    static async sendEmail(type, toMail, subject, content) {
+        try {
+            if (type === 'text') {
+                await sendText(toMail, subject, content);
+            } else if (type === 'html') {
+                await sendHtml(toMail, subject, content);
+            }
+            console.log("📭 the message has been sent successfully");
+        } catch (error) {
+            console.error("Rejected: error sending the message\n" + error);
+        }
     }
 
-    static sendEmailSystemNotification(toMail, username, message) {
-        sendText(toMail, "System notification", message)
-            .then(
-                result => { console.log("📭 the message has been sent successfully"); },
-                error => { console.log("Rejected: error sending the message\n" + error); }
-            );
+    static sendEmailMessage(toMail, username, message) {
+        this.sendEmail('text', toMail, 'Hello', `Hello ${username}, ${message}`);
+    }
+
+    static sendEmailSystemNotification(toMail, message) {
+        this.sendEmail('text', toMail, 'System notification', message);
     }
 
     static sendEmailUserRegistered(toMail, username) {
-        sendHtml(toMail, `Congratulations on the successful registration of ${username}!`, "userRegistered.html")
-            .then(
-                result => { console.log("📭 the message has been sent successfully"); },
-                error => { console.log("Rejected: error sending the message\n" + error); }
-            );
+        this.sendEmail('html', toMail, `Congratulations on the successful registration of ${username}!`, "userRegistered.html");
     }
 }
 

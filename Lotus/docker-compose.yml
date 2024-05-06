@@ -38,6 +38,7 @@ services:
       - GRPC_PORT_AUTH_SERVICE=19001
       - RABBITMQ_HOST=sendToQueue.js
       - RABBITMQ_PORT=5672
+      - SECRET_KEY=12AASF213ASDMaMDSKASK123ksmdaasl0o4askmd123k9asdfja
     ports:
       - "31902:31902"
     networks:
@@ -98,6 +99,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - APP_PORT=31903
+      - SECRET_KEY=12AASF213ASDMaMDSKASK123ksmdaasl0o4askmd123k9asdfja
     volumes:
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/auth.proto:/app/auth.proto
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/notify.proto:/app/notify.proto
@@ -120,6 +122,7 @@ services:
       - DB_PORT=40007
       - DB_PASSWORD=password@12345
       - APP_PORT=31904
+      - SECRET_KEY=12AASF213ASDMaMDSKASK123ksmdaasl0o4askmd123k9asdfja
     volumes:
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
