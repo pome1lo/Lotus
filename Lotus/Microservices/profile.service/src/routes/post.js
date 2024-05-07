@@ -2,10 +2,13 @@ const Router = require('koa-router');
 const { POST } = require('../database/models/post');
 const { SavedPost } = require('../database/models/saved');
 const { Op } = require('sequelize');
-const sequelize = require("../database/config");
+const koaJwt = require("koa-jwt");
+
+const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
+
 const router = new Router();
 
-router.get('/api/posts/recent', async (ctx) => {
+async function getRecentPosts(ctx) {
     try {
         const postsWithImages = await POST.findAll({
             where: { IMAGE: { [Op.ne]: null } },
@@ -14,19 +17,14 @@ router.get('/api/posts/recent', async (ctx) => {
         });
 
         ctx.status = 200;
-        ctx.body = {
-            posts: postsWithImages
-        };
+        ctx.body = { posts: postsWithImages };
     } catch (error) {
         ctx.status = 500;
         ctx.body = { message: error.message };
     }
-});
+}
 
-
-// Предполагается, что у вас уже есть настроенный Koa router и импортированная модель SavedPost
-
-router.post('/api/posts/save', async (ctx) => {
+async function savePost(ctx) {
     try {
         const { userId, postId } = ctx.request.body;
 
@@ -37,7 +35,6 @@ router.post('/api/posts/save', async (ctx) => {
             return;
         }
 
-        // Создаём новую запись в таблице SAVED_POSTS
         const savedPost = await SavedPost.create({ USER_ID: userId, POST_ID: postId });
         ctx.status = 201;
         ctx.body = savedPost;
@@ -46,13 +43,12 @@ router.post('/api/posts/save', async (ctx) => {
         console.error(error.message);
         ctx.body = 'Error saving the post.';
     }
-});
+}
 
-router.delete('/api/posts/unsave', async (ctx) => {
+async function unsavePost(ctx) {
     try {
-        const { userId, postId } = ctx.request.body; // Получаем ID пользователя и поста из тела запроса
+        const { userId, postId } = ctx.request.body;
 
-        // Удаляем запись из таблицы SAVED_POSTS
         const deleted = await SavedPost.destroy({ where: { USER_ID: userId, POST_ID: postId } });
         if (deleted) {
             ctx.status = 200;
@@ -65,7 +61,10 @@ router.delete('/api/posts/unsave', async (ctx) => {
         ctx.status = 500;
         ctx.body = 'Error unsaving the post.';
     }
-});
+}
 
+router.get('/api/posts/recent', getRecentPosts);
+router.post('/api/posts/save', koaJwt({ secret: SECRET_KEY }), savePost);
+router.delete('/api/posts/unsave', koaJwt({ secret: SECRET_KEY }), unsavePost);
 
 module.exports = router;

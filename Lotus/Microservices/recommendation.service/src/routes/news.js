@@ -1,15 +1,18 @@
 const axios = require('axios');
 const Router = require('koa-router');
+
 const router = new Router();
+const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_OFFSET = 1;
+const API_KEY = 'c8857ca5a88f4c6db7a26661057b6546';
 
-router.get('/api/news', async (ctx) => {
+async function fetchNews(ctx) {
     const { topic, limit, offset } = ctx.query;
-    // Обеспечиваем наличие значений по умолчанию для limit и offset
-    const pageSize = limit ? parseInt(limit, 10) : 20; // Значение по умолчанию, если limit не указан
-    const pageOffset = offset ? parseInt(offset, 10) : 1; // Значение по умолчанию, если offset не указан
 
-    // Добавляем параметры пагинации в URL запроса
-    const url = `https://newsapi.org/v2/everything?q=${topic}&sortBy=publishedAt&pageSize=${pageSize}&page=${pageOffset}&apiKey=c8857ca5a88f4c6db7a26661057b6546`;
+    const pageSize = limit ? parseInt(limit, 10) : DEFAULT_PAGE_SIZE;
+    const pageOffset = offset ? parseInt(offset, 10) : DEFAULT_PAGE_OFFSET;
+
+    const url = `https://newsapi.org/v2/everything?q=${topic}&sortBy=publishedAt&pageSize=${pageSize}&page=${pageOffset}&apiKey=${API_KEY}`;
 
     try {
         const response = await axios.get(url);
@@ -34,7 +37,8 @@ router.get('/api/news', async (ctx) => {
         ctx.status = 500;
         ctx.body = 'Ошибка при получении новостей';
     }
-});
+}
 
+router.get('/api/news', fetchNews);
 
 module.exports = router;

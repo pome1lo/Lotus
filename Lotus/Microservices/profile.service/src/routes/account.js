@@ -1,34 +1,22 @@
 const Router = require('koa-router');
 const { USER } = require('../database/models/user');
 const { POST } = require('../database/models/post');
-const util = require('util');
 const crypto = require('crypto');
 const argon2 = require('argon2');
-// const grpc = require('@grpc/grpc-js');
-// const protoLoader = require('@grpc/proto-loader');
 const koaJwt = require('koa-jwt');
-// const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
-// const GRPC_PORT_AUTH_SERVICE = process.env.GRPC_PORT_AUTH_SERVICE == null ? 19001 : process.env.GRPC_PORT_AUTH_SERVICE;
 const Sequelize = require('sequelize');
-const {updatePassword, deleteUser} = require("../services/gRPC/AuthServer");
+const { updatePassword, deleteUser } = require("../services/gRPC/AuthServer");
 const Op = Sequelize.Op;
 
-const secretKey = 'your-secret-key'; //todo add data in config | docker
+const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
 const router = new Router();
 
-// const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
-// const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
-//
-// const TARGET = process.env.APP_PORT == null ? `0.0.0.0:${GRPC_PORT_AUTH_SERVICE}` : `authenticationwebapi:${GRPC_PORT_AUTH_SERVICE}`; //todo ???
-// const client = new authPackage.AuthenticationService(TARGET, grpc.credentials.createInsecure());
-
-
-router.get('/api/account/protected', koaJwt({ secret: secretKey }), async (ctx) => {
+async function protectedRoute(ctx) {
     ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
-});
+}
 
-router.post('/api/account/personal', async (ctx) => {
+async function personalRoute(ctx) {
     const { id, username, firstname, lastname } = ctx.request.body;
 
     try {
@@ -52,9 +40,9 @@ router.post('/api/account/personal', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
-router.post('/api/account/security', async (ctx) => {
+async function securityRoute(ctx) {
     const { id, password } = ctx.request.body;
 
     try {
@@ -65,38 +53,23 @@ router.post('/api/account/security', async (ctx) => {
             return;
         }
 
-        user.EMAIL = email || user.EMAIL;
-        //user.PHONE_NUMBER = phone_number || user.PHONE_NUMBER; /// todo check
-
         const salt = crypto.randomBytes(32).toString('hex');
         const hashedPassword = await argon2.hash(password + salt);
 
-
-        updatePassword(id, hashedPassword, salt)
-        // client.UpdatePassword({ id: id, password: hashedPassword, salt: salt }, (error, response) => {
-        //     if (error) {
-        //         throw new Error(error.message);
-        //     }
-        // });
+        updatePassword(id, hashedPassword, salt);
         await user.save();
 
         ctx.status = 200;
         ctx.body = { message: 'User updated successfully' };
 
     } catch (error) {
-        console.log(error);
-        if (error.code === grpc.status.NOT_FOUND) {
-            ctx.status = 404;
-            ctx.body = { error: 'Authentication service: User not found' };
-        } else {
-            ctx.status = 500;
-            ctx.body = { error: 'Something went wrong' };
-        }
+        console.error(error);
+        ctx.status = 500;
+        ctx.body = { error: 'Something went wrong' };
     }
+}
 
-});
-
-router.delete('/api/account/delete', async (ctx) => {
+async function deleteRoute(ctx) {
     const { id } = ctx.request.body;
 
     try {
@@ -109,11 +82,6 @@ router.delete('/api/account/delete', async (ctx) => {
         }
 
         deleteUser(id);
-        // client.DeleteUser({ id: id }, (error, response) => {
-        //     if (error) {
-        //         throw new Error(error.message);
-        //     }
-        // });
 
         const posts = await POST.findAll({ where: { USER_ID: { [Op.eq]: id } } });
         for (let post of posts) {
@@ -125,11 +93,15 @@ router.delete('/api/account/delete', async (ctx) => {
         ctx.status = 200;
         ctx.body = { message: 'User deleted successfully' };
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
+router.get('/api/account/protected', koaJwt({ secret: SECRET_KEY }), protectedRoute);
+router.post('/api/account/personal', koaJwt({ secret: SECRET_KEY }), personalRoute);
+router.post('/api/account/security', koaJwt({ secret: SECRET_KEY }), securityRoute);
+router.delete('/api/account/delete', koaJwt({ secret: SECRET_KEY }), deleteRoute);
 
 module.exports = router;

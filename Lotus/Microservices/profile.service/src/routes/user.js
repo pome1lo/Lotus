@@ -2,13 +2,34 @@ const Router = require('koa-router');
 const { POST } = require('../database/models/post');
 const { USER } = require('../database/models/user');
 const { SUBSCRIPTION } = require('../database/models/subscription');
-const { Op, random } = require('sequelize');
-const {fn} = require("../database/config");
-const sequelize = require("../database/config");
+const { Op } = require('sequelize');
+const koaJwt = require("koa-jwt");
+
+const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
 const router = new Router();
 
-router.post('/api/user/subscribe', async (ctx) => {
+async function protectedRoute(ctx) {
+    ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
+}
+
+async function getRecentPosts(ctx) {
+    try {
+        const postsWithImages = await POST.findAll({
+            where: { IMAGE: { [Op.ne]: null } },
+            order: [['PUBLISHED_AT', 'DESC']],
+            limit: 3
+        });
+
+        ctx.status = 200;
+        ctx.body = { posts: postsWithImages };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = { message: error.message };
+    }
+}
+
+async function subscribeUser(ctx) {
     const { user_id, to_id } = ctx.request.body;
 
     try {
@@ -28,7 +49,6 @@ router.post('/api/user/subscribe', async (ctx) => {
             return;
         }
 
-
         await SUBSCRIPTION.create({ SUBSCRIBER_ID: user_id, SUBSCRIBED_TO_ID: to_id });
 
         user.SUBSCRIPTIONS_COUNT += 1;
@@ -43,9 +63,9 @@ router.post('/api/user/subscribe', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
-router.post('/api/user/unsubscribe', async (ctx) => {
+async function unsubscribeUser(ctx) {
     const { user_id, to_id } = ctx.request.body;
 
     try {
@@ -77,16 +97,15 @@ router.post('/api/user/unsubscribe', async (ctx) => {
         ctx.body = { message: 'Unsubscribed successfully' };
     } catch (error) {
         ctx.status = 500;
-        console.log(error.message);
+        console.error(error.message);
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
-router.get('/api/user/:userId/posts', async (ctx) => {
+async function getUserPosts(ctx) {
     try {
-        const userId = parseInt(ctx.params.userId, 10); // Убедитесь, что userId является числом
+        const userId = parseInt(ctx.params.userId, 10);
 
-        // Предполагается, что у вас есть модель SUBSCRIPTION, которая определена где-то в коде
         const subscriptions = await SUBSCRIPTION.findAll({
             where: { SUBSCRIBER_ID: userId },
         });
@@ -102,12 +121,11 @@ router.get('/api/user/:userId/posts', async (ctx) => {
             }]
         });
 
-        // Убедитесь, что возвращаемые данные корректны
         if (posts) {
             ctx.body = {
                 posts: posts.map(post => ({
-                    ...post.get({ plain: true }), // Используйте метод get с опцией plain для получения чистых данных
-                    USERNAME: post.USER?.USERNAME, // Используйте опциональный цепочный оператор для предотвращения ошибки
+                    ...post.get({ plain: true }),
+                    USERNAME: post.USER?.USERNAME,
                     PROFILE_PICTURE: post.USER?.PROFILE_PICTURE
                 }))
             };
@@ -120,10 +138,9 @@ router.get('/api/user/:userId/posts', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
-
-router.get('/api/user/:userId/subscriptions', async (ctx) => {
+async function getUserSubscriptions(ctx) {
     const subscriberId = parseInt(ctx.params.userId, 10);
 
     try {
@@ -152,9 +169,9 @@ router.get('/api/user/:userId/subscriptions', async (ctx) => {
         ctx.body = { error: 'Internal Server Error' };
         console.error(error);
     }
-});
+}
 
-router.get('/api/user/:userId/subscribers', async (ctx) => {
+async function getUserSubscribers(ctx) {
     const userId = parseInt(ctx.params.userId, 10);
 
     try {
@@ -183,9 +200,9 @@ router.get('/api/user/:userId/subscribers', async (ctx) => {
         ctx.body = { error: 'Internal Server Error' };
         console.error(error);
     }
-});
+}
 
-router.get('/api/user/suggestions/:userId', async (ctx) => {
+async function getUserSuggestions(ctx) {
     const excludedUserId = parseInt(ctx.params.userId, 10);
 
     try {
@@ -211,6 +228,15 @@ router.get('/api/user/suggestions/:userId', async (ctx) => {
         ctx.body = { error: 'Internal Server Error' };
         console.error(error);
     }
-});
+}
+
+router.get('/api/account/protected', koaJwt({ secret: SECRET_KEY }), protectedRoute);
+router.get('/api/posts/recent', getRecentPosts);
+router.post('/api/user/subscribe', koaJwt({ secret: SECRET_KEY }), subscribeUser);
+router.post('/api/user/unsubscribe', koaJwt({ secret: SECRET_KEY }), unsubscribeUser);
+router.get('/api/user/:userId/posts', getUserPosts);
+router.get('/api/user/:userId/subscriptions', getUserSubscriptions);
+router.get('/api/user/:userId/subscribers', getUserSubscribers);
+router.get('/api/user/suggestions/:userId', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
 
 module.exports = router;

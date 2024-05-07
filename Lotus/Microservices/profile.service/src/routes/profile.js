@@ -1,29 +1,111 @@
 const Router = require('koa-router');
-const { USER} = require('../database/models/user');
+const { USER } = require('../database/models/user');
 const { POST } = require('../database/models/post');
-const { COMMENT} = require("../database/models/comment");
-const router = new Router();
+const { COMMENT } = require("../database/models/comment");
 const path = require('path');
 const multer = require("koa-multer");
-const {SUBSCRIPTION} = require("../database/models/subscription");
+const koaJwt = require("koa-jwt");
 
+const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './src/data/users/posts/images/');
-    },
-    filename: function (req, file, cb) {
+    destination: './src/data/users/posts/images/',
+    filename: (req, file, cb) => {
         if (!file.fieldname || !file.originalname) {
             return cb(new Error('Fieldname or originalname is missing'));
         }
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
+const router = new Router();
 
-router.get('/api/profile/:username', async (ctx) => {
+async function createPost(ctx) {
+    const { user_id, title, content } = ctx.req.body;
+
+    if (!ctx.req.file) {
+        ctx.status = 400;
+        ctx.body = { error: 'File not uploaded' };
+        return;
+    }
+
+    try {
+        const post = await POST.create({
+            USER_ID: user_id,
+            TITLE: title,
+            CONTENT: content,
+            IMAGE: ctx.req.file.filename
+        });
+
+        ctx.status = 201;
+        ctx.body = { message: 'Post created successfully', post };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = { error: 'Something went wrong' };
+    }
+}
+async function updateProfileImage(ctx) {
+    const { user_id } = ctx.req.body;
+
+    if (!ctx.req.file) {
+        ctx.status = 400;
+        ctx.body = { error: 'File not uploaded' };
+        return;
+    }
+    const image = ctx.req.file.filename;
+    try {
+        const user = await USER.findByPk(user_id);
+        if (!user) {
+            ctx.status = 404;
+            ctx.body = { error: 'User not found' };
+            return;
+        }
+        user.PROFILE_PICTURE = image;
+        await user.save();
+
+        ctx.status = 200;
+        ctx.body = { message: 'Profile picture updated successfully', user };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = {error: 'Something went wrong'};
+    }
+}
+async function updatePost(ctx) {
+    const { title, content } = ctx.req.body;
+    const { id } = ctx.params;
+
+    if (!ctx.req.file && !title && !content) {
+        ctx.status = 400;
+        ctx.body = { error: 'No update data provided' };
+        return;
+    }
+
+    try {
+        const post = await POST.findByPk(id);
+        if (!post) {
+            ctx.status = 404;
+            ctx.body = { error: 'Post not found' };
+            return;
+        }
+
+        const updatedData = {
+            TITLE: title || post.TITLE,
+            CONTENT: content || post.CONTENT,
+            IMAGE: ctx.req.file ? ctx.req.file.filename : post.IMAGE
+        };
+
+        await post.update(updatedData);
+
+        ctx.status = 200;
+        ctx.body = { message: 'Post updated successfully', post: updatedData };
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = { error: 'Something went wrong' };
+    }
+}
+async function getProfile(ctx) {
     if (!ctx.query.current_user_id) {
         ctx.status = 401; // Неавторизованный доступ
         ctx.body = { message: 'User is not authenticated' };
@@ -62,11 +144,8 @@ router.get('/api/profile/:username', async (ctx) => {
         ctx.status = 404;
         ctx.body = { message: 'User not found' };
     }
-});
-
-
-
-router.get('/api/profiles', async (ctx) => {
+}
+async function getProfiles(ctx) {
     let users = await USER.findAll();
 
     if (users) {
@@ -81,9 +160,8 @@ router.get('/api/profiles', async (ctx) => {
         ctx.status = 404;
         ctx.body = { message: 'Users not found' };
     }
-});
-
-router.get('/api/profile/:username/:post_id/comments', async (ctx) => {
+}
+async function getComments(ctx) {
     const post_id = ctx.params.post_id;
     let comments = await COMMENT.findAll({where: { POST_ID: post_id } });
 
@@ -93,9 +171,8 @@ router.get('/api/profile/:username/:post_id/comments', async (ctx) => {
         ctx.status = 404;
         ctx.body = { message: 'Users not found' };
     }
-});
-
-router.get('/api/profile/:username/:post_id', async (ctx) => {
+}
+async function getPost(ctx) {
     const username =  ctx.params.username;
     const post_id =  ctx.params.post_id;
     console.log(username)
@@ -107,9 +184,8 @@ router.get('/api/profile/:username/:post_id', async (ctx) => {
         ctx.status = 404;
         ctx.body = { message: 'Posts not found' };
     }
-});
-
-router.get('/api/profile/:username/posts', async (ctx) => {
+}
+async function getPosts(ctx) {
     const username =  ctx.params.username;
     const user = await USER.findOne({where: { USERNAME: username }});
     const posts = await POST.findAll({ where: { USER_ID: user.ID } });
@@ -119,13 +195,8 @@ router.get('/api/profile/:username/posts', async (ctx) => {
         ctx.status = 404;
         ctx.body = { message: 'Posts not found' };
     }
-});
-
-
-
-
-
-router.post('/api/profile/:username/:postid/comments/create', async (ctx) => {
+}
+async function createComment(ctx) {
     const username =  ctx.params.username;
     const post_id =  ctx.params.postid;
     const { user_id, comment_username, comment_text, picture } = ctx.request.body;
@@ -140,107 +211,16 @@ router.post('/api/profile/:username/:postid/comments/create', async (ctx) => {
             USER_PICTURE: picture
         });
 
+
         ctx.status = 201;
         ctx.body = { message: 'Comment created successfully', comment };
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         ctx.status = 500;
         ctx.body = { message: 'Something went wrong' };
     }
-});
-
-
-router.post('/api/profile/posts/create', upload.single('image'), async (ctx) => {
-    const { user_id, title, content } = ctx.req.body;
-
-    if (!ctx.req.file) {
-        ctx.status = 400;
-        ctx.body = { error: 'File not uploaded' };
-        return;
-    }
-
-    try {
-        const post = await POST.create({
-            USER_ID: user_id,
-            TITLE: title,
-            CONTENT: content,
-            IMAGE: ctx.req.file.filename
-        });
-
-        ctx.status = 201;
-        ctx.body = { message: 'Post created successfully', post };
-    } catch (error) {
-        ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
-    }
-});
-
-router.put('/api/profile/image', upload.single('image'), async (ctx) => {
-    const { user_id } = ctx.req.body;
-
-    if (!ctx.req.file) {
-        ctx.status = 400;
-        ctx.body = { error: 'File not uploaded' };
-        return;
-    }
-    const image = ctx.req.file.filename;
-    try {
-        const user = await USER.findByPk(user_id);
-        if (!user) {
-            ctx.status = 404;
-            ctx.body = { error: 'User not found' };
-            return;
-        }
-        user.PROFILE_PICTURE = image;
-        await user.save();
-
-        ctx.status = 200;
-        ctx.body = { message: 'Profile picture updated successfully', user };
-    } catch (error) {
-        ctx.status = 500;
-        ctx.body = {error: 'Something went wrong'};
-    }
-});
-
-
-router.put('/api/profile/posts/update/:id', upload.single('image'), async (ctx) => {
-    const { title, content } = ctx.req.body;
-    const { id } = ctx.params;
-
-    if (!ctx.req.file && !title && !content) {
-        ctx.status = 400;
-        ctx.body = { error: 'No update data provided' };
-        return;
-    }
-
-    try {
-        const post = await POST.findByPk(id);
-        if (!post) {
-            ctx.status = 404;
-            ctx.body = { error: 'Post not found' };
-            return;
-        }
-
-        const updatedData = {
-            TITLE: title || post.TITLE,
-            CONTENT: content || post.CONTENT,
-            IMAGE: ctx.req.file ? ctx.req.file.filename : post.IMAGE
-        };
-
-        await post.update(updatedData);
-
-        ctx.status = 200;
-        ctx.body = { message: 'Post updated successfully', post: updatedData };
-    } catch (error) {
-        ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
-    }
-});
-
-
-
-
-router.delete('/api/profile/posts/delete', async (ctx) => {
+}
+async function deletePost(ctx) {
     const { id } = ctx.request.body;
 
     try {
@@ -261,10 +241,8 @@ router.delete('/api/profile/posts/delete', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
-
-
-router.delete('/api/profile/:username/:postid/comments/delete', async (ctx) => {
+}
+async function deleteComment(ctx) {
     const { id } = ctx.request.body;
 
     try {
@@ -285,7 +263,18 @@ router.delete('/api/profile/:username/:postid/comments/delete', async (ctx) => {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };
     }
-});
+}
 
+router.get('/api/profiles', koaJwt({ secret: SECRET_KEY }), getProfiles);
+router.get('/api/profile/:username', koaJwt({ secret: SECRET_KEY }), getProfile);
+router.get('/api/profile/:username/:post_id/comments', koaJwt({ secret: SECRET_KEY }), getComments);
+router.get('/api/profile/:username/:post_id', koaJwt({ secret: SECRET_KEY }), getPost);
+router.get('/api/profile/:username/posts', koaJwt({ secret: SECRET_KEY }), getPosts);
+router.post('/api/profile/:username/:postid/comments/create', koaJwt({ secret: SECRET_KEY }), createComment);
+router.post('/api/profile/posts/create', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
+router.put('/api/profile/image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);
+router.put('/api/profile/posts/update/:id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
+router.delete('/api/profile/posts/delete', koaJwt({ secret: SECRET_KEY }), deletePost);
+router.delete('/api/profile/:username/:postid/comments/delete', koaJwt({ secret: SECRET_KEY }), deleteComment);
 
 module.exports = router;
