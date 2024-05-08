@@ -43,7 +43,7 @@ async function deleteUser(call, callback) {
         if (!user) {
             return callback({
                 code: grpc.status.NOT_FOUND,
-                details: 'User not found'
+                message: 'User not found'
             });
         }
 

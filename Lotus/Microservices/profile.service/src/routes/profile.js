@@ -123,7 +123,7 @@ async function getProfile(ctx) {
         user.PROFILE_PICTURE = user.PROFILE_PICTURE ? `https://localhost:31903/${user.PROFILE_PICTURE}` : null;
 
             let isCurrentUserSubscribedToProfileUser = false;
-        if (currentUserId != "null") {
+        if (currentUserId !== "null") {
             const subscription = await SUBSCRIPTION.findOne({
                 where: {
                     SUBSCRIBER_ID: currentUserId,

@@ -21,14 +21,14 @@ function getTarget() {
 
 function updatePassword(id, password, salt) {
     return client.UpdatePassword({id, password, salt},  (error, response) => {
-        if (error) { throw new Error(response.details); }
+        if (error) { throw new Error(response.message); }
         else { console.log(response.success); }
     });
 }
 
 function deleteUser(id) {
     return client.DeleteUser({id},  (error, response) => {
-        if (error) { throw new Error(response.details); }
+        if (error) { throw new Error(response.message); }
         else { console.log(response.success); }
     });
 }

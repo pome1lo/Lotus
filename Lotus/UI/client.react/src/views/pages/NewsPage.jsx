@@ -22,9 +22,6 @@ const NewsPage = () => {
         const url = `https://localhost:31904/api/news?topic=${currentTopic}&limit=${pageSize}&offset=${offsett}`;
         fetch(url)
             .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
                 return res.json();
             })
             .then(data => {

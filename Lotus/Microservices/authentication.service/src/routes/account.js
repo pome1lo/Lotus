@@ -48,7 +48,25 @@ async function createUser(ctx) {
         message: 'The user has been successfully registered',
         username: newUser.USERNAME,
         token: token,
-        user_id: newUser.ID
+        user_id: newUser.ID,
+    };
+}
+
+async function identifyUser(ctx) {
+    const { username, email, password } = ctx.request.body;
+    const existingUser = await USER.findOne({ where: { EMAIL: email } });
+
+    if (existingUser) {
+        ctx.status = 400;
+        ctx.body = { message: 'The user already exists' };
+        return;
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    verifyEmail(username, email, `Please confirm your email address using the entered code: ${code}`);
+
+    ctx.body = {
+        code: code
     };
 }
 
@@ -79,47 +97,43 @@ async function verifyUserEmail(ctx) {
     const { username, email } = ctx.request.body;
 
     try {
-        const token = crypto.randomBytes(20).toString('hex');
-        const verificationLink = `https://localhost:31901/api/auth/account/verify-email?token=${token}`;
-
-        verifyEmail(username, email,`please verify your email by clicking on the following link: ${verificationLink}`);
-
-        const user = await USER.findOne({ where: { USERNAME: username } });
-        user.VERIFICATION_TOKEN = token;
-        await user.save();
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        verifyEmail(username, email, `Please confirm your email address using the entered code: ${code}`);
 
         ctx.status = 200;
-        ctx.body = { message: 'Mail send!' };
+        ctx.body = {
+            code: code
+        };
     } catch (error) {
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
-async function confirmUserEmail(ctx) {
-    const token = ctx.query.token;
-
-    try {
-        console.log("token " + token);
-
-        const user = await USER.findOne({ where: { VERIFICATION_TOKEN: token } });
-
-        if (!user) {
-            ctx.status = 400;
-            ctx.body = { error: 'Invalid or expired token' };
-            return;
-        }
-
-        user.IS_EMAIL_VERIFIED = true;
-        user.VERIFICATION_TOKEN = null;
-        await user.save();
-        ctx.redirect('https://localhost:3000');
-    } catch (error) {
-        console.log(error.message);
-        ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
-    }
-}
+// async function confirmUserEmail(ctx) {
+//     const token = ctx.query.token;
+//
+//     try {
+//         console.log("token " + token);
+//
+//         const user = await USER.findOne({ where: { VERIFICATION_TOKEN: token } });
+//
+//         if (!user) {
+//             ctx.status = 400;
+//             ctx.body = { error: 'Invalid or expired token' };
+//             return;
+//         }
+//
+//         user.IS_EMAIL_VERIFIED = true;
+//         user.VERIFICATION_TOKEN = null;
+//         await user.save();
+//         ctx.redirect('https://localhost:3000');
+//     } catch (error) {
+//         console.log(error.message);
+//         ctx.status = 500;
+//         ctx.body = { error: 'Something went wrong' };
+//     }
+// }
 
 async function resetUserPassword(ctx) {
     const { username, password } = ctx.request.body;
@@ -153,10 +167,11 @@ async function protectedRoute(ctx) {
     ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
 }
 
-router.post('/api/auth/account/register', createUser);
+router.post('/api/auth/account/identify', identifyUser);
 router.post('/api/auth/account/login', loginUser);
 router.post('/api/auth/account/verify-email', verifyUserEmail);
-router.get ('/api/auth/account/verify-email', confirmUserEmail);
+router.post('/api/auth/account/create', createUser);
+// router.get ('/api/auth/account/verify-email', confirmUserEmail);
 router.post('/api/auth/account/reset-password', resetUserPassword);
 router.get ('/api/auth/account/protected', koaJwt({ secret: secretKey }), protectedRoute);
 

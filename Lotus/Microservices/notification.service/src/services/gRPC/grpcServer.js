@@ -7,7 +7,7 @@ const PROTO_PATH = process.env.APP_PORT ? "./app/notify.proto" : "./../../Static
 async function verifyEmail(call, callback) {
     const { username, email, message } = call.request;
 
-    Mailer.sendEmailMessage(email, "Email verification", username, message);
+    Mailer.sendEmailMessage(email, username, message);
 
     try {
         callback(null, { success: true, message: `Successfully ${message}` });
