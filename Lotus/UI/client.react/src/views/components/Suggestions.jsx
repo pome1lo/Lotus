@@ -2,6 +2,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {Publisher} from "./Publisher";
 import {SubscriptionButton} from "./SubscriptionButton";
 import {useEffect, useState} from "react";
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
 const Suggestions = () => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Suggestions = () => {
             navigate('/login');
         } else {
 
-        fetch(`https://localhost:31903/api/user/suggestions/${currentUserId}`)
+        fetchWithAuth(`https://localhost:31903/api/user/suggestions/${currentUserId}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -30,11 +31,11 @@ const Suggestions = () => {
       <>
           <h6 className="border-bottom pb-2 mb-0 mt-5">Suggestions</h6>
           {suggestions && (
-              suggestions.map((item, index) => (
+              suggestions.map((item) => (
                   <>
-                      <div className="d-flex justify-content-between mt-3">
+                      <div className="d-flex justify-content-between mt-3" >
                           <Link to={`/profile/${item.USERNAME}`} className="d-flex justify-content-between w-100">
-                              <Publisher key={index}
+                              <Publisher key={item.ID}
                                          avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
                                          nickname={item.USERNAME}
                               />

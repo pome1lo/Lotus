@@ -1,7 +1,12 @@
 import {Comment} from "../components/Comment";
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
+import io from 'socket.io-client';
 import {Post} from "../components/Post";
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+
+// Подключаемся к Socket.io серверу
+const socket = io('https://localhost:31903');
 
 const CommentsPage = () => {
     const {username, postid} = useParams();
@@ -36,18 +41,20 @@ const CommentsPage = () => {
     }, [username, postid, navigate]);
 
     useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${currentUsername}`)
+        fetch(`https://localhost:31903/api/profile/${currentUsername}?current_user_id=${currentUserId}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
                 }
                 return res.json();
             })
-            .then(data => { setUser(data.user); })
+            .then(data => setUser(data.user))
     }, [username, navigate]);
 
+
+
     async function sendComment() {
-        const response = await fetch(`https://localhost:31903/api/profile/${username}/${postid}/comments/create`, {
+        const response = await fetchWithAuth(`https://localhost:31903/api/profile/${username}/${postid}/comments/create`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -98,7 +105,7 @@ const CommentsPage = () => {
                     : (
                         comments.length > 0 ? (
                             (comments.sort((a, b) => b.ID - a.ID).map(item => (
-                                <Comment
+                                <Comment key={item.ID}
                                     username={item.USERNAME}
                                     text={item.COMMENT}
                                     date={item.CREATED_AT}
@@ -117,14 +124,14 @@ const CommentsPage = () => {
 
                 <div className="d-flex align-items-start mt-4">
                     {user && <img src={user.PROFILE_PICTURE} alt="alt"
-                         className="mr-2 border-radius-medium" width="100" height="100"/>}
+                                  className="mr-2 border-radius-medium" width="100" height="100"/>}
                     <div className="w-100">
                         <label htmlFor="firstName" className="form-label">{currentUsername}</label>
                         <textarea className="form-control" id="firstName"
                                   value={inputComment} onChange={(e) => setComment(e.target.value)}
                                   placeholder="Write some comment..." required=""/>
                         <div className="d-flex justify-content-end mt-2">
-                            <button type="button" className="btn btn-danger" onClick={sendComment} >
+                            <button type="button" className="btn btn-danger" onClick={sendComment}>
                                 Send
                             </button>
                         </div>

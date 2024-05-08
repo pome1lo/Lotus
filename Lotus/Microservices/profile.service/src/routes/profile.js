@@ -5,6 +5,7 @@ const { COMMENT } = require("../database/models/comment");
 const path = require('path');
 const multer = require("koa-multer");
 const koaJwt = require("koa-jwt");
+const {SUBSCRIPTION} = require("../database/models/subscription");
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
@@ -106,13 +107,8 @@ async function updatePost(ctx) {
     }
 }
 async function getProfile(ctx) {
-    if (!ctx.query.current_user_id) {
-        ctx.status = 401; // Неавторизованный доступ
-        ctx.body = { message: 'User is not authenticated' };
-        return;
-    }
-
     const currentUserId = ctx.query.current_user_id;
+
     const username = ctx.params.username;
     const user = await USER.findOne({ where: { USERNAME: username } });
 
@@ -126,14 +122,16 @@ async function getProfile(ctx) {
         });
         user.PROFILE_PICTURE = user.PROFILE_PICTURE ? `https://localhost:31903/${user.PROFILE_PICTURE}` : null;
 
-        // Проверяем подписку
-        const subscription = await SUBSCRIPTION.findOne({
-            where: {
-                SUBSCRIBER_ID: currentUserId,
-                SUBSCRIBED_TO_ID: user.ID
-            }
-        });
-        const isCurrentUserSubscribedToProfileUser = subscription !== null;
+            let isCurrentUserSubscribedToProfileUser = false;
+        if (currentUserId != "null") {
+            const subscription = await SUBSCRIPTION.findOne({
+                where: {
+                    SUBSCRIBER_ID: currentUserId,
+                    SUBSCRIBED_TO_ID: user.ID
+                }
+            });
+            isCurrentUserSubscribedToProfileUser = subscription !== null;
+        }
 
         ctx.body = {
             user: user,
@@ -145,6 +143,7 @@ async function getProfile(ctx) {
         ctx.body = { message: 'User not found' };
     }
 }
+
 async function getProfiles(ctx) {
     let users = await USER.findAll();
 
@@ -265,11 +264,11 @@ async function deleteComment(ctx) {
     }
 }
 
-router.get('/api/profiles', koaJwt({ secret: SECRET_KEY }), getProfiles);
-router.get('/api/profile/:username', koaJwt({ secret: SECRET_KEY }), getProfile);
-router.get('/api/profile/:username/:post_id/comments', koaJwt({ secret: SECRET_KEY }), getComments);
-router.get('/api/profile/:username/:post_id', koaJwt({ secret: SECRET_KEY }), getPost);
-router.get('/api/profile/:username/posts', koaJwt({ secret: SECRET_KEY }), getPosts);
+router.get('/api/profiles', getProfiles);
+router.get('/api/profile/:username', getProfile);
+router.get('/api/profile/:username/:post_id/comments', getComments);
+router.get('/api/profile/:username/:post_id', getPost);
+router.get('/api/profile/:username/posts', getPosts);
 router.post('/api/profile/:username/:postid/comments/create', koaJwt({ secret: SECRET_KEY }), createComment);
 router.post('/api/profile/posts/create', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
 router.put('/api/profile/image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);

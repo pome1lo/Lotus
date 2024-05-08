@@ -15,8 +15,6 @@ const PeoplePage = () => {
         if (!currentUserId) {
             navigate('/login');
         } else {
-
-
             fetch(`https://localhost:31903/api/user/${currentUserId}/subscriptions`)
                 .then(res => {
                     if (!res.ok && res.status === 404) {

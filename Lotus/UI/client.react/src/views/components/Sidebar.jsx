@@ -8,7 +8,6 @@ const Sidebar = () => {
     const [profileName, setProfileName] = useState('');
     useEffect(() => {
         const username = sessionStorage.getItem('username');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         setProfileName(username);
         setIsAuthenticated(!!username);
     }, []);

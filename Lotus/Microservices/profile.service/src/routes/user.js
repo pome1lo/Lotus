@@ -4,6 +4,7 @@ const { USER } = require('../database/models/user');
 const { SUBSCRIPTION } = require('../database/models/subscription');
 const { Op } = require('sequelize');
 const koaJwt = require("koa-jwt");
+const sequelize = require("../database/config");
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 

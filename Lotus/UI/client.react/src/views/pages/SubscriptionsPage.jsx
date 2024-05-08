@@ -14,9 +14,6 @@ const SubscriptionsPage = () => {
         const url = `https://localhost:31903/api/user/${currentUserId}/posts`;
         fetch(url)
             .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
                 if (!res.ok && res.status === 500) {
                     setPosts([]);
                 }

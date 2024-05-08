@@ -1,6 +1,7 @@
 import {ProfileNavBar} from "../components/ProfileNavBar";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
 const ChangePasswordPage = () => {
     const {username} = useParams();
@@ -23,7 +24,7 @@ const ChangePasswordPage = () => {
     }, [username, navigate]);
 
     async function changePassowrd() {
-        const response = await fetch('https://localhost:31903/api/account/security', {
+        const response = await fetchWithAuth('https://localhost:31903/api/account/security', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,7 +35,6 @@ const ChangePasswordPage = () => {
             })
         });
         if (!response.ok) {
-            //console.error('Ошибка входа:', response.statusText);
             const data = await response.json();
             console.log(data.message);
             return;
@@ -50,7 +50,7 @@ const ChangePasswordPage = () => {
         }
     }
     async function deleteAccount() {
-        const response = await fetch('https://localhost:31903/api/account/delete', {
+        const response = await fetchWithAuth('https://localhost:31903/api/account/delete', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({

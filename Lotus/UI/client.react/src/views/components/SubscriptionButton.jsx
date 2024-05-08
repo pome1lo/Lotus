@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
 const SubscriptionButton = ({ styles, user_id, to_id, initiallySubscribed }) => {
     const [isSubscribed, setIsSubscribed] = useState(initiallySubscribed);
@@ -21,7 +22,7 @@ const SubscriptionButton = ({ styles, user_id, to_id, initiallySubscribed }) => 
                 : styles
         )
         try {
-            const response = await fetch(endpoint, {
+            const response = await fetchWithAuth(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

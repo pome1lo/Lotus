@@ -4,6 +4,7 @@ import {Publisher} from "./Publisher";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useRef, useState} from "react";
 import {SaveButton} from "./SaveButton";
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
 const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, user_id, content_text, likes_count, isAuthor }) => {
     const fileInput = useRef();
@@ -15,7 +16,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
     const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
 
     async function deletePost() {
-        const response = await fetch('https://localhost:31903/api/profile/posts/delete', {
+        const response = await fetchWithAuth('https://localhost:31903/api/profile/posts/delete', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -43,7 +44,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
         formData.append('content', Content);
 
         try {
-            const response = await fetch(`https://localhost:31903/api/profile/posts/update/${post_id}`, {
+            const response = await fetchWithAuth(`https://localhost:31903/api/profile/posts/update/${post_id}`, {
                 method: 'PUT',
                 body: formData
             });
@@ -66,8 +67,6 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
     const savePostHandleClick = () => {
         setIsFilled(!isFilled);
     };
-
-    console.log("isAuthor " + isAuthor);
 
     return (
         <>

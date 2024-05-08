@@ -12,7 +12,6 @@ const NewsItem =  ({ Topic, Title, Description, Url, UrlToImage, PublishedAt, Co
                     </div>
                     <div className="card-body">
                         <h6 className="card-title small">{Title}</h6>
-                        {/*<p className="card-text  text-fade small">{Description}</p>*/}
                     </div>
                     <p className="card-text card-footer small"><small className="text-body-secondary">{PublishedAt}</small> </p>
                 </div>

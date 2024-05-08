@@ -1,5 +1,3 @@
-import {useState} from "react";
-
 const Comment = ({ username, text, user_picture }) => {
     return(
         <div className="d-flex text-muted pt-3">

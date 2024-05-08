@@ -4,6 +4,8 @@ import "../../assets/css/Profile.css";
 import {SubscriptionButton} from "../components/SubscriptionButton";
 import {NewsItem} from "../components/NewsItem";
 import {Post} from "../components/Post";
+import {options} from "axios";
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
 const ProfilePage = () => {
     const {username} = useParams();
@@ -13,8 +15,9 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const fileInput = useRef();
 
-    const [currentUsername, setCurrentUsername] = useState(sessionStorage.getItem('username'));
-    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
+    const currentUsername = sessionStorage.getItem('username');
+    const currentUserId = sessionStorage.getItem('user_id');
+
 
     const [inputHeading, setHeading] = useState('');
     const [inputContent, setContent] = useState('');
@@ -23,9 +26,6 @@ const ProfilePage = () => {
     useEffect(() => {
         fetch(`https://localhost:31903/api/profile/${username}?current_user_id=${currentUserId}`)
             .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
                 return res.json();
             })
             .then(data => {
@@ -34,6 +34,8 @@ const ProfilePage = () => {
                 setIsCurrentUserSubscribedToProfileUser(data.isCurrentUserSubscribedToProfileUser);
             })
     }, [username, navigate]);
+
+
 
 
     async function fetchData() {
@@ -45,7 +47,7 @@ const ProfilePage = () => {
         formData.append('content', inputContent);
 
         try {
-            const response = await fetch('https://localhost:31903/api/profile/posts/create', {
+            const response = await fetchWithAuth('https://localhost:31903/api/profile/posts/create', {
                 method: 'POST',
                 body: formData
             });
