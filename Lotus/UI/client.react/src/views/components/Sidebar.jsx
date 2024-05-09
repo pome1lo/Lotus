@@ -45,6 +45,11 @@ const Sidebar = () => {
                                 </NavLink>
                             </li>
                             <li>
+                                <NavLink to="/notifications" className="nav-link link-body-emphasis" aria-current="page">
+                                    <i className="bi bi-bell"></i>Notifications
+                                </NavLink>
+                            </li>
+                            <li>
                                 <hr/>
                                 {isAuthenticated ? (
                                         <NavLink to={`/profile/${CURRENT_USERNAME}`}

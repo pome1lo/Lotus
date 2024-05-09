@@ -9,10 +9,10 @@ async function notifyUserEmail(ctx) {
     const user_id = ctx.state.user.user_id;
 
     try {
-        const notifications = await NOTIFICATION.findAll({ where: { USER_ID: user_id } });
-
         ctx.status = 200;
-        ctx.body = notifications;
+        ctx.body = {
+            notifications: await NOTIFICATION.findAll({ where: { USER_ID: user_id } })
+        } ;
     } catch (error) {
         console.error(error.message);
         ctx.status = 500;

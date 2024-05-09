@@ -22,6 +22,7 @@ import {AboutPage} from "./views/pages/AboutPage";
 import {PeoplePage} from "./views/pages/PeoplePage";
 import {SavedPage} from "./views/pages/SavedPage";
 import {SubscriptionsPage} from "./views/pages/SubscriptionsPage";
+import {NotificationsPage} from "./views/pages/NotificationsPage";
 
 function App() {
   useEffect(() => AOS.init , []);
@@ -44,6 +45,7 @@ function App() {
           <Route path="/people" element={<PeoplePage/>} />
           <Route path="/saved" element={<SavedPage/>} />
           <Route path="/subscriptions" element={<SubscriptionsPage/>} />
+          <Route path="/notifications" element={<NotificationsPage/>} />
         </Route>
         <Route path="login" element={<AuthenticationPage />} />
         <Route path="register" element={<RegistrationPage />} />

@@ -48,7 +48,7 @@ const SupportPage = () => {
 
     return (
         <>
-            <div className="col-md-5 order-lg-2">
+            <div className="col-md-5 order-md-2">
                 <form onSubmit={fetchData}>
                     <h1 className="fw-bold">How we can help?</h1>
                     <label>Your problem:</label>
