@@ -41,14 +41,18 @@ async function createUser(ctx) {
     sendToQueue('UserRegisteredQueue', userRegistered);
     sendToQueue('NotifyUserRegisteredQueue', userRegistered);
 
-    const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({
+        user_id: newUser.ID,
+        username,
+        email
+    }, secretKey, { expiresIn: '1h' });
 
     ctx.status = 201;
     ctx.body = {
         message: 'The user has been successfully registered',
-        username: newUser.USERNAME,
+        //username: newUser.USERNAME,
         token: token,
-        user_id: newUser.ID,
+        //user_id: newUser.ID,
     };
 }
 
@@ -89,8 +93,15 @@ async function loginUser(ctx) {
         return;
     }
 
-    const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
-    ctx.body = { token, username: user.USERNAME, user_id: user.ID };
+    const token = jwt.sign({
+        user_id: user.ID,
+        username: user.USERNAME,
+        email: user.EMAIL
+    }, secretKey, { expiresIn: '1h' });
+
+    ctx.body = {
+        token //, username: user.USERNAME, user_id: user.ID
+    };
 }
 
 async function verifyUserEmail(ctx) {
@@ -164,6 +175,7 @@ async function resetUserPassword(ctx) {
 }
 
 async function protectedRoute(ctx) {
+    console.log(ctx.state.user.username);
     ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
 }
 
@@ -171,7 +183,6 @@ router.post('/api/auth/account/identify', identifyUser);
 router.post('/api/auth/account/login', loginUser);
 router.post('/api/auth/account/verify-email', verifyUserEmail);
 router.post('/api/auth/account/create', createUser);
-// router.get ('/api/auth/account/verify-email', confirmUserEmail);
 router.post('/api/auth/account/reset-password', resetUserPassword);
 router.get ('/api/auth/account/protected', koaJwt({ secret: secretKey }), protectedRoute);
 

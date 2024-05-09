@@ -5,19 +5,22 @@ const crypto = require('crypto');
 const argon2 = require('argon2');
 const koaJwt = require('koa-jwt');
 const Sequelize = require('sequelize');
-const { updatePassword, deleteUser } = require("../services/gRPC/AuthServer");
+const { updatePassword: grpcUpdatePassword, deleteUser: grpcDeleteUser } = require("../services/gRPC/AuthServer");
 const Op = Sequelize.Op;
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
 const router = new Router();
 
-async function protectedRoute(ctx) {
-    ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
-}
 
-async function personalRoute(ctx) {
+async function updateAccount(ctx) {
     const { id, username, firstname, lastname } = ctx.request.body;
+
+    if (ctx.state.user.user_id !== id) {
+        ctx.status = 401;
+        ctx.body = { error: 'Unauthorized: You can only update your own information' };
+        return;
+    }
 
     try {
         const user = await USER.findByPk(id);
@@ -42,8 +45,14 @@ async function personalRoute(ctx) {
     }
 }
 
-async function securityRoute(ctx) {
+async function updatePassword(ctx) {
     const { id, password } = ctx.request.body;
+
+    if (ctx.state.user.user_id !== id) {
+        ctx.status = 401;
+        ctx.body = { error: 'Unauthorized: You can only update your own information' };
+        return;
+    }
 
     try {
         const user = await USER.findByPk(id);
@@ -56,7 +65,7 @@ async function securityRoute(ctx) {
         const salt = crypto.randomBytes(32).toString('hex');
         const hashedPassword = await argon2.hash(password + salt);
 
-        updatePassword(id, hashedPassword, salt);
+        grpcUpdatePassword(id, hashedPassword, salt);
         await user.save();
 
         ctx.status = 200;
@@ -69,8 +78,14 @@ async function securityRoute(ctx) {
     }
 }
 
-async function deleteRoute(ctx) {
+async function deleteAccount(ctx) {
     const { id } = ctx.request.body;
+
+    if (ctx.state.user.user_id !== id) {
+        ctx.status = 401;
+        ctx.body = { error: 'Unauthorized: You can only update your own information' };
+        return;
+    }
 
     try {
         const user = await USER.findByPk(id);
@@ -81,7 +96,7 @@ async function deleteRoute(ctx) {
             return;
         }
 
-        deleteUser(id);
+        grpcDeleteUser(id);
 
         const posts = await POST.findAll({ where: { USER_ID: { [Op.eq]: id } } });
         for (let post of posts) {
@@ -99,9 +114,8 @@ async function deleteRoute(ctx) {
     }
 }
 
-router.get('/api/account/protected', koaJwt({ secret: SECRET_KEY }), protectedRoute);
-router.post('/api/account/personal', koaJwt({ secret: SECRET_KEY }), personalRoute);
-router.post('/api/account/security', koaJwt({ secret: SECRET_KEY }), securityRoute);
-router.delete('/api/account/delete', koaJwt({ secret: SECRET_KEY }), deleteRoute);
+router.put('/api/account', koaJwt({ secret: SECRET_KEY }), updateAccount);
+router.put('/api/account/password', koaJwt({ secret: SECRET_KEY }), updatePassword);
+router.delete('/api/account', koaJwt({ secret: SECRET_KEY }), deleteAccount);
 
 module.exports = router;

@@ -10,26 +10,6 @@ const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
 const router = new Router();
 
-async function protectedRoute(ctx) {
-    ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
-}
-
-async function getRecentPosts(ctx) {
-    try {
-        const postsWithImages = await POST.findAll({
-            where: { IMAGE: { [Op.ne]: null } },
-            order: [['PUBLISHED_AT', 'DESC']],
-            limit: 3
-        });
-
-        ctx.status = 200;
-        ctx.body = { posts: postsWithImages };
-    } catch (error) {
-        ctx.status = 500;
-        ctx.body = { message: error.message };
-    }
-}
-
 async function subscribeUser(ctx) {
     const { user_id, to_id } = ctx.request.body;
 
@@ -231,13 +211,11 @@ async function getUserSuggestions(ctx) {
     }
 }
 
-router.get('/api/account/protected', koaJwt({ secret: SECRET_KEY }), protectedRoute);
-router.get('/api/posts/recent', getRecentPosts);
+router.get('/api/user/:user_id/posts', getUserPosts);
+router.get('/api/user/:user_id/subscriptions', getUserSubscriptions);
+router.get('/api/user/:user_id/subscribers', getUserSubscribers);
+router.get('/api/user/suggestions/:userId', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
 router.post('/api/user/subscribe', koaJwt({ secret: SECRET_KEY }), subscribeUser);
 router.post('/api/user/unsubscribe', koaJwt({ secret: SECRET_KEY }), unsubscribeUser);
-router.get('/api/user/:userId/posts', getUserPosts);
-router.get('/api/user/:userId/subscriptions', getUserSubscriptions);
-router.get('/api/user/:userId/subscribers', getUserSubscribers);
-router.get('/api/user/suggestions/:userId', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
 
 module.exports = router;

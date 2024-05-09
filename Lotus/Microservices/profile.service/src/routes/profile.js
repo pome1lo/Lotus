@@ -26,6 +26,12 @@ const router = new Router();
 async function createPost(ctx) {
     const { user_id, title, content } = ctx.req.body;
 
+    if (ctx.state.user.user_id !== user_id) {
+        ctx.status = 401;
+        ctx.body = { error: 'Unauthorized: You can only update your own information' };
+        return;
+    }
+
     if (!ctx.req.file) {
         ctx.status = 400;
         ctx.body = { error: 'File not uploaded' };
@@ -48,7 +54,7 @@ async function createPost(ctx) {
     }
 }
 async function updateProfileImage(ctx) {
-    const { user_id } = ctx.req.body;
+    const user_id = ctx.state.user.user_id;
 
     if (!ctx.req.file) {
         ctx.status = 400;
@@ -85,9 +91,16 @@ async function updatePost(ctx) {
 
     try {
         const post = await POST.findByPk(id);
+
         if (!post) {
             ctx.status = 404;
             ctx.body = { error: 'Post not found' };
+            return;
+        }
+
+        if (ctx.state.user.user_id !== post.USER_ID) {
+            ctx.status = 401;
+            ctx.body = { error: 'Unauthorized: You can only update your own information' };
             return;
         }
 
@@ -107,8 +120,8 @@ async function updatePost(ctx) {
     }
 }
 async function getProfile(ctx) {
-    const currentUserId = ctx.query.current_user_id;
 
+    const currentUserId = ctx.state.user.user_id || null;
     const username = ctx.params.username;
     const user = await USER.findOne({ where: { USERNAME: username } });
 
@@ -174,8 +187,6 @@ async function getComments(ctx) {
 async function getPost(ctx) {
     const username =  ctx.params.username;
     const post_id =  ctx.params.post_id;
-    console.log(username)
-    console.log(post_id)
     const post = await POST.findByPk(post_id);
     if (post) {
         ctx.body = post;
@@ -197,9 +208,14 @@ async function getPosts(ctx) {
 }
 async function createComment(ctx) {
     const username =  ctx.params.username;
-    const post_id =  ctx.params.postid;
+    const post_id =  ctx.params.post_id;
     const { user_id, comment_username, comment_text, picture } = ctx.request.body;
 
+    if (ctx.state.user.user_id !== user_id) {
+        ctx.status = 401;
+        ctx.body = { error: 'Unauthorized: You can only update your own information' };
+        return;
+    }
 
     try {
         const comment = await COMMENT.create({
@@ -210,7 +226,6 @@ async function createComment(ctx) {
             USER_PICTURE: picture
         });
 
-
         ctx.status = 201;
         ctx.body = { message: 'Comment created successfully', comment };
     } catch (error) {
@@ -220,7 +235,7 @@ async function createComment(ctx) {
     }
 }
 async function deletePost(ctx) {
-    const { id } = ctx.request.body;
+    const { id } = ctx.query.post_id;
 
     try {
         const post = await POST.findByPk(id);
@@ -228,6 +243,12 @@ async function deletePost(ctx) {
         if (!post) {
             ctx.status = 404;
             ctx.body = { error: 'Post not found' };
+            return;
+        }
+
+        if (ctx.state.user.user_id !== post.USER_ID) {
+            ctx.status = 401;
+            ctx.body = { error: 'Unauthorized: You can only update your own information' };
             return;
         }
 
@@ -241,20 +262,36 @@ async function deletePost(ctx) {
         ctx.body = { error: 'Something went wrong' };
     }
 }
+
 async function deleteComment(ctx) {
-    const { id } = ctx.request.body;
+    const postId = ctx.params.post_id;
+    const commentId = ctx.params.comment_id;
+    const currentUserId = ctx.state.user.user_id; // Идентификатор текущего пользователя из токена
 
     try {
-        const comment = await COMMENT.findByPk(id);
-
+        const comment = await COMMENT.findByPk(commentId);
         if (!comment) {
             ctx.status = 404;
             ctx.body = { error: 'Comment not found' };
             return;
         }
 
-        await comment.destroy();
+        // Находим пост, чтобы проверить, является ли текущий пользователь его создателем
+        const post = await POST.findByPk(postId);
+        if (!post) {
+            ctx.status = 404;
+            ctx.body = { error: 'Post not found' };
+            return;
+        }
 
+        // Проверяем, что текущий пользователь является автором комментария или создателем поста
+        if (comment.USER_ID !== currentUserId && post.USER_ID !== currentUserId) {
+            ctx.status = 403;
+            ctx.body = { error: 'You are not authorized to delete this comment' };
+            return;
+        }
+
+        await comment.destroy();
         ctx.status = 200;
         ctx.body = { message: 'Comment deleted successfully' };
     } catch (error) {
@@ -264,16 +301,17 @@ async function deleteComment(ctx) {
     }
 }
 
+
 router.get('/api/profiles', getProfiles);
-router.get('/api/profile/:username', getProfile);
-router.get('/api/profile/:username/:post_id/comments', getComments);
-router.get('/api/profile/:username/:post_id', getPost);
+router.get('/api/profile/:username', koaJwt({ secret: SECRET_KEY }), getProfile);
 router.get('/api/profile/:username/posts', getPosts);
-router.post('/api/profile/:username/:postid/comments/create', koaJwt({ secret: SECRET_KEY }), createComment);
-router.post('/api/profile/posts/create', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
+router.get('/api/profile/:username/:post_id', getPost);
+router.get('/api/profile/:username/:post_id/comments', getComments);
+router.post('/api/profile/:username/:post_id/comment', koaJwt({ secret: SECRET_KEY }), createComment);
+router.post('/api/profile/post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
+router.put('/api/profile/:username/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
 router.put('/api/profile/image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);
-router.put('/api/profile/posts/update/:id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
-router.delete('/api/profile/posts/delete', koaJwt({ secret: SECRET_KEY }), deletePost);
-router.delete('/api/profile/:username/:postid/comments/delete', koaJwt({ secret: SECRET_KEY }), deleteComment);
+router.delete('/api/profile/:username/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);
+router.delete('/api/profile/:username/:post_id/comment/:comment_id', koaJwt({ secret: SECRET_KEY }), deleteComment);
 
 module.exports = router;

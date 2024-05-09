@@ -26,7 +26,8 @@ async function getRecentPosts(ctx) {
 
 async function savePost(ctx) {
     try {
-        const { userId, postId } = ctx.request.body;
+        const postId = ctx.query.post_id;
+        const userId = ctx.state.user.user_id;
 
         const existingEntry = await SavedPost.findOne({ where: { USER_ID: userId, POST_ID: postId } });
         if (existingEntry) {
@@ -47,7 +48,8 @@ async function savePost(ctx) {
 
 async function unsavePost(ctx) {
     try {
-        const { userId, postId } = ctx.request.body;
+        const postId = ctx.query.post_id;
+        const userId = ctx.state.user.user_id;
 
         const deleted = await SavedPost.destroy({ where: { USER_ID: userId, POST_ID: postId } });
         if (deleted) {
@@ -64,7 +66,7 @@ async function unsavePost(ctx) {
 }
 
 router.get('/api/posts/recent', getRecentPosts);
-router.post('/api/posts/save', koaJwt({ secret: SECRET_KEY }), savePost);
-router.delete('/api/posts/unsave', koaJwt({ secret: SECRET_KEY }), unsavePost);
+router.put('/api/post/:post_id/save', koaJwt({ secret: SECRET_KEY }), savePost);
+router.put('/api/post/:post_id/unsave', koaJwt({ secret: SECRET_KEY }), unsavePost);
 
 module.exports = router;
