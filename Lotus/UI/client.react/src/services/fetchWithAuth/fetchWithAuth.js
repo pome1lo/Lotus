@@ -15,11 +15,12 @@ const fetchWithAuth = async (url, options = {}) => {
     try {
         const response = await fetch(url, options);
         if (response.status === 401) {
-            window.location.href = '/login';
+            //window.location.href = '/login';
+
             return;
         }
         if (response.status === 404) {
-            window.location.href = '/not-found';
+            //window.location.href = '/not-found';
             return;
         }
         return response;

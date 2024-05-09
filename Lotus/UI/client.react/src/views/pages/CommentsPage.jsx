@@ -1,12 +1,8 @@
 import {Comment} from "../components/Comment";
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import io from 'socket.io-client';
-import {Post} from "../components/Post";
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
-
-// Подключаемся к Socket.io серверу
-const socket = io('https://localhost:31903');
+import {ErrorMessage} from "../components/ErrorMessage";
 
 const CommentsPage = () => {
     const {username, postid} = useParams();
@@ -14,9 +10,9 @@ const CommentsPage = () => {
     const [comments, setComments] = useState(null);
     const [user, setUser] = useState(null);
     const [inputComment, setComment] = useState('');
-    const [currentUsername, setCurrentUsername] = useState(sessionStorage.getItem('username'));
-    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
         fetch(`https://localhost:31903/api/profile/${username}/${postid}`)
@@ -41,11 +37,8 @@ const CommentsPage = () => {
     }, [username, postid, navigate]);
 
     useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${currentUsername}?current_user_id=${currentUserId}`)
+        fetchWithAuth(`https://localhost:31903/api/profile`)
             .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
                 return res.json();
             })
             .then(data => setUser(data.user))
@@ -54,25 +47,25 @@ const CommentsPage = () => {
 
 
     async function sendComment() {
-        const response = await fetchWithAuth(`https://localhost:31903/api/profile/${username}/${postid}/comments/create`, {
+        const response = await fetchWithAuth(`https://localhost:31903/api/profile/${username}/${postid}/comment`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                user_id: currentUserId,
-                comment_username: currentUsername,
                 comment_text: inputComment,
                 picture: user.PROFILE_PICTURE
             })
         });
         const data = await response.json();
         if (!response.ok) {
-            console.log(data.message);
+            setErrorMessage(data.message);
+            setShowError(true);
             return;
         }
         if (response.ok) {
             window.location.reload();
         } else {
-            console.error('Error:', data.message);
+            setErrorMessage(data.message);
+            setShowError(true);
         }
     }
 
@@ -126,7 +119,7 @@ const CommentsPage = () => {
                     {user && <img src={user.PROFILE_PICTURE} alt="alt"
                                   className="mr-2 border-radius-medium" width="100" height="100"/>}
                     <div className="w-100">
-                        <label htmlFor="firstName" className="form-label">{currentUsername}</label>
+                        <label htmlFor="firstName" className="form-label">{user.USERNAME}</label>
                         <textarea className="form-control" id="firstName"
                                   value={inputComment} onChange={(e) => setComment(e.target.value)}
                                   placeholder="Write some comment..." required=""/>
@@ -139,6 +132,8 @@ const CommentsPage = () => {
                 </div>
 
             </div>
+
+            <ErrorMessage message={errorMessage} isVisible={showError} />
         </>
     )
 }

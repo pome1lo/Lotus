@@ -5,27 +5,18 @@ import {useEffect, useState} from "react";
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
 const Suggestions = () => {
-    const navigate = useNavigate();
-    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
     const [suggestions, setSuggestions] = useState();
 
     useEffect(() => {
-        if (!currentUserId) {
-            navigate('/login');
-        } else {
-
-        fetchWithAuth(`https://localhost:31903/api/user/suggestions/${currentUserId}`)
-            .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
+        fetchWithAuth(`https://localhost:31903/api/user/suggestions`)
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setSuggestions(data.suggestions);
+                    });
                 }
-                return res.json();
             })
-            .then(data => {
-                setSuggestions(data.suggestions);
-            })
-        }
-    }, [currentUserId, navigate]);
+    }, []);
 
     return (
       <>
@@ -42,7 +33,6 @@ const Suggestions = () => {
                           </Link>
                           <SubscriptionButton
                               styles={"btn red-link"}
-                              user_id={currentUserId}
                               to_id={item.ID}/>
                       </div>
                   </>

@@ -4,7 +4,13 @@ package authPackage;
 
 service AuthenticationService {
   rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse);
+  rpc UpdateAccount (UpdateAccountRequest) returns (UpdateAccountResponse);
   rpc DeleteUser (UpdatePasswordRequest) returns (UpdatePasswordResponse);
+}
+
+message UpdateAccountRequest {
+  string id = 1;
+  string username = 2;
 }
 
 message UpdatePasswordRequest {
@@ -15,6 +21,11 @@ message UpdatePasswordRequest {
 
 message DeleteUser {
   string id = 1;
+}
+
+message UpdateAccountResponse {
+  bool success = 1;
+  string message = 2;
 }
 
 message UpdatePasswordResponse {

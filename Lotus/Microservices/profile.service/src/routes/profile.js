@@ -120,10 +120,9 @@ async function updatePost(ctx) {
     }
 }
 async function getProfile(ctx) {
-
-    const currentUserId = ctx.state.user.user_id || null;
+    const currentUserId = ctx.state.user.user_id;
     const username = ctx.params.username;
-    const user = await USER.findOne({ where: { USERNAME: username } });
+    const user = await USER.findOne( { where: { USERNAME: username }});
 
     if (user) {
         const posts = await POST.findAll({ where: { USER_ID: user.ID } });
@@ -209,13 +208,9 @@ async function getPosts(ctx) {
 async function createComment(ctx) {
     const username =  ctx.params.username;
     const post_id =  ctx.params.post_id;
-    const { user_id, comment_username, comment_text, picture } = ctx.request.body;
-
-    if (ctx.state.user.user_id !== user_id) {
-        ctx.status = 401;
-        ctx.body = { error: 'Unauthorized: You can only update your own information' };
-        return;
-    }
+    const { comment_text, picture } = ctx.request.body;
+    const user_id = ctx.state.user.user_id;
+    const comment_username = ctx.state.user.username;
 
     try {
         const comment = await COMMENT.create({
@@ -308,10 +303,12 @@ router.get('/api/profile/:username/posts', getPosts);
 router.get('/api/profile/:username/:post_id', getPost);
 router.get('/api/profile/:username/:post_id/comments', getComments);
 router.post('/api/profile/:username/:post_id/comment', koaJwt({ secret: SECRET_KEY }), createComment);
-router.post('/api/profile/post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
-router.put('/api/profile/:username/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
 router.put('/api/profile/image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);
-router.delete('/api/profile/:username/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);
 router.delete('/api/profile/:username/:post_id/comment/:comment_id', koaJwt({ secret: SECRET_KEY }), deleteComment);
+
+
+router.post('/api/post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
+router.put('/api/post/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
+router.delete('/api/post/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);
 
 module.exports = router;

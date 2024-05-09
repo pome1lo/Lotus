@@ -5,7 +5,7 @@ import React, {useEffect, useState} from "react";
 
 const Sidebar = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [profileName, setProfileName] = useState('');
+    const [CURRENT_USERNAME, setProfileName] = useState('');
     useEffect(() => {
         const username = sessionStorage.getItem('username');
         setProfileName(username);
@@ -41,13 +41,13 @@ const Sidebar = () => {
                             </li>
                             <li>
                                 <NavLink to="/subscriptions" className="nav-link link-body-emphasis" aria-current="page">
-                                    <i className="bi bi-chat-square-text"></i>Subscriptions
+                                    <i className="bi bi-chat-square-text"></i>For you
                                 </NavLink>
                             </li>
                             <li>
                                 <hr/>
                                 {isAuthenticated ? (
-                                        <NavLink to={`/profile/${profileName}`}
+                                        <NavLink to={`/profile/${CURRENT_USERNAME}`}
                                                  className="nav-link link-body-emphasis profile-nav-link"
                                                  aria-current="page">
                                             <img src={`${DefaultProfileImage}`} height="20" alt=""/>Profile

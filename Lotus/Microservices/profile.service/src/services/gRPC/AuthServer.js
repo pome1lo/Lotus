@@ -26,6 +26,13 @@ function updatePassword(id, password, salt) {
     });
 }
 
+function updateAccount(id, username) {
+    return client.UpdateAccount({id, username},  (error, response) => {
+        if (error) { throw new Error(response.message); }
+        else { console.log(response.success); }
+    });
+}
+
 function deleteUser(id) {
     return client.DeleteUser({id},  (error, response) => {
         if (error) { throw new Error(response.message); }
@@ -35,5 +42,6 @@ function deleteUser(id) {
 
 module.exports = {
     updatePassword,
+    updateAccount,
     deleteUser
 };

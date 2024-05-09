@@ -35,10 +35,6 @@ const USER = sequelize.define('USERS', {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
-    VERIFICATION_TOKEN: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
     RESET_PASSWORD_TOKEN: {
         type: DataTypes.STRING,
         allowNull: true

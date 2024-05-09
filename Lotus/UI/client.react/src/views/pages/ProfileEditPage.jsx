@@ -2,28 +2,27 @@ import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import {ProfileNavBar} from "../components/ProfileNavBar";
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {ErrorMessage} from "../components/ErrorMessage";
 
 const ProfileEditPage = () => {
     const {username} = useParams();
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const fileInput = useRef();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
 
     const [inputUserName, setUserName] = useState('');
     const [inputFirstName, setFirstName] = useState('');
     const [inputLastName, setLastName] = useState('');
-    const [inputPhoneNumber, setPhoneNumber] = useState('');
     const [currentUserId, setCurrentId] = useState('');
 
     useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${username}`)
+        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
             .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
                 return res.json();
             })
-            .then(data => setUser(data)) /// todo data......... json in server ??????
+            .then(data => setUser(data))
         setCurrentId(sessionStorage.getItem('user_id'));
 
     }, [username, navigate]);
@@ -165,17 +164,6 @@ const ProfileEditPage = () => {
                                           Please enter your email.
                                       </div>
                                   </div>
-                                  <div className="col-12 mb-3">
-                                      <label htmlFor="number" className="form-label">Phone number</label>
-                                      <input type="text" className="form-control" id="number"
-                                             placeholder="Input your phone number"
-                                             onChange={(e) => setPhoneNumber(e.target.value)}
-                                             defaultValue={`${user.PHONE_NUMBER == null ? "" : user.PHONE_NUMBER}`}
-                                             required=""/>
-                                      <div className="invalid-feedback">
-                                          Please enter your phone number.
-                                      </div>
-                                  </div>
                                   <hr className="my-4"/>
                                   <button className="w-100 btn btn-danger btn-lg" type="button" onClick={fetchData}>
                                       Save changes
@@ -189,6 +177,7 @@ const ProfileEditPage = () => {
               </div>
           </div>
           <ProfileNavBar username={username}/>
+          <ErrorMessage message={errorMessage} isVisible={showError} />
       </>
     )
 }

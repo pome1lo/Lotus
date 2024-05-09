@@ -3,16 +3,19 @@ import React, {useEffect, useState} from "react";
 import {Post} from "../components/Post";
 import {Suggestions} from "../components/Suggestions";
 import {RecentPosts} from "../components/RecentPosts";
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {ErrorMessage} from "../components/ErrorMessage";
 
 const SubscriptionsPage = () => {
     const [posts, setPosts] = useState([]);
-    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const url = `https://localhost:31903/api/user/${currentUserId}/posts`;
-        fetch(url)
+        const url = `https://localhost:31903/api/user/posts`;
+        fetchWithAuth(url)
             .then(res => {
                 if (!res.ok && res.status === 500) {
                     setPosts([]);
@@ -60,6 +63,7 @@ const SubscriptionsPage = () => {
                   </div>
                   <Suggestions/>
                   <RecentPosts/>
+                  <ErrorMessage message={errorMessage} isVisible={showError} />
               </div>
           </div>
       </>

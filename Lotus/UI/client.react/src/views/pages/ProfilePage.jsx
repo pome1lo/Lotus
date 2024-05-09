@@ -2,10 +2,9 @@ import {Link, useParams, useNavigate} from "react-router-dom";
 import React, {useEffect, useRef, useState,} from "react";
 import "../../assets/css/Profile.css";
 import {SubscriptionButton} from "../components/SubscriptionButton";
-import {NewsItem} from "../components/NewsItem";
 import {Post} from "../components/Post";
-import {options} from "axios";
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {ErrorMessage} from "../components/ErrorMessage";
 
 const ProfilePage = () => {
     const {username} = useParams();
@@ -14,40 +13,37 @@ const ProfilePage = () => {
     const [posts, setPosts] = useState(null);
     const navigate = useNavigate();
     const fileInput = useRef();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
 
     const currentUsername = sessionStorage.getItem('username');
-    const currentUserId = sessionStorage.getItem('user_id');
-
 
     const [inputHeading, setHeading] = useState('');
     const [inputContent, setContent] = useState('');
     const [inputDate, setDate] = useState('');
 
     useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${username}?current_user_id=${currentUserId}`)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setUser(data.user);
-                setPosts(data.posts);
-                setIsCurrentUserSubscribedToProfileUser(data.isCurrentUserSubscribedToProfileUser);
+        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setUser(data.user);
+                        setPosts(data.posts);
+                        setIsCurrentUserSubscribedToProfileUser(data.isCurrentUserSubscribedToProfileUser);
+                    });
+                }
             })
     }, [username, navigate]);
-
-
-
 
     async function fetchData() {
         const file = fileInput.current.files[0];
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('user_id', user.ID);
         formData.append('title', inputHeading);
         formData.append('content', inputContent);
 
         try {
-            const response = await fetchWithAuth('https://localhost:31903/api/profile/posts/create', {
+            const response = await fetchWithAuth('https://localhost:31903/api/post', {
                 method: 'POST',
                 body: formData
             });
@@ -81,15 +77,12 @@ const ProfilePage = () => {
                             </div>
                             {(currentUsername === null || user.USERNAME !== currentUsername) ? (
                                 <SubscriptionButton
-                                    user_id={currentUserId} to_id={user.ID}
+                                    to_id={user.ID}
                                     initiallySubscribed={isCurrentUserSubscribedToProfileUser}
                                     styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>
                             ) : (<></>)
                             }
 
-                            <Link to={`/profile/${username}/edit`}
-                                  className=" mr-2 btn btn-outline-secondary d-inline-flex align-items-center">Edit
-                            </Link>
                             <Link to={`/profile/${username}/edit`} className="mr-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
                                      className="bi bi-gear rotate hover-size" viewBox="0 0 16 16">
@@ -100,23 +93,22 @@ const ProfilePage = () => {
                                 </svg>
                             </Link>
                         </div>
+                        <div className="d-flex">
+                            <h5 className="mr-2">{user.FIRSTNAME}</h5>
+                            <h5>{user.LASTNAME}</h5>
+                        </div>
                         <div className="d-flex align-items-center w-100">
                             <p className="mr-2">{posts === null ? "0" : posts.length} publications</p>
                             <p className="mr-2">{user.SUBSCRIBERS_COUNT} subscribers</p>
                             <p className="mr-2">{user.SUBSCRIPTIONS_COUNT} subscriptions</p>
                         </div>
                         <div>
-                            This is some additional paragraph placeholder content. It has been written to fill the
-                            available space of text affects the surrounding content. We'll repeat it often to keep
-                            the demonstration flowing, so be on the lookout for this exact same string of text.
+                            {user.DESCRIPTION}
                         </div>
                     </div>
                 </div>
-                <div className="d-flex">
-                    <h2>{user.FIRSTNAME}</h2>
-                    <h2>{user.LASTNAME}</h2>
-                </div>
-                <div className="d-flex align-items-center w-100 justify-content-between text-muted">
+
+                    <div className="d-flex align-items-center w-100 justify-content-between text-muted">
                     <div className="d-flex" >
                         {user && <img src={user.PROFILE_PICTURE} width="30px" className="mr-2 border-radius" alt={"content"}/>}
                         <p className="m-auto">What's new with you?</p>
@@ -136,9 +128,8 @@ const ProfilePage = () => {
                         posts.length > 0 ? (
                         posts.sort((a, b) => b.ID - a.ID).map(item => (
                             <Post key={item.ID}
-                                  post_id={item.ID}
+                                post_id={item.ID}
                                 user_image={user.PROFILE_PICTURE}
-                                isAuthor={item.USER_ID == currentUserId}
                                 username={user.USERNAME}
                                 content_image={item.IMAGE}
                                 content_heading={item.TITLE}
@@ -237,6 +228,7 @@ const ProfilePage = () => {
                 </div>
              </>
             )}
+            <ErrorMessage message={errorMessage} isVisible={showError} />
         </div>
 
     );

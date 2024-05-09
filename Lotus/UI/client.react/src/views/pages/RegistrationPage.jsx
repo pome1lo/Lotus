@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import "../../assets/css/Authentication.css";
 import {ErrorMessage} from "../components/ErrorMessage";
-import {AuthorizationPage} from "./AuthorizationPage";
 
 const RegistrationPage = () => {
     const navigate = useNavigate();
@@ -77,7 +76,6 @@ const RegistrationPage = () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    sessionStorage.setItem('user_id', data.user_id);
                     sessionStorage.setItem('token', data.token);
                     sessionStorage.setItem('username', data.username);
                     navigate('/')
@@ -134,7 +132,9 @@ const RegistrationPage = () => {
     return (
         <>
             <main className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
-                <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
+                <Link to="/">
+                    <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
+                </Link>
                 {!isRegistered ? (
                     <form className="text-center form-signin needs-validation" onSubmit={identifyUser}>
                     <h2 className="h4 mb-3 fw-medium">Please join</h2>

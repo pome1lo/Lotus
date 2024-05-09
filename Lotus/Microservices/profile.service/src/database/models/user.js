@@ -23,8 +23,8 @@ const USER = sequelize.define('USERS', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    PHONE_NUMBER: {
-        type: DataTypes.STRING,
+    DESCRIPTION: {
+        type: DataTypes.TEXT,
         allowNull: true
     },
     SUBSCRIBERS_COUNT: {

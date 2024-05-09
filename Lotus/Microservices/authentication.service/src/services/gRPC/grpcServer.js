@@ -7,6 +7,31 @@ const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.pr
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
 
+async function updateAccount(call, callback) {
+    const { id, username } = call.request;
+
+    try {
+        const user = await USER.findByPk(id);
+        if (!user) {
+            return callback({
+                code: grpc.status.NOT_FOUND,
+                details: 'User not found'
+            });
+        }
+
+        await redisClient.del(user.USERNAME);
+        user.USERNAME = username;
+        await user.save();
+
+        callback(null, { success: true, message: 'Username updated successfully' });
+    } catch (error) {
+        callback({
+            code: grpc.status.INTERNAL,
+            message: 'Internal server error'
+        });
+    }
+}
+
 async function updatePassword(call, callback) {
     const { id, password, salt } = call.request;
 
@@ -15,7 +40,7 @@ async function updatePassword(call, callback) {
         if (!user) {
             return callback({
                 code: grpc.status.NOT_FOUND,
-                details: 'User not found'
+                message: 'User not found'
             });
         }
 
@@ -30,7 +55,7 @@ async function updatePassword(call, callback) {
     } catch (error) {
         callback({
             code: grpc.status.INTERNAL,
-            details: 'Internal server error'
+            message: 'Internal server error'
         });
     }
 }
@@ -70,7 +95,7 @@ async function deleteUser(call, callback) {
     catch (error) {
         callback({
             code: grpc.status.INTERNAL,
-            details: 'Internal server error'
+            message: 'Internal server error'
         });
     }
 }
@@ -79,6 +104,7 @@ const server = new grpc.Server();
 
 server.addService(authPackage.AuthenticationService.service, {
     UpdatePassword: updatePassword,
+    UpdateAccount: updateAccount,
     DeleteUser: deleteUser
 });
 

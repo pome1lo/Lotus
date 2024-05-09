@@ -2,18 +2,21 @@ import {ProfileNavBar} from "../components/ProfileNavBar";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {ErrorMessage} from "../components/ErrorMessage";
 
 const ChangePasswordPage = () => {
     const {username} = useParams();
     const [inputCurrentPassword, setCurrentPassword] = useState('');
     const [inputNewPassword, setNewPassword] = useState('');
     const [inputConfirmPassword, setConfirmPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
 
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${username}`)
+        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -24,51 +27,45 @@ const ChangePasswordPage = () => {
     }, [username, navigate]);
 
     async function changePassowrd() {
-        const response = await fetchWithAuth('https://localhost:31903/api/account/security', {
+        const response = await fetchWithAuth('https://localhost:31903/api/account/password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                id: user.ID,
                 password: inputNewPassword
             })
         });
+        const data = await response.json();
         if (!response.ok) {
-            const data = await response.json();
-            console.log(data.message);
+            setErrorMessage(data.message);
+            setShowError(true);
             return;
         }
-
-        const data = await response.json();
         if (response.ok) {
             sessionStorage.setItem('token', data.token);
-            sessionStorage.setItem('username', data.username);
             navigate(`/profile/${username}`);
         } else {
-            console.error('Ошибка входа:', data.message);
+            setErrorMessage(data.message);
+            setShowError(true);
         }
     }
     async function deleteAccount() {
-        const response = await fetchWithAuth('https://localhost:31903/api/account/delete', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                id: user.ID
-            })
+        const response = await fetchWithAuth('https://localhost:31903/api/account', {
+            method: 'DELETE'
         });
         if (!response.ok) {
-            //console.error('Ошибка входа:', response.statusText);
+            setErrorMessage(data.message);
+            setShowError(true);
             return;
         }
         const data = await response.json();
-        console.log(data.message);
         if (response.ok) {
             sessionStorage.removeItem('token');
-            sessionStorage.removeItem('username');
             navigate(`/`);
         } else {
-            console.error('Error:', data.message);
+            setErrorMessage(data.message);
+            setShowError(true);
         }
     }
 
@@ -135,6 +132,7 @@ const ChangePasswordPage = () => {
                 </form>
             </div>
             <ProfileNavBar username={username}/>
+            <ErrorMessage message={errorMessage} isVisible={showError} />
         </>
     )
 }

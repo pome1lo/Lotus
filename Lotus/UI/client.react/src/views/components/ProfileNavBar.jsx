@@ -1,21 +1,13 @@
 import {NavLink} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React from "react";
 
 const ProfileNavBar = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [profileName, setProfileName] = useState('');
-    useEffect(() => {
-        const username = sessionStorage.getItem('username');
-        setProfileName(username);
-        setIsAuthenticated(!!username);
-    }, []);
-
+    const profileName = sessionStorage.getItem('username');
   return (
       <>
           <div className="col-md-2 order-md-last profile-nav-bar">
               <nav className="">
-                  {isAuthenticated
-                      ? <ul className="list-unstyled d-flex flex-column gap-2">
+                  <ul className="list-unstyled d-flex flex-column gap-2">
                       <li>
                           <NavLink to={`/profile/${profileName}/edit`}
                                    className="btn rounded-2 d-flex align-items-start gap-2 py-2 px-3 lh-sm text-start">
@@ -47,8 +39,6 @@ const ProfileNavBar = () => {
                           </NavLink>
                       </li>
                   </ul>
-                      : <></>
-                  }
               </nav>
           </div>
       </>

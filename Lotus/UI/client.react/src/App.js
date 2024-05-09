@@ -27,33 +27,29 @@ function App() {
   useEffect(() => AOS.init , []);
 
   return (
-      // <div className="App">
-        <>
-          <Routes>
-            <Route path="/" element={<Layout/>}>
-              <Route index path="home" element={<HomePage/>} />
-              {/*<Route path="news" element={<NewsPage/>} />*/}
-              <Route path="news" element={<NewsPage/>} />
-              <Route path="news/:topic" element={<NewsPage/>} />
-              <Route path="news/:id" element={<SelectedNews/>} />
-              <Route path="support" element={<SupportPage/>} />
-              <Route path="profile/:username" element={<ProfilePage/>} />
-              <Route path="profile/:username/edit" element={<ProfileEditPage/>} />
-              <Route path="profile/:username/change-password" element={<ChangePasswordPage/>} />
-              <Route path="/:username/:postid/comments" element={<CommentsPage/>} />
-              <Route path="/about" element={<AboutPage/>} />
-              <Route path="/people" element={<PeoplePage/>} />
-              <Route path="/saved" element={<SavedPage/>} />
-              <Route path="/subscriptions" element={<SubscriptionsPage/>} />
-            </Route>
-            {/*<Route path="login" element={<FormPage/>} />*/}
-            {/*<Route path="*" element={<AuthorizationPage />} />*/}
-            <Route path="login" element={<AuthenticationPage />} />
-            <Route path="register" element={<RegistrationPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </>
-      // </div>
+    <>
+      <Routes>
+        <Route path="/" element={<Layout/>}>
+          <Route index element={<HomePage/>} />
+          <Route path="home" element={<HomePage/>} />
+          <Route path="news" element={<NewsPage/>} />
+          <Route path="news/:topic" element={<NewsPage/>} />
+          <Route path="news/:id" element={<SelectedNews/>} />
+          <Route path="support" element={<SupportPage/>} />
+          <Route path="profile/:username" element={<ProfilePage/>} />
+          <Route path="profile/:username/edit" element={<ProfileEditPage/>} />
+          <Route path="profile/:username/change-password" element={<ChangePasswordPage/>} />
+          <Route path="/:username/:postid/comments" element={<CommentsPage/>} />
+          <Route path="/about" element={<AboutPage/>} />
+          <Route path="/people" element={<PeoplePage/>} />
+          <Route path="/saved" element={<SavedPage/>} />
+          <Route path="/subscriptions" element={<SubscriptionsPage/>} />
+        </Route>
+        <Route path="login" element={<AuthenticationPage />} />
+        <Route path="register" element={<RegistrationPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   );
 }
 

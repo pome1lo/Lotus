@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const argon2 = require('argon2');
 const koaJwt = require('koa-jwt');
 const Sequelize = require('sequelize');
-const { updatePassword: grpcUpdatePassword, deleteUser: grpcDeleteUser } = require("../services/gRPC/AuthServer");
+const { updatePassword: grpcUpdatePassword, deleteUser: grpcDeleteUser, updateAccount: grpcUpdateAccount } = require("../services/gRPC/AuthServer");
 const Op = Sequelize.Op;
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
@@ -35,6 +35,8 @@ async function updateAccount(ctx) {
         user.FIRSTNAME = firstname || user.FIRSTNAME;
         user.LASTNAME = lastname || user.LASTNAME;
 
+        grpcUpdateAccount(id, user.USERNAME);
+
         await user.save();
 
         ctx.status = 200;
@@ -46,13 +48,8 @@ async function updateAccount(ctx) {
 }
 
 async function updatePassword(ctx) {
-    const { id, password } = ctx.request.body;
-
-    if (ctx.state.user.user_id !== id) {
-        ctx.status = 401;
-        ctx.body = { error: 'Unauthorized: You can only update your own information' };
-        return;
-    }
+    const { password } = ctx.request.body;
+    const id = ctx.state.user.user_id;
 
     try {
         const user = await USER.findByPk(id);
@@ -79,13 +76,7 @@ async function updatePassword(ctx) {
 }
 
 async function deleteAccount(ctx) {
-    const { id } = ctx.request.body;
-
-    if (ctx.state.user.user_id !== id) {
-        ctx.status = 401;
-        ctx.body = { error: 'Unauthorized: You can only update your own information' };
-        return;
-    }
+    const id = ctx.state.user.user_id;
 
     try {
         const user = await USER.findByPk(id);

@@ -6,22 +6,17 @@ import {useRef, useState} from "react";
 import {SaveButton} from "./SaveButton";
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
-const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, user_id, content_text, likes_count, isAuthor }) => {
+const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, content_text, likes_count }) => {
     const fileInput = useRef();
     const [Heading, setHeading] = useState(content_heading);
     const [Content, setContent] = useState(content_text);
     const [inpDate, setDate] = useState(dop_info);
 
     const navigate = useNavigate();
-    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
 
     async function deletePost() {
-        const response = await fetchWithAuth('https://localhost:31903/api/profile/posts/delete', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                id: post_id
-            })
+        const response = await fetchWithAuth(`https://localhost:31903/api/post/${post_id}`, {
+            method: 'DELETE'
         });
         if (!response.ok) {
             console.error('Error:', response.statusText);
@@ -44,7 +39,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
         formData.append('content', Content);
 
         try {
-            const response = await fetchWithAuth(`https://localhost:31903/api/profile/posts/update/${post_id}`, {
+            const response = await fetchWithAuth(`https://localhost:31903/api/post/${post_id}`, {
                 method: 'PUT',
                 body: formData
             });
@@ -77,7 +72,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                     <div className="d-flex align-items-center justify-content-between">
                         <Publisher avatar={user_image} nickname={username} info={dop_info}/>
                         <div className="btn-group mr-4">
-                            {isAuthor ? (
+                            {/*{isAuthor ? (*/}
                                 <button type="button" className="btn border-0 bg-transparent" data-bs-toggle="modal"
                                        data-bs-target="#postEditModal">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
@@ -88,7 +83,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                                             d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
                                     </svg>
                                 </button>
-                            ) : (<></>)}
+                            {/*) : (<></>)}*/}
                         </div>
 
                     </div>
@@ -160,28 +155,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                         </div>
                         <div>
                             <SaveButton
-                                postId={post_id}
-                                current_user_id={currentUserId}/>
-
-                            {/*<button type="button" className="mr-4 border-0 bg-transparent" onClick={savePostHandleClick}>*/}
-                            {/*    {isFilled ?*/}
-                            {/*        (<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"*/}
-                            {/*              className="bi bi-floppy hover-size" viewBox="0 0 16 16">*/}
-                            {/*            <path d="M11 2H9v3h2z"/>*/}
-                            {/*            <path*/}
-                            {/*                d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/>*/}
-                            {/*        </svg>) : (*/}
-                            {/*            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"*/}
-                            {/*                 fill="currentColor" className="bi bi-floppy-fill hover-size" viewBox="0 0 16 16">*/}
-                            {/*                <path*/}
-                            {/*                    d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>*/}
-                            {/*                <path*/}
-                            {/*                    d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>*/}
-                            {/*            </svg>*/}
-                            {/*        )*/}
-                            {/*    }*/}
-
-                            {/*</button>*/}
+                                postId={post_id}/>
                         </div>
                     </div>
                 </div>

@@ -11,7 +11,8 @@ const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 const router = new Router();
 
 async function subscribeUser(ctx) {
-    const { user_id, to_id } = ctx.request.body;
+    const user_id = ctx.state.user.user_id;
+    const { to_id } = ctx.request.body;
 
     try {
         const user = await USER.findByPk(user_id);
@@ -47,7 +48,8 @@ async function subscribeUser(ctx) {
 }
 
 async function unsubscribeUser(ctx) {
-    const { user_id, to_id } = ctx.request.body;
+    const user_id = ctx.state.user.user_id;
+    const { to_id } = ctx.request.body;
 
     try {
         const user = await USER.findByPk(user_id);
@@ -85,7 +87,7 @@ async function unsubscribeUser(ctx) {
 
 async function getUserPosts(ctx) {
     try {
-        const userId = parseInt(ctx.params.userId, 10);
+        const userId = ctx.state.user.user_id;
 
         const subscriptions = await SUBSCRIPTION.findAll({
             where: { SUBSCRIBER_ID: userId },
@@ -122,7 +124,7 @@ async function getUserPosts(ctx) {
 }
 
 async function getUserSubscriptions(ctx) {
-    const subscriberId = parseInt(ctx.params.userId, 10);
+    const subscriberId = ctx.state.user.user_id;
 
     try {
         const userWithSubscriptions = await USER.findByPk(subscriberId, {
@@ -153,7 +155,7 @@ async function getUserSubscriptions(ctx) {
 }
 
 async function getUserSubscribers(ctx) {
-    const userId = parseInt(ctx.params.userId, 10);
+    const userId =  ctx.state.user.user_id;
 
     try {
         const userWithSubscribers = await USER.findByPk(userId, {
@@ -184,7 +186,7 @@ async function getUserSubscribers(ctx) {
 }
 
 async function getUserSuggestions(ctx) {
-    const excludedUserId = parseInt(ctx.params.userId, 10);
+    const excludedUserId= ctx.state.user.user_id;
 
     try {
         const subscribedIds = (await SUBSCRIPTION.findAll({
@@ -211,10 +213,10 @@ async function getUserSuggestions(ctx) {
     }
 }
 
-router.get('/api/user/:user_id/posts', getUserPosts);
-router.get('/api/user/:user_id/subscriptions', getUserSubscriptions);
-router.get('/api/user/:user_id/subscribers', getUserSubscribers);
-router.get('/api/user/suggestions/:userId', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
+router.get('/api/user/posts', koaJwt({ secret: SECRET_KEY }), getUserPosts);
+router.get('/api/user/subscriptions', koaJwt({ secret: SECRET_KEY }), getUserSubscriptions);
+router.get('/api/user/subscribers', koaJwt({ secret: SECRET_KEY }), getUserSubscribers);
+router.get('/api/user/suggestions', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
 router.post('/api/user/subscribe', koaJwt({ secret: SECRET_KEY }), subscribeUser);
 router.post('/api/user/unsubscribe', koaJwt({ secret: SECRET_KEY }), unsubscribeUser);
 

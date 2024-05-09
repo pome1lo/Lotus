@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {NewsItem} from "../components/NewsItem";
 import "../../assets/css/NewsPage.css";
 import {Post} from "../components/Post";
+import {ErrorMessage} from "../components/ErrorMessage";
 
 const NewsPage = () => {
     const { topic = 'last' } = useParams();
@@ -11,7 +12,8 @@ const NewsPage = () => {
     const [currentPage, setCurrentPage] = useState(2);
     const [totalPages, setTotalPages] = useState(0);
     const pageSize = 12;
-    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
 
     const navigate = useNavigate();
 
@@ -19,14 +21,12 @@ const NewsPage = () => {
         const offsett = (currentPage - 1) * pageSize;
         setPostStatus(false);
         setArticles([]);
-        const url = `https://localhost:31904/api/news?topic=${currentTopic}&limit=${pageSize}&offset=${offsett}`;
-        fetch(url)
+        fetch(`https://localhost:31904/api/news?topic=${currentTopic}&limit=${pageSize}&offset=${offsett}`)
             .then(res => {
                 return res.json();
             })
             .then(data => {
                 if (Array.isArray(data.articles)) {
-                    console.log(data.articles);
                     setArticles(data.articles);
                     setTotalPages(Math.ceil(data.totalCount / pageSize));
                 } else {
@@ -34,7 +34,8 @@ const NewsPage = () => {
                 }
             })
             .catch(error => {
-                console.error('Ошибка при получении новостей:', error);
+                setErrorMessage(error.message);
+                setShowError(true);
             })
     };
 
@@ -164,6 +165,7 @@ const NewsPage = () => {
                 </div>
             </div>
 
+            <ErrorMessage message={errorMessage} isVisible={showError} />
         </>
     );
 };

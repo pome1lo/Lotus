@@ -4,7 +4,7 @@ const Router = require('koa-router');
 const router = new Router();
 const DEFAULT_PAGE_SIZE = 20;
 const DEFAULT_PAGE_OFFSET = 1;
-const API_KEY = 'c8857ca5a88f4c6db7a26661057b6546';
+const API_KEY = '2f50e07c6c6f42848f513647c4611a27';
 
 async function fetchNews(ctx) {
     const { topic, limit, offset } = ctx.query;

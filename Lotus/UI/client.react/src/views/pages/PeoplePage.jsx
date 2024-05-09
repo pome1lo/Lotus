@@ -1,43 +1,35 @@
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {Publisher} from "../components/Publisher";
-import {SubscriptionButton} from "../components/SubscriptionButton";
 import {Suggestions} from "../components/Suggestions";
 import {RecentPosts} from "../components/RecentPosts";
+import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {ErrorMessage} from "../components/ErrorMessage";
 
 const PeoplePage = () => {
-    const navigate = useNavigate();
-    const [currentUserId, setCurrentId] = useState(sessionStorage.getItem('user_id'));
     const [subscriptions, setSubscriptions] = useState();
     const [subscribers, setSubscribers] = useState();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
-        if (!currentUserId) {
-            navigate('/login');
-        } else {
-            fetch(`https://localhost:31903/api/user/${currentUserId}/subscriptions`)
-                .then(res => {
-                    if (!res.ok && res.status === 404) {
-                        navigate('/not-found');
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    setSubscriptions(data.subscriptions);
-                })
-            fetch(`https://localhost:31903/api/user/${currentUserId}/subscribers`)
-                .then(res => {
-                    if (!res.ok && res.status === 404) {
-                        navigate('/not-found');
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    setSubscribers(data.subscribers);
-                })
-        }
-    }, [currentUserId, navigate]);
-
+        fetchWithAuth('https://localhost:31903/api/user/subscriptions')
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setSubscriptions(data.subscriptions);
+                    });
+                }
+            })
+        fetchWithAuth('https://localhost:31903/api/user/subscribers')
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setSubscribers(data.subscribers);
+                    });
+                }
+            })
+    }, []);
 
     return(
         <>
@@ -116,6 +108,7 @@ const PeoplePage = () => {
                     </div>
                     <Suggestions/>
                     <RecentPosts/>
+                    <ErrorMessage message={errorMessage} isVisible={showError} />
                 </div>
             </div>
         </>

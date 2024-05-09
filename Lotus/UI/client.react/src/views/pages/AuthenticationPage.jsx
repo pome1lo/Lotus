@@ -28,18 +28,15 @@ const AuthenticationPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                sessionStorage.setItem('user_id', data.user_id);
                 sessionStorage.setItem('token', data.token);
                 sessionStorage.setItem('username', data.username);
                 navigate('/');
             } else {
-                console.error('Ошибка входа:', data.message);
                 setErrorMessage(data.message);
                 setShowError(true);
             }
         } catch (error) {
-            console.error('Ошибка запроса:', error);
-            setErrorMessage(error.toString());
+            setErrorMessage(error.message.toString());
             setShowError(true);
         }
     }
@@ -48,14 +45,16 @@ const AuthenticationPage = () => {
         <>
             <main
                 className="d-flex flex-column align-items-center justify-content-center py-4 form-signin w-100 vh-100">
-                <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
+                <Link to="/">
+                    <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
+                </Link>
 
                 <form className="text-center form-signin needs-validation" onSubmit={fetchData}>
                     <h2 className="h4 mb-3 fw-medium">Please sign in</h2>
                     <div className="form-floating username">
-                        <input type="text" className="form-control" id="floatingInput" required placeholder="User name"
+                        <input type="text" className="form-control" id="floatingInput" required placeholder="Username"
                                value={inputUsername} onChange={(e) => setUsername(e.target.value)}/>
-                        <label htmlFor="floatingInput">User name</label>
+                        <label htmlFor="floatingInput">Username</label>
                     </div>
                     <div className="form-floating password ">
                         <input type="password" className="form-control" id="floatingPassword" placeholder="Password"

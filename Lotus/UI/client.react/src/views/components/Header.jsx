@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 
 const Header = () => {
     const [theme, setTheme] = useState('dark');
-    const [showButton, setShowButton] = useState(false);
+    const [, setShowButton] = useState(false);
     const navigate = useNavigate();
 
 
@@ -27,8 +27,7 @@ const Header = () => {
 
     const handleClick = () => {
         sessionStorage.removeItem('token');
-        sessionStorage.removeItem('username');
-        sessionStorage.removeItem('user_id');
+        sessionStorage.removeItem('username')
         navigate(`/`);
         window.location.reload();
     };
@@ -65,13 +64,7 @@ const Header = () => {
 
                         <ul className="navbar-nav col-lg-6 justify-content-lg-center">
                             <li className="nav-item">
-                                <Link className="nav-link active" aria-current="page" to="#">Home</Link>
-                            </li>
-                            <li className="nav-item">
                                 <Link className="nav-link" to="/about">All about Lotus</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="#" className="nav-link disabled">Disabled</Link>
                             </li>
                             <li>
                                 <h6 className="pb-2 mb-2 border-bottom show-display"></h6>

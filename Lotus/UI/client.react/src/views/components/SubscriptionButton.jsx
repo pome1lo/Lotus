@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
-const SubscriptionButton = ({ styles, user_id, to_id, initiallySubscribed }) => {
+const SubscriptionButton = ({ styles, to_id, initiallySubscribed }) => {
     const [isSubscribed, setIsSubscribed] = useState(initiallySubscribed);
     const [buttonStyles, setButtonStyles] = useState(styles == null
         ? isSubscribed
@@ -26,7 +26,6 @@ const SubscriptionButton = ({ styles, user_id, to_id, initiallySubscribed }) => 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    user_id: user_id,
                     to_id: to_id
                 })
             });

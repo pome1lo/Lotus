@@ -50,7 +50,7 @@ async function createUser(ctx) {
     ctx.status = 201;
     ctx.body = {
         message: 'The user has been successfully registered',
-        //username: newUser.USERNAME,
+        username: newUser.USERNAME,
         token: token,
         //user_id: newUser.ID,
     };
@@ -100,7 +100,8 @@ async function loginUser(ctx) {
     }, secretKey, { expiresIn: '1h' });
 
     ctx.body = {
-        token //, username: user.USERNAME, user_id: user.ID
+        token,
+        username: user.USERNAME//, user_id: user.ID
     };
 }
 
@@ -120,31 +121,6 @@ async function verifyUserEmail(ctx) {
         ctx.body = { message: 'Something went wrong' };
     }
 }
-
-// async function confirmUserEmail(ctx) {
-//     const token = ctx.query.token;
-//
-//     try {
-//         console.log("token " + token);
-//
-//         const user = await USER.findOne({ where: { VERIFICATION_TOKEN: token } });
-//
-//         if (!user) {
-//             ctx.status = 400;
-//             ctx.body = { error: 'Invalid or expired token' };
-//             return;
-//         }
-//
-//         user.IS_EMAIL_VERIFIED = true;
-//         user.VERIFICATION_TOKEN = null;
-//         await user.save();
-//         ctx.redirect('https://localhost:3000');
-//     } catch (error) {
-//         console.log(error.message);
-//         ctx.status = 500;
-//         ctx.body = { error: 'Something went wrong' };
-//     }
-// }
 
 async function resetUserPassword(ctx) {
     const { username, password } = ctx.request.body;
