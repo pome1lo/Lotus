@@ -5,6 +5,8 @@ const { SUBSCRIPTION } = require('../database/models/subscription');
 const { Op } = require('sequelize');
 const koaJwt = require("koa-jwt");
 const sequelize = require("../database/config");
+const {SUPPORT} = require("../database/models/support");
+const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
@@ -213,11 +215,41 @@ async function getUserSuggestions(ctx) {
     }
 }
 
+async function support(ctx) {
+    const user_id = ctx.state.user.user_id;
+    const username = ctx.state.user.username;
+    const email = ctx.state.user.email;
+    const { problem_message } = ctx.request.body;
+
+    try {
+        const newSupportMessage = await SUPPORT.create({
+            USER_ID: user_id,
+            PROBLEM_MESSAGE: problem_message
+        });
+
+        const data = {
+            EMAIL: email,
+            USERNAME: username,
+            PROBLEM_MESSAGE: problem_message
+        }
+        sendToQueue("SupportEmailNotificationQueue", data);
+
+        ctx.status = 201;
+        ctx.body = { message: 'Support message saved successfully', supportMessageId: newSupportMessage.ID };
+    } catch (error) {
+        console.error('Error saving support message:', error);
+        ctx.status = 500;
+        ctx.body = { message: 'Internal Server Error' };
+    }
+}
+
+
 router.get('/api/user/posts', koaJwt({ secret: SECRET_KEY }), getUserPosts);
 router.get('/api/user/subscriptions', koaJwt({ secret: SECRET_KEY }), getUserSubscriptions);
 router.get('/api/user/subscribers', koaJwt({ secret: SECRET_KEY }), getUserSubscribers);
 router.get('/api/user/suggestions', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
 router.post('/api/user/subscribe', koaJwt({ secret: SECRET_KEY }), subscribeUser);
 router.post('/api/user/unsubscribe', koaJwt({ secret: SECRET_KEY }), unsubscribeUser);
+router.post('/api/user/support', koaJwt({ secret: SECRET_KEY }), support);
 
 module.exports = router;

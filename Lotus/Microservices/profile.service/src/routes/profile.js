@@ -306,7 +306,6 @@ router.post('/api/profile/:username/:post_id/comment', koaJwt({ secret: SECRET_K
 router.put('/api/profile/image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);
 router.delete('/api/profile/:username/:post_id/comment/:comment_id', koaJwt({ secret: SECRET_KEY }), deleteComment);
 
-
 router.post('/api/post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
 router.put('/api/post/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
 router.delete('/api/post/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);

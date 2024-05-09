@@ -10,7 +10,8 @@ const QUEUES = {
     UserNotificationQueue: 'UserNotificationQueue',
     SystemNotificationQueue: 'SystemNotificationQueue',
     EmailNotificationQueue: 'EmailNotificationQueue',
-    LastEmailNotificationQueue: 'LastEmailNotificationQueue'
+    LastEmailNotificationQueue: 'LastEmailNotificationQueue',
+    SupportEmailNotificationQueue: 'SupportEmailNotificationQueue'
 };
 
 function connectRabbitMQ() {
@@ -63,6 +64,11 @@ function connectRabbitMQ() {
                 const { EMAIL: email, USER_ID: user_id, USERNAME: username, MESSAGE: message } = JSON.parse(msg.content.toString());
                 Mailer.sendEmailMessage(email, username, message);
                 await NOTIFICATION.destroy({ where: { USER_ID: user_id } });
+            }, { noAck: true });
+
+            channel.consume(QUEUES.SupportEmailNotificationQueue, async function (msg) {
+                const { EMAIL: email, USERNAME: username, PROBLEM_MESSAGE: message } = JSON.parse(msg.content.toString());
+                Mailer.sendSupportEmailMessage(email, username, message);
             }, { noAck: true });
         });
     });

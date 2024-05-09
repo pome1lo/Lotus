@@ -11,7 +11,6 @@ const ProfileRoutes = require('./src/routes/profile');
 const AccountRoutes = require('./src/routes/account');
 const UserRoutes = require('./src/routes/user');
 const PostRoutes = require('./src/routes/post');
-const {COMMENT} = require("./src/database/models/comment");
 
 const connectRabbitMQ = require('./src/services/RabbitMQ/connectRabbitMQ');
 const { setupSocket } = require('./src/services/Socket/socket');

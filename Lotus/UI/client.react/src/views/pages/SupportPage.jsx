@@ -19,14 +19,13 @@ const SupportPage = () => {
         event.preventDefault();
 
         try {
-            const response = await fetchWithAuth('https://localhost:31901/api/profile/support', {
+            const response = await fetchWithAuth('https://localhost:31903/api/user/support', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    content: inputContent,
-                    user_id: sessionStorage.getItem('') //// todo ADD SUPPORT
+                    problem_message: inputContent,
                 })
             });
 
@@ -49,7 +48,7 @@ const SupportPage = () => {
 
     return (
         <>
-            <div className="col-md-8 order-lg-2">
+            <div className="col-md-5 order-lg-2">
                 <form onSubmit={fetchData}>
                     <h1 className="fw-bold">How we can help?</h1>
                     <label>Your problem:</label>
@@ -60,7 +59,6 @@ const SupportPage = () => {
                     <button className="btn btn-danger mt-3" type="submit">Send</button>
                 </form>
             </div>
-            <ProfileNavBar username={username}/>
             <ErrorMessage message={errorMessage} isVisible={showError} />
             <SuccessMessage message="Message succesfully sended"
                 isVisible={showSuccess}

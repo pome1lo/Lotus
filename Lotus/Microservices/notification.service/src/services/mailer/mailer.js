@@ -15,6 +15,10 @@ class Mailer {
         this.sendEmail('text', toMail, 'Email verification', `Hello ${username}, ${message}`)
             .then(console.log('Message send'));
     }
+    static sendSupportEmailMessage(mail, username, message) {
+        this.sendEmail('text', "lotus.service.no.reply@gmail.com", 'Support', `| ${username} | ${mail} | ${message}`)
+            .then(console.log('Message send'));
+    }
 
     static sendEmailSystemNotification(toMail, message) {
         this.sendEmail('text', toMail, 'System notification', message)
