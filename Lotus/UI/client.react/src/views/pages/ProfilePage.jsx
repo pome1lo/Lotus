@@ -38,6 +38,7 @@ const ProfilePage = () => {
     async function fetchData() {
         const file = fileInput.current.files[0];
         const formData = new FormData();
+        formData.append('user_id', user.ID);
         formData.append('image', file);
         formData.append('title', inputHeading);
         formData.append('content', inputContent);

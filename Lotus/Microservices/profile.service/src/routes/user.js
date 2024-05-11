@@ -133,7 +133,7 @@ async function getUserSubscriptions(ctx) {
             include: [{
                 model: USER,
                 as: 'Subscriptions',
-                attributes: ['ID', 'USERNAME', 'EMAIL', 'FIRSTNAME', 'LASTNAME', 'PHONE_NUMBER', 'PROFILE_PICTURE'],
+                attributes: ['ID', 'USERNAME', 'EMAIL', 'FIRSTNAME', 'LASTNAME', 'DESCRIPTION', 'PROFILE_PICTURE'],
                 through: {
                     attributes: []
                 }
@@ -152,7 +152,7 @@ async function getUserSubscriptions(ctx) {
     } catch (error) {
         ctx.status = 500;
         ctx.body = { error: 'Internal Server Error' };
-        console.error(error);
+        console.error(error.message);
     }
 }
 
@@ -164,7 +164,7 @@ async function getUserSubscribers(ctx) {
             include: [{
                 model: USER,
                 as: 'Subscribers',
-                attributes: ['ID', 'USERNAME', 'EMAIL', 'FIRSTNAME', 'LASTNAME', 'PHONE_NUMBER', 'PROFILE_PICTURE'],
+                attributes: ['ID', 'USERNAME', 'EMAIL', 'FIRSTNAME', 'LASTNAME', 'DESCRIPTION', 'PROFILE_PICTURE'],
                 through: {
                     attributes: []
                 }
@@ -183,7 +183,7 @@ async function getUserSubscribers(ctx) {
     } catch (error) {
         ctx.status = 500;
         ctx.body = { error: 'Internal Server Error' };
-        console.error(error);
+        console.error(error.message);
     }
 }
 

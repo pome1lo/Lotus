@@ -6,7 +6,7 @@ import {useRef, useState} from "react";
 import {SaveButton} from "./SaveButton";
 import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 
-const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, content_text, likes_count }) => {
+const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, user_id, content_text, likes_count }) => {
     const fileInput = useRef();
     const [Heading, setHeading] = useState(content_heading);
     const [Content, setContent] = useState(content_text);
@@ -34,6 +34,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
     async function editPost() {
         const file = fileInput.current.files[0];
         const formData = new FormData();
+        formData.append('user_id', user_id);
         formData.append('image', file);
         formData.append('title', Heading);
         formData.append('content', Content);

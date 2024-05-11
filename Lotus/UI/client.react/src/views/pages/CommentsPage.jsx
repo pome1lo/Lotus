@@ -5,17 +5,27 @@ import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const CommentsPage = () => {
-    const {username, postid} = useParams();
+    const {username, post_id} = useParams();
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState(null);
     const [user, setUser] = useState(null);
+    const [currentUser, setCurrentUser]= useState(null);
     const [inputComment, setComment] = useState('');
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
-
     useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${username}/${postid}`)
+        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
+            .then(res => {
+                return res.json();
+            })
+            .then(data => setUser(data.user))
+        fetchWithAuth(`https://localhost:31903/api/profile`)
+            .then(res => {
+                return res.json();
+            })
+            .then(data => setCurrentUser(data.user))
+        fetch(`https://localhost:31903/api/profile/${username}/${post_id}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -23,10 +33,7 @@ const CommentsPage = () => {
                 return res.json();
             })
             .then(data => setPost(data));
-    }, [username, postid, navigate]);
-
-    useEffect(() => {
-        fetch(`https://localhost:31903/api/profile/${username}/${postid}/comments`)
+        fetch(`https://localhost:31903/api/profile/${username}/${post_id}/comments`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -34,25 +41,15 @@ const CommentsPage = () => {
                 return res.json();
             })
             .then(data => setComments(data));
-    }, [username, postid, navigate]);
-
-    useEffect(() => {
-        fetchWithAuth(`https://localhost:31903/api/profile`)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => setUser(data.user))
-    }, [username, navigate]);
-
-
+    }, [username, post_id, navigate]);
 
     async function sendComment() {
-        const response = await fetchWithAuth(`https://localhost:31903/api/profile/${username}/${postid}/comment`, {
+        const response = await fetchWithAuth(`https://localhost:31903/api/profile/${username}/${post_id}/comment`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 comment_text: inputComment,
-                picture: user.PROFILE_PICTURE
+                picture: currentUser.PROFILE_PICTURE
             })
         });
         const data = await response.json();
@@ -83,10 +80,10 @@ const CommentsPage = () => {
                                          src={"https://localhost:31903/" + post.IMAGE} alt="" width="48" height="48"/>
                                     <div>
                                         <h1 className="h6 mb-0 text-white lh-1 mb-2">{post.TITLE}</h1>
-                                        <p className="content-text small">{post.PUBLISHED_AT}</p>
+                                        <p className="content-text small" >{post.PUBLISHED_AT}</p>
                                     </div>
                                 </div>
-                                <p className="content-text">{post.CONTENT}</p>
+                                <p className="content-text" style={{fontFamily: "Calibri"}}>{post.CONTENT}</p>
                             </div>
                         </div>
                     </>
@@ -116,10 +113,10 @@ const CommentsPage = () => {
                 <hr className="mt-4"/>
 
                 <div className="d-flex align-items-start mt-4">
-                    {user && <img src={user.PROFILE_PICTURE} alt="alt"
-                                  className="mr-2 border-radius-medium" width="100" height="100"/>}
+                    {currentUser && <img src={currentUser.PROFILE_PICTURE} alt="alt"
+                                  className="mr-2 border-radius" width="100" height="100"/>}
                     <div className="w-100">
-                        <label htmlFor="firstName" className="form-label">{user.USERNAME}</label>
+                        {currentUser && <label htmlFor="firstName" className="form-label fw-bolder">{currentUser.USERNAME}</label>}
                         <textarea className="form-control" id="firstName"
                                   value={inputComment} onChange={(e) => setComment(e.target.value)}
                                   placeholder="Write some comment..." required=""/>

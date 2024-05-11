@@ -59,20 +59,18 @@ const PeoplePage = () => {
                              aria-labelledby="nav-subscriptions-tab">
                             {subscriptions && (
                                 subscriptions.map((item) => (
-                                    <>
-                                        <div className="d-flex justify-content-between mt-3">
-                                            <Link to={`/profile/${item.USERNAME}`}
-                                                  className="d-flex justify-content-between w-100">
-                                                <Publisher key={item.ID}
-                                                           avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
-                                                           nickname={item.USERNAME}
-                                                />
-                                                <button className="btn red-link">
-                                                    View profile
-                                                </button>
-                                            </Link>
-                                        </div>
-                                    </>
+                                    <div className="d-flex justify-content-between mt-3" key={item.ID}>
+                                        <Link to={`/profile/${item.USERNAME}`}
+                                              className="d-flex justify-content-between w-100">
+                                            <Publisher key={item.ID}
+                                                       avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
+                                                       nickname={item.USERNAME}
+                                            />
+                                            <button className="btn red-link">
+                                                View profile
+                                            </button>
+                                        </Link>
+                                    </div>
                                 ))
                             )}
                         </div>
@@ -80,20 +78,18 @@ const PeoplePage = () => {
                              aria-labelledby="nav-subscribers-tab">
                             {subscribers && (
                                 subscribers.map((item) => (
-                                    <>
-                                        <div className="d-flex justify-content-between mt-3">
-                                            <Link to={`/profile/${item.USERNAME}`}
-                                                  className="d-flex justify-content-between w-100">
-                                                <Publisher key={item.ID}
-                                                           avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
-                                                           nickname={item.USERNAME}
-                                                />
-                                                <button className="btn red-link">
-                                                    View profile
-                                                </button>
-                                            </Link>
-                                        </div>
-                                    </>
+                                    <div className="d-flex justify-content-between mt-3" key={item.ID}>
+                                        <Link to={`/profile/${item.USERNAME}`}
+                                              className="d-flex justify-content-between w-100">
+                                            <Publisher key={item.ID}
+                                                       avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
+                                                       nickname={item.USERNAME}
+                                            />
+                                            <button className="btn red-link">
+                                                View profile
+                                            </button>
+                                        </Link>
+                                    </div>
                                 ))
                             )}
                         </div>

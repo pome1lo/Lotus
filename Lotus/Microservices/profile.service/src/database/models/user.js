@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config.js');
+const {POST} = require("./post");
 
 const USER = sequelize.define('USERS', {
     ID: {
@@ -47,5 +48,8 @@ const USER = sequelize.define('USERS', {
     timestamps: false,
     freezeTableName: true
 });
+
+USER.hasMany(POST, { foreignKey: 'USER_ID' });
+POST.belongsTo(USER, { foreignKey: 'USER_ID' });
 
 module.exports = { USER };

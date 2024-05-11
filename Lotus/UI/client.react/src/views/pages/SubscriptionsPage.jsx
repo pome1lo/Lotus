@@ -25,12 +25,14 @@ const SubscriptionsPage = () => {
             .then(data => {
                 if (Array.isArray(data.posts)) {
                     setPosts(data.posts);
+                    console.log(data);
                 } else {
                     setPosts([]);
                 }
             })
             .catch(error => {
-                console.error('Ошибка при получении постов:', error);
+                setErrorMessage(error.message);
+                setShowError(true);
             })
     }, [navigate]);
 

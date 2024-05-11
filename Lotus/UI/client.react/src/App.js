@@ -40,7 +40,7 @@ function App() {
           <Route path="profile/:username" element={<ProfilePage/>} />
           <Route path="profile/:username/edit" element={<ProfileEditPage/>} />
           <Route path="profile/:username/change-password" element={<ChangePasswordPage/>} />
-          <Route path="/:username/:postid/comments" element={<CommentsPage/>} />
+          <Route path="/:username/:post_id/comments" element={<CommentsPage/>} />
           <Route path="/about" element={<AboutPage/>} />
           <Route path="/people" element={<PeoplePage/>} />
           <Route path="/saved" element={<SavedPage/>} />

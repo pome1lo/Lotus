@@ -3,6 +3,7 @@ const { USER } = require('../database/models/user');
 const { POST } = require('../database/models/post');
 const crypto = require('crypto');
 const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
 const Sequelize = require('sequelize');
 const { updatePassword: grpcUpdatePassword, deleteUser: grpcDeleteUser, updateAccount: grpcUpdateAccount } = require("../services/gRPC/AuthServer");
@@ -14,7 +15,7 @@ const router = new Router();
 
 
 async function updateAccount(ctx) {
-    const { id, username, firstname, lastname } = ctx.request.body;
+    const { id, username, firstname, lastname, description } = ctx.request.body;
 
     if (ctx.state.user.user_id !== id) {
         ctx.status = 401;
@@ -34,13 +35,24 @@ async function updateAccount(ctx) {
         user.USERNAME = username || user.USERNAME;
         user.FIRSTNAME = firstname || user.FIRSTNAME;
         user.LASTNAME = lastname || user.LASTNAME;
+        user.DESCRIPTION = description || user.DESCRIPTION;
 
         grpcUpdateAccount(id, user.USERNAME);
 
         await user.save();
 
+        const token = jwt.sign({
+            user_id: user.ID,
+            username,
+            email: user.email
+        }, SECRET_KEY, { expiresIn: '1h' });
+
         ctx.status = 200;
-        ctx.body = { message: 'User updated successfully' };
+        ctx.body = {
+            message: 'User updated successfully',
+            username: user.USERNAME,
+            token: token,
+        };
     } catch (error) {
         ctx.status = 500;
         ctx.body = { error: 'Something went wrong' };

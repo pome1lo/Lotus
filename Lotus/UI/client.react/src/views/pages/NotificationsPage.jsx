@@ -12,7 +12,6 @@ const NotificationsPage = () => {
             .then(response => {
                 if (response) {
                     response.json().then(data => {
-                        console.log(data.notifications);
                         setNotifications(data.notifications);
                     });
                 }

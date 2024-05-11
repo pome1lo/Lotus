@@ -25,8 +25,7 @@ const router = new Router();
 
 async function createPost(ctx) {
     const { user_id, title, content } = ctx.req.body;
-
-    if (ctx.state.user.user_id !== user_id) {
+    if (ctx.state.user.user_id !== parseInt(user_id)) {
         ctx.status = 401;
         ctx.body = { error: 'Unauthorized: You can only update your own information' };
         return;
@@ -40,7 +39,7 @@ async function createPost(ctx) {
 
     try {
         const post = await POST.create({
-            USER_ID: user_id,
+            USER_ID: ctx.state.user.user_id,
             TITLE: title,
             CONTENT: content,
             IMAGE: ctx.req.file.filename
@@ -81,16 +80,22 @@ async function updateProfileImage(ctx) {
 }
 async function updatePost(ctx) {
     const { title, content } = ctx.req.body;
-    const { id } = ctx.params;
+    const post_id = ctx.params.post_id;
 
-    if (!ctx.req.file && !title && !content) {
+    // if (ctx.state.user.user_id !== parseInt(user_id)) {
+    //     ctx.status = 401;
+    //     ctx.body = { error: 'Unauthorized: You can only update your own information' };
+    //     return;
+    // }
+
+    if (!ctx.req.file || !title || !content) {
         ctx.status = 400;
         ctx.body = { error: 'No update data provided' };
         return;
     }
 
     try {
-        const post = await POST.findByPk(id);
+        const post = await POST.findByPk(post_id);
 
         if (!post) {
             ctx.status = 404;
@@ -119,10 +124,48 @@ async function updatePost(ctx) {
         ctx.body = { error: 'Something went wrong' };
     }
 }
+
+async function getCurrentProfile(ctx) {
+    const currentUserId = ctx.state.user.user_id;
+    const username = ctx.state.user.username;
+    const user = await USER.findOne({ where: { USERNAME: username }});
+
+    if (user) {
+        const posts = await POST.findAll({ where: { USER_ID: user.ID } });
+        const postsWithImageUrls = posts.map(post => {
+            return {
+                ...post.get({ plain: true }),
+                IMAGE: post.IMAGE ? `https://localhost:31903/${post.IMAGE}` : null
+            };
+        });
+        user.PROFILE_PICTURE = user.PROFILE_PICTURE ? `https://localhost:31903/${user.PROFILE_PICTURE}` : null;
+
+        let isCurrentUserSubscribedToProfileUser = false;
+        if (currentUserId !== "null") {
+            const subscription = await SUBSCRIPTION.findOne({
+                where: {
+                    SUBSCRIBER_ID: currentUserId,
+                    SUBSCRIBED_TO_ID: user.ID
+                }
+            });
+            isCurrentUserSubscribedToProfileUser = subscription !== null;
+        }
+
+        ctx.body = {
+            user: user,
+            posts: postsWithImageUrls,
+            isCurrentUserSubscribedToProfileUser: isCurrentUserSubscribedToProfileUser
+        };
+    } else {
+        ctx.status = 404;
+        ctx.body = { message: 'User not found' };
+    }
+}
+
 async function getProfile(ctx) {
     const currentUserId = ctx.state.user.user_id;
     const username = ctx.params.username;
-    const user = await USER.findOne( { where: { USERNAME: username }});
+    const user = await USER.findOne({ where: { USERNAME: username }});
 
     if (user) {
         const posts = await POST.findAll({ where: { USER_ID: user.ID } });
@@ -155,6 +198,7 @@ async function getProfile(ctx) {
         ctx.body = { message: 'User not found' };
     }
 }
+
 
 async function getProfiles(ctx) {
     let users = await USER.findAll();
@@ -299,6 +343,7 @@ async function deleteComment(ctx) {
 
 router.get('/api/profiles', getProfiles);
 router.get('/api/profile/:username', koaJwt({ secret: SECRET_KEY }), getProfile);
+router.get('/api/profile', koaJwt({ secret: SECRET_KEY }), getCurrentProfile);
 router.get('/api/profile/:username/posts', getPosts);
 router.get('/api/profile/:username/:post_id', getPost);
 router.get('/api/profile/:username/:post_id/comments', getComments);

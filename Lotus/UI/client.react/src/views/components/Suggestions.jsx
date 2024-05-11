@@ -23,19 +23,17 @@ const Suggestions = () => {
           <h6 className="border-bottom pb-2 mb-0 mt-5">Suggestions</h6>
           {suggestions && (
               suggestions.map((item) => (
-                  <>
-                      <div className="d-flex justify-content-between mt-3" >
-                          <Link to={`/profile/${item.USERNAME}`} className="d-flex justify-content-between w-100">
-                              <Publisher key={item.ID}
-                                         avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
-                                         nickname={item.USERNAME}
-                              />
-                          </Link>
-                          <SubscriptionButton
-                              styles={"btn red-link"}
-                              to_id={item.ID}/>
-                      </div>
-                  </>
+                  <div className="d-flex justify-content-between mt-3" key={item.ID}>
+                      <Link to={`/profile/${item.USERNAME}`} className="d-flex justify-content-between w-100">
+                          <Publisher key={item.ID}
+                                     avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
+                                     nickname={item.USERNAME}
+                          />
+                      </Link>
+                      <SubscriptionButton
+                          styles={"btn red-link"}
+                          to_id={item.ID}/>
+                  </div>
               ))
           )}
       </>
