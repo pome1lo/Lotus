@@ -22,7 +22,7 @@ async function subscribeUser(ctx) {
 
         if (!user || !subscribeToUser) {
             ctx.status = 404;
-            ctx.body = { error: 'User not found' };
+            ctx.body = { message: 'User not found' };
             return;
         }
 
@@ -45,7 +45,7 @@ async function subscribeUser(ctx) {
         ctx.body = { message: 'Subscribed successfully' };
     } catch (error) {
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -59,7 +59,7 @@ async function unsubscribeUser(ctx) {
 
         if (!user || !unsubscribeFromUser) {
             ctx.status = 404;
-            ctx.body = { error: 'User not found' };
+            ctx.body = { message: 'User not found' };
             return;
         }
 
@@ -83,7 +83,7 @@ async function unsubscribeUser(ctx) {
     } catch (error) {
         ctx.status = 500;
         console.error(error.message);
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -116,12 +116,12 @@ async function getUserPosts(ctx) {
             };
         } else {
             ctx.status = 404;
-            ctx.body = { error: 'Posts not found' };
+            ctx.body = { message: 'Posts not found' };
         }
     } catch (error) {
         console.error(error);
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -142,7 +142,7 @@ async function getUserSubscriptions(ctx) {
 
         if (!userWithSubscriptions) {
             ctx.status = 404;
-            ctx.body = { error: 'User not found' };
+            ctx.body = { message: 'User not found' };
             return;
         }
 
@@ -151,7 +151,7 @@ async function getUserSubscriptions(ctx) {
         };
     } catch (error) {
         ctx.status = 500;
-        ctx.body = { error: 'Internal Server Error' };
+        ctx.body = { message: 'Internal Server Error' };
         console.error(error.message);
     }
 }
@@ -173,7 +173,7 @@ async function getUserSubscribers(ctx) {
 
         if (!userWithSubscribers) {
             ctx.status = 404;
-            ctx.body = { error: 'User not found' };
+            ctx.body = { message: 'User not found' };
             return;
         }
 
@@ -182,7 +182,7 @@ async function getUserSubscribers(ctx) {
         };
     } catch (error) {
         ctx.status = 500;
-        ctx.body = { error: 'Internal Server Error' };
+        ctx.body = { message: 'Internal Server Error' };
         console.error(error.message);
     }
 }
@@ -244,12 +244,14 @@ async function support(ctx) {
 }
 
 
-router.get('/api/user/posts', koaJwt({ secret: SECRET_KEY }), getUserPosts);
-router.get('/api/user/subscriptions', koaJwt({ secret: SECRET_KEY }), getUserSubscriptions);
-router.get('/api/user/subscribers', koaJwt({ secret: SECRET_KEY }), getUserSubscribers);
-router.get('/api/user/suggestions', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
-router.post('/api/user/subscribe', koaJwt({ secret: SECRET_KEY }), subscribeUser);
-router.post('/api/user/unsubscribe', koaJwt({ secret: SECRET_KEY }), unsubscribeUser);
-router.post('/api/user/support', koaJwt({ secret: SECRET_KEY }), support);
+const PREFIX = "/api/profile/";
+
+router.get(PREFIX + 'user/posts', koaJwt({ secret: SECRET_KEY }), getUserPosts);
+router.get(PREFIX + 'user/subscriptions', koaJwt({ secret: SECRET_KEY }), getUserSubscriptions);
+router.get(PREFIX + 'user/subscribers', koaJwt({ secret: SECRET_KEY }), getUserSubscribers);
+router.get(PREFIX + 'user/suggestions', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
+router.post(PREFIX + 'user/subscribe', koaJwt({ secret: SECRET_KEY }), subscribeUser);
+router.post(PREFIX + 'user/unsubscribe', koaJwt({ secret: SECRET_KEY }), unsubscribeUser);
+router.post(PREFIX + 'user/support', koaJwt({ secret: SECRET_KEY }), support);
 
 module.exports = router;

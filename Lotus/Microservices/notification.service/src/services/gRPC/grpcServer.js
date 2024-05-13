@@ -2,7 +2,7 @@ const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const { Mailer } = require("../mailer/mailer");
 
-const PROTO_PATH = process.env.APP_PORT ? "./app/notify.proto" : "./../../Static/protos/notify.proto";
+const PROTO_PATH = process.env.APP_PORT ? "/app/notify.proto" : "./../../Static/protos/notify.proto";
 
 async function verifyEmail(call, callback) {
     const { username, email, message } = call.request;

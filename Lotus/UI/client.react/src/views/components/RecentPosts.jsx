@@ -33,7 +33,7 @@ const RecentPosts = () => {
                       </div>
                       <div>
                           <p>{item.USERNAME}</p>
-                          <h5>{item.TITLE}</h5>
+                          <h6>{item.TITLE}</h6>
                           <p className="content-text">{`${new Date(item.PUBLISHED_AT).toLocaleString("en", {
                               day: '2-digit',
                               month: 'short',

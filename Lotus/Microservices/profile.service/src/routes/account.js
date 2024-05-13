@@ -19,7 +19,7 @@ async function updateAccount(ctx) {
 
     if (ctx.state.user.user_id !== id) {
         ctx.status = 401;
-        ctx.body = { error: 'Unauthorized: You can only update your own information' };
+        ctx.body = { message: 'Unauthorized: You can only update your own information' };
         return;
     }
 
@@ -28,7 +28,7 @@ async function updateAccount(ctx) {
 
         if (!user) {
             ctx.status = 404;
-            ctx.body = { error: 'User not found' };
+            ctx.body = { message: 'User not found' };
             return;
         }
 
@@ -55,7 +55,7 @@ async function updateAccount(ctx) {
         };
     } catch (error) {
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -67,7 +67,7 @@ async function updatePassword(ctx) {
         const user = await USER.findByPk(id);
         if (!user) {
             ctx.status = 404;
-            ctx.body = { error: 'User not found' };
+            ctx.body = { message: 'User not found' };
             return;
         }
 
@@ -83,7 +83,7 @@ async function updatePassword(ctx) {
     } catch (error) {
         console.error(error);
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -95,7 +95,7 @@ async function deleteAccount(ctx) {
 
         if (!user) {
             ctx.status = 404;
-            ctx.body = { error: 'User not found' };
+            ctx.body = { message: 'User not found' };
             return;
         }
 
@@ -113,12 +113,15 @@ async function deleteAccount(ctx) {
     } catch (error) {
         console.error(error.message);
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
-router.put('/api/account', koaJwt({ secret: SECRET_KEY }), updateAccount);
-router.put('/api/account/password', koaJwt({ secret: SECRET_KEY }), updatePassword);
-router.delete('/api/account', koaJwt({ secret: SECRET_KEY }), deleteAccount);
+const PREFIX = "/api/profile/";
+
+router.put(PREFIX + 'account', koaJwt({ secret: SECRET_KEY }), updateAccount);
+router.put(PREFIX + 'account/password', koaJwt({ secret: SECRET_KEY }), updatePassword);
+router.delete(PREFIX + 'account', koaJwt({ secret: SECRET_KEY }), deleteAccount);
+
 
 module.exports = router;

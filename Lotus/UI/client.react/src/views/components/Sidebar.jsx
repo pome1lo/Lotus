@@ -35,11 +35,6 @@ const Sidebar = () => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/saved" className="nav-link link-body-emphasis" aria-current="page">
-                                    <i className="bi bi-bookmark"></i>Saved
-                                </NavLink>
-                            </li>
-                            <li>
                                 <NavLink to="/subscriptions" className="nav-link link-body-emphasis" aria-current="page">
                                     <i className="bi bi-chat-square-text"></i>For you
                                 </NavLink>

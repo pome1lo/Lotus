@@ -1,6 +1,5 @@
 const Router = require('koa-router');
 const { POST } = require('../database/models/post');
-const { SavedPost } = require('../database/models/saved');
 const { Op } = require('sequelize');
 const koaJwt = require("koa-jwt");
 
@@ -24,49 +23,8 @@ async function getRecentPosts(ctx) {
     }
 }
 
-async function savePost(ctx) {
-    try {
-        const postId = ctx.query.post_id;
-        const userId = ctx.state.user.user_id;
+const PREFIX = "/api/profile/";
 
-        const existingEntry = await SavedPost.findOne({ where: { USER_ID: userId, POST_ID: postId } });
-        if (existingEntry) {
-            ctx.status = 409;
-            ctx.body = 'Post is already saved.';
-            return;
-        }
-
-        const savedPost = await SavedPost.create({ USER_ID: userId, POST_ID: postId });
-        ctx.status = 201;
-        ctx.body = savedPost;
-    } catch (error) {
-        ctx.status = 500;
-        console.error(error.message);
-        ctx.body = 'Error saving the post.';
-    }
-}
-
-async function unsavePost(ctx) {
-    try {
-        const postId = ctx.query.post_id;
-        const userId = ctx.state.user.user_id;
-
-        const deleted = await SavedPost.destroy({ where: { USER_ID: userId, POST_ID: postId } });
-        if (deleted) {
-            ctx.status = 200;
-            ctx.body = 'Post was unsaved.';
-        } else {
-            ctx.status = 404;
-            ctx.body = 'Post not found or was not saved.';
-        }
-    } catch (error) {
-        ctx.status = 500;
-        ctx.body = 'Error unsaving the post.';
-    }
-}
-
-router.get('/api/posts/recent', getRecentPosts);
-router.put('/api/post/:post_id/save', koaJwt({ secret: SECRET_KEY }), savePost);
-router.put('/api/post/:post_id/unsave', koaJwt({ secret: SECRET_KEY }), unsavePost);
+router.get(PREFIX + 'posts/recent', getRecentPosts);
 
 module.exports = router;

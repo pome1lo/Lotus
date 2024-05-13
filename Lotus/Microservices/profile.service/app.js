@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors');
 const fs = require("fs");
 const https = require("https");
+
 const path = require("path");
 const serve = require("koa-static");
 const Router = require('koa-router');
@@ -13,7 +14,8 @@ const UserRoutes = require('./src/routes/user');
 const PostRoutes = require('./src/routes/post');
 
 const connectRabbitMQ = require('./src/services/RabbitMQ/connectRabbitMQ');
-const { setupSocket } = require('./src/services/Socket/socket');
+
+const {initializeSocketIo} = require('./src/services/Socket/socket');
 
 const port = process.env.APP_PORT || 31903;
 const isDocker = process.env.APP_PORT == null;
@@ -24,7 +26,13 @@ app.keys = [ process.env.SECRET_KEY || 'secret_key' ];
 
 const imagesPath = path.join(__dirname, './src/data/users/posts/images');
 app.use(serve(imagesPath));
-app.use(cors({ origin: '*' }));
+app.use(cors({
+    origin: 'https://localhost:3000',
+    allowMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    credentials: true
+}));
+
 app.use(bodyParser());
 
 app.use(ProfileRoutes.routes());
@@ -39,11 +47,12 @@ const options = {
 };
 
 const server = https.createServer(options, app.callback());
-const io = setupSocket(server);
+initializeSocketIo(server);
 
 server.listen(port, () => {
     console.log(`Сервер запущен на порту ${port}`);
-    module.exports.io = io;
 });
 
 connectRabbitMQ();
+
+

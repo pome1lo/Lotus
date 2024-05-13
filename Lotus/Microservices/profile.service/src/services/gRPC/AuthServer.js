@@ -8,7 +8,7 @@ const TARGET = getTarget();
 const client = new authPackage.AuthenticationService(TARGET, grpc.credentials.createInsecure());
 
 function getProtoPath() {
-    return process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
+    return process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "/app/auth.proto";
 }
 
 function getGrpcPort() {

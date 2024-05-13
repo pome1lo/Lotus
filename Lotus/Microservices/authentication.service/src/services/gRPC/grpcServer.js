@@ -3,7 +3,7 @@ const protoLoader = require('@grpc/proto-loader');
 const { USER } = require('../../database/models/user');
 const { redisClient } = require('./../Redis/redisClient');
 const { sendToQueue } = require("../RabbitMQ/sendToQueue");
-const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "./app/auth.proto";
+const PROTO_PATH = process.env.APP_PORT == null ? "./../../Static/protos/auth.proto" : "/app/auth.proto";
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, { });
 const authPackage = grpc.loadPackageDefinition(packageDefinition).authPackage;
 

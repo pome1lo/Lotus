@@ -9,7 +9,7 @@ const TARGET = getTarget();
 const client = new notifyPackage.NotificationService(TARGET, grpc.credentials.createInsecure());
 
 function getProtoPath() {
-    return process.env.APP_PORT == null ? "./../../Static/protos/notify.proto" : "./app/notify.proto";
+    return process.env.APP_PORT == null ? "./../../Static/protos/notify.proto" : "/app/notify.proto";
 }
 
 function getGrpcPort() {

@@ -1,8 +1,6 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const userAccountRoutes = require('./src/routes/account');
-const googleRoutes = require('./src/routes/google');
-const githubRoutes = require('./src/routes/github');
 const cors = require('koa2-cors');
 const session = require("koa-session");
 const passport = require("koa-passport");
@@ -27,8 +25,6 @@ app.use(cors());
 app.use(bodyParser());
 
 app.use(userAccountRoutes.routes());
-app.use(googleRoutes.routes());
-app.use(githubRoutes.routes());
 
 grpcServer.startServer(grpcPort);
 

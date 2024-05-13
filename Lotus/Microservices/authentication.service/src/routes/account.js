@@ -146,7 +146,7 @@ async function resetUserPassword(ctx) {
     } catch (error) {
         console.log(error.message);
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -155,11 +155,14 @@ async function protectedRoute(ctx) {
     ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
 }
 
-router.post('/api/auth/account/identify', identifyUser);
-router.post('/api/auth/account/login', loginUser);
-router.post('/api/auth/account/verify-email', verifyUserEmail);
-router.post('/api/auth/account/create', createUser);
-router.post('/api/auth/account/reset-password', resetUserPassword);
-router.get ('/api/auth/account/protected', koaJwt({ secret: secretKey }), protectedRoute);
+const PREFIX = "/api/auth/";
+
+router.post(PREFIX + 'account/identify', identifyUser);
+router.post(PREFIX + 'account/login', loginUser);
+router.post(PREFIX + 'account/verify-email', verifyUserEmail);
+router.post(PREFIX + 'account/create', createUser);
+router.post(PREFIX + 'account/reset-password', resetUserPassword);
+router.get (PREFIX + 'account/protected', koaJwt({ secret: secretKey }), protectedRoute);
+
 
 module.exports = router;

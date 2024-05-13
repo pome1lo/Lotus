@@ -1,6 +1,6 @@
 import './assets/css/App.css';
 import 'aos/dist/aos.css';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import AOS from 'aos';
 import { Route, Routes } from 'react-router-dom';
 import {NewsPage} from "./views/pages/NewsPage";
@@ -16,16 +16,37 @@ import {AuthenticationPage} from "./views/pages/AuthenticationPage";
 import {RegistrationPage} from "./views/pages/RegistrationPage";
 import {ChangePasswordPage} from "./views/pages/ChangePasswordPage";
 import {SupportPage} from "./views/pages/SupportPage";
-import {Comment} from "./views/components/Comment";
 import {CommentsPage} from "./views/pages/CommentsPage";
 import {AboutPage} from "./views/pages/AboutPage";
 import {PeoplePage} from "./views/pages/PeoplePage";
-import {SavedPage} from "./views/pages/SavedPage";
 import {SubscriptionsPage} from "./views/pages/SubscriptionsPage";
 import {NotificationsPage} from "./views/pages/NotificationsPage";
 
+import io from 'socket.io-client';
+import {ErrorMessage} from "./views/components/ErrorMessage";
+
+const socket = io('https://localhost:31903', { withCredentials: true });
+// socket.on('connect', () => { console.log('Подключено к серверу'); });
+// socket.emit('message', 'Привет, сервер!');
+// socket.on('message', (data) => { console.log(data); });
+
 function App() {
   useEffect(() => AOS.init , []);
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    socket.join('someRoom');
+    socket.on('new-comment', (data) => {
+      setErrorMessage((prevMessages) => [...prevMessages, data]);
+      setShowError(true);
+    });
+
+    return () => {
+      socket.off('new-comment');
+    };
+  }, []);
 
   return (
     <>
@@ -43,7 +64,6 @@ function App() {
           <Route path="/:username/:post_id/comments" element={<CommentsPage/>} />
           <Route path="/about" element={<AboutPage/>} />
           <Route path="/people" element={<PeoplePage/>} />
-          <Route path="/saved" element={<SavedPage/>} />
           <Route path="/subscriptions" element={<SubscriptionsPage/>} />
           <Route path="/notifications" element={<NotificationsPage/>} />
         </Route>
@@ -51,6 +71,8 @@ function App() {
         <Route path="register" element={<RegistrationPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+
+      <ErrorMessage message={errorMessage} isVisible={showError}/>
     </>
   );
 }

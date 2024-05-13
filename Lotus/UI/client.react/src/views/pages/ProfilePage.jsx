@@ -55,11 +55,12 @@ const ProfilePage = () => {
             }
 
             const data = await response.json();
-            console.log('OK:', data);
             navigate(`/profile/${username}`);
             window.location.reload();
         } catch (error) {
-            console.error('Ошибка:', error);
+            console.error('Ошибка:', error.message);
+            setErrorMessage(error.message);
+            setShowError(true);
         }
     }
 

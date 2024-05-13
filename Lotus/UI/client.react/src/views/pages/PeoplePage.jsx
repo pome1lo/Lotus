@@ -58,39 +58,55 @@ const PeoplePage = () => {
                         <div className="tab-pane fade" id="nav-subscriptions" role="tabpanel"
                              aria-labelledby="nav-subscriptions-tab">
                             {subscriptions && (
-                                subscriptions.map((item) => (
-                                    <div className="d-flex justify-content-between mt-3" key={item.ID}>
-                                        <Link to={`/profile/${item.USERNAME}`}
-                                              className="d-flex justify-content-between w-100">
-                                            <Publisher key={item.ID}
-                                                       avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
-                                                       nickname={item.USERNAME}
-                                            />
-                                            <button className="btn red-link">
-                                                View profile
-                                            </button>
-                                        </Link>
+                                subscriptions.length > 0 ? (
+                                    subscriptions.map((item) => (
+                                        <div className="d-flex justify-content-between mt-3" key={item.ID}>
+                                            <Link to={`/profile/${item.USERNAME}`}
+                                                  className="d-flex justify-content-between w-100">
+                                                <Publisher key={item.ID}
+                                                           avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
+                                                           nickname={item.USERNAME}
+                                                />
+                                                <button className="btn red-link">
+                                                    View profile
+                                                </button>
+                                            </Link>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="bg-body-tertiary p-5 rounded mt-3">
+                                        <h2>There's no one here yet ☹️</h2>
+                                        <p className="lead">Publish posts and find your audience!</p>
                                     </div>
-                                ))
+                                )
+
                             )}
                         </div>
                         <div className="tab-pane fade active show" id="nav-subscribers" role="tabpanel"
                              aria-labelledby="nav-subscribers-tab">
                             {subscribers && (
-                                subscribers.map((item) => (
-                                    <div className="d-flex justify-content-between mt-3" key={item.ID}>
-                                        <Link to={`/profile/${item.USERNAME}`}
-                                              className="d-flex justify-content-between w-100">
-                                            <Publisher key={item.ID}
-                                                       avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
-                                                       nickname={item.USERNAME}
-                                            />
-                                            <button className="btn red-link">
-                                                View profile
-                                            </button>
-                                        </Link>
+                                subscribers.length > 0 ? (
+                                    subscribers.map((item) => (
+                                        <div className="d-flex justify-content-between mt-3" key={item.ID}>
+                                            <Link to={`/profile/${item.USERNAME}`}
+                                                  className="d-flex justify-content-between w-100">
+                                                <Publisher key={item.ID}
+                                                           avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
+                                                           nickname={item.USERNAME}
+                                                />
+                                                <button className="btn red-link">
+                                                    View profile
+                                                </button>
+                                            </Link>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="bg-body-tertiary p-5 rounded mt-3">
+                                        <h2>There's no one here yet ☹️</h2>
+                                        <p className="lead">You can subscribe to someone at any time</p>
                                     </div>
-                                ))
+                                )
+
                             )}
                         </div>
                     </div>

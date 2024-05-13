@@ -5,6 +5,7 @@ const { COMMENT } = require("../database/models/comment");
 const path = require('path');
 const multer = require("koa-multer");
 const koaJwt = require("koa-jwt");
+const { io } = require('./../services/Socket/socket');
 const {SUBSCRIPTION} = require("../database/models/subscription");
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
@@ -90,7 +91,7 @@ async function updatePost(ctx) {
 
     if (!ctx.req.file || !title || !content) {
         ctx.status = 400;
-        ctx.body = { error: 'No update data provided' };
+        ctx.body = { message: 'No update data provided' };
         return;
     }
 
@@ -99,13 +100,13 @@ async function updatePost(ctx) {
 
         if (!post) {
             ctx.status = 404;
-            ctx.body = { error: 'Post not found' };
+            ctx.body = { message: 'Post not found' };
             return;
         }
 
         if (ctx.state.user.user_id !== post.USER_ID) {
             ctx.status = 401;
-            ctx.body = { error: 'Unauthorized: You can only update your own information' };
+            ctx.body = { message: 'Unauthorized: You can only update your own information' };
             return;
         }
 
@@ -121,7 +122,7 @@ async function updatePost(ctx) {
         ctx.body = { message: 'Post updated successfully', post: updatedData };
     } catch (error) {
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -265,6 +266,8 @@ async function createComment(ctx) {
             USER_PICTURE: picture
         });
 
+
+
         ctx.status = 201;
         ctx.body = { message: 'Comment created successfully', comment };
     } catch (error) {
@@ -273,6 +276,17 @@ async function createComment(ctx) {
         ctx.body = { message: 'Something went wrong' };
     }
 }
+
+
+
+
+async function test(ctx) {
+    io.emit('new-comment', {
+        message: 'У вас новый комментарий!'
+    });
+}
+
+
 async function deletePost(ctx) {
     const { id } = ctx.query.post_id;
 
@@ -281,13 +295,13 @@ async function deletePost(ctx) {
 
         if (!post) {
             ctx.status = 404;
-            ctx.body = { error: 'Post not found' };
+            ctx.body = { message: 'Post not found' };
             return;
         }
 
         if (ctx.state.user.user_id !== post.USER_ID) {
             ctx.status = 401;
-            ctx.body = { error: 'Unauthorized: You can only update your own information' };
+            ctx.body = { message: 'Unauthorized: You can only update your own information' };
             return;
         }
 
@@ -298,7 +312,7 @@ async function deletePost(ctx) {
     } catch (error) {
         console.log(error.message);
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
@@ -311,7 +325,7 @@ async function deleteComment(ctx) {
         const comment = await COMMENT.findByPk(commentId);
         if (!comment) {
             ctx.status = 404;
-            ctx.body = { error: 'Comment not found' };
+            ctx.body = { message: 'Comment not found' };
             return;
         }
 
@@ -319,14 +333,14 @@ async function deleteComment(ctx) {
         const post = await POST.findByPk(postId);
         if (!post) {
             ctx.status = 404;
-            ctx.body = { error: 'Post not found' };
+            ctx.body = { message: 'Post not found' };
             return;
         }
 
         // Проверяем, что текущий пользователь является автором комментария или создателем поста
         if (comment.USER_ID !== currentUserId && post.USER_ID !== currentUserId) {
             ctx.status = 403;
-            ctx.body = { error: 'You are not authorized to delete this comment' };
+            ctx.body = { message: 'You are not authorized to delete this comment' };
             return;
         }
 
@@ -336,23 +350,26 @@ async function deleteComment(ctx) {
     } catch (error) {
         console.log(error.message);
         ctx.status = 500;
-        ctx.body = { error: 'Something went wrong' };
+        ctx.body = { message: 'Something went wrong' };
     }
 }
 
+const PREFIX = "/api/profile/";
 
-router.get('/api/profiles', getProfiles);
-router.get('/api/profile/:username', koaJwt({ secret: SECRET_KEY }), getProfile);
-router.get('/api/profile', koaJwt({ secret: SECRET_KEY }), getCurrentProfile);
-router.get('/api/profile/:username/posts', getPosts);
-router.get('/api/profile/:username/:post_id', getPost);
-router.get('/api/profile/:username/:post_id/comments', getComments);
-router.post('/api/profile/:username/:post_id/comment', koaJwt({ secret: SECRET_KEY }), createComment);
-router.put('/api/profile/image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);
-router.delete('/api/profile/:username/:post_id/comment/:comment_id', koaJwt({ secret: SECRET_KEY }), deleteComment);
+router.get(PREFIX + 'test', test);
+router.get(PREFIX + 'profiles', getProfiles);
+router.get(PREFIX + ':username', koaJwt({ secret: SECRET_KEY }), getProfile);
+router.get(PREFIX, koaJwt({ secret: SECRET_KEY }), getCurrentProfile);
+router.get(PREFIX + ':username/posts', getPosts);
+router.get(PREFIX + ':username/:post_id', getPost);
+router.get(PREFIX + ':username/:post_id/comments', getComments);
+router.post(PREFIX + ':username/:post_id/comment', koaJwt({ secret: SECRET_KEY }), createComment);
+router.put(PREFIX + 'image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);
+router.delete(PREFIX + ':username/:post_id/comment/:comment_id', koaJwt({ secret: SECRET_KEY }), deleteComment);
 
-router.post('/api/post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
-router.put('/api/post/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
-router.delete('/api/post/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);
+router.post(PREFIX + '/api/post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
+router.put(PREFIX + '/api/post/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
+router.delete(PREFIX + '/api/post/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);
+
 
 module.exports = router;

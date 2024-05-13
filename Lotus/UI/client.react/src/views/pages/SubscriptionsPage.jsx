@@ -39,23 +39,32 @@ const SubscriptionsPage = () => {
   return (
       <>
           <div className="col-md-6 order-md-1">
-              {(posts.map((item, index) => (
-                  <Post key={index}
-                        post_id={item.ID}
-                        user_id={item.USER_ID}
-                        user_image={'https://localhost:31903/' + item.PROFILE_PICTURE}
-                        username={item.USERNAME}
-                        content_image={'https://localhost:31903/' + item.IMAGE}
-                        content_heading={item.TITLE}
-                        content_text={item.CONTENT}
-                        dop_info={`${new Date(item.PUBLISHED_AT).toLocaleString("en", {
-                            day: '2-digit',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })}`}
-                  />
-              )))}
+              {posts &&
+                  posts.length > 0 ? (
+                  (posts.map((item, index) => (
+                      <Post key={index}
+                            post_id={item.ID}
+                            user_id={item.USER_ID}
+                            user_image={'https://localhost:31903/' + item.PROFILE_PICTURE}
+                            username={item.USERNAME}
+                            content_image={'https://localhost:31903/' + item.IMAGE}
+                            content_heading={item.TITLE}
+                            content_text={item.CONTENT}
+                            dop_info={`${new Date(item.PUBLISHED_AT).toLocaleString("en", {
+                                day: '2-digit',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}`}
+                      />
+                  )))
+              ) : (
+                  <div className="bg-body-tertiary p-5 rounded mt-3">
+                      <h2>There's no one here yet ☹️</h2>
+                      <p className="lead">Subscribe to someone to follow their updates!</p>
+                  </div>
+              )
+          }
           </div>
           <div className="position-sticky col-md-4 order-md-2">
               <div className="sticky-xl-top ">

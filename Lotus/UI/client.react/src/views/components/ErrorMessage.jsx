@@ -6,7 +6,7 @@ const ErrorMessage = ({ message, isVisible }) => {
     }
 
     return (
-        <div style={{position: "absolute", right: 0, bottom: 0, maxWidth: 350}}
+        <div style={{position: "absolute", right: 0, bottom: 0, maxWidth: 350, zIndex: 9999}}
              className={`alert align-items-center mr-2 alert-danger d-flex`}
              role="alert">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
