@@ -17,7 +17,13 @@ async function getNews(ctx) {
             order: [['ID', 'DESC']]
         });
 
-        ctx.body = { news: news };
+        const totalNewsCount = await NEWS.count({ where: { TOPIC_NAME: topic_name } });
+        const maxPages = Math.ceil(totalNewsCount / limit);
+
+        ctx.body = {
+            news: news,
+            maxPages: maxPages
+        };
     } catch (error) {
         console.log(error.message);
         ctx.status = 500;

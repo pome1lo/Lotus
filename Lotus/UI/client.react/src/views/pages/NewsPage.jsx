@@ -7,15 +7,18 @@ const NewsPage = () => {
     const [news, setNews] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1)
+    const [maxPages, setMaxPages] = useState(1)
 
     const fetchArticlesByTopic = async (currentTopic) => {
         setNews([]);
-        fetch(`https://localhost:4000/api/news/${currentTopic}?limit=24&page=1`)
+        fetch(`https://localhost:4000/api/news/${currentTopic}?limit=24&page=${currentPage}`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {
                         setNews([]);
                         setNews(data.news);
+                        setMaxPages(data.maxPages);
                     });
                 }
             })
@@ -27,14 +30,14 @@ const NewsPage = () => {
 
     useEffect( () => {
          fetchArticlesByTopic('world');
-    }, []);
+    }, [currentPage]);
 
     return (
         <>
             <div className="col-md-10 order-md-1 two">
                 <div className="p-5 mb-4 bg-body-image rounded-3">
                     <div className="container-fluid py-5">
-                        <h1 className="display-1 fw-bold">Themes</h1>
+                        <h1 className="display-1 fw-bold">News</h1>
                     </div>
                 </div>
                 <div className="bd-example m-0 border-0">
@@ -91,6 +94,30 @@ const NewsPage = () => {
                                              aria-labelledby="nav-economy-tab">
                                             <NewsTabItem news={news}/>
                                         </div>
+                                        <nav aria-label="Пример навигации по страницам">
+                                            <ul className="pagination justify-content-center">
+                                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                                    <a className="page-link text-body-secondary"
+                                                       onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}>Предыдущая</a>
+                                                </li>
+                                                <li className={`page-item ${currentPage === 1 ? 'd-none' : ''}`}>
+                                                    <a className="page-link"
+                                                      >{currentPage - 1}</a>
+                                                </li>
+                                                <li className="page-item active">
+                                                    <a className="page-link"
+                                                      >{currentPage}</a>
+                                                </li>
+                                                <li className={`page-item ${currentPage === maxPages ? 'd-none' : ''}`}>
+                                                    <a className="page-link"
+                                                      >{currentPage + 1}</a>
+                                                </li>
+                                                <li className={`page-item ${currentPage === maxPages ? 'disabled' : ''}`}>
+                                                    <a className={`page-link `}
+                                                       onClick={() => currentPage < maxPages && setCurrentPage(currentPage + 1)}>Следующая</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </>
                                 ) : (
                                     <>
@@ -103,7 +130,7 @@ const NewsPage = () => {
                         </div>
                 </div>
             </div>
-            <ErrorMessage message={errorMessage} isVisible={showError} />
+            <ErrorMessage message={errorMessage} isVisible={showError}/>
         </>
     );
 };
