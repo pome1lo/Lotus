@@ -1,36 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import {useNavigate, useParams} from "react-router-dom";
-import {NewsItem} from "../components/NewsItem";
 import "../../assets/css/NewsPage.css";
-import {Post} from "../components/Post";
 import {ErrorMessage} from "../components/ErrorMessage";
+import {NewsTabItem} from "../components/NewsTabItem";
 
 const NewsPage = () => {
-    const { topic = 'last' } = useParams();
-    const [articles, setArticles] = useState([]);
-    const [postStatus, setPostStatus] = useState(false);
-    const [currentPage, setCurrentPage] = useState(2);
-    const [totalPages, setTotalPages] = useState(0);
-    const pageSize = 12;
+    const [news, setNews] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
 
-    const navigate = useNavigate();
-
     const fetchArticlesByTopic = async (currentTopic) => {
-        const offsett = (currentPage - 1) * pageSize;
-        setPostStatus(false);
-        setArticles([]);
-        fetch(`https://localhost:4000/api/news?topic=${currentTopic}&limit=${pageSize}&offset=${offsett}`)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                if (Array.isArray(data.articles)) {
-                    setArticles(data.articles);
-                    setTotalPages(Math.ceil(data.totalCount / pageSize));
-                } else {
-                    setArticles([]);
+        setNews([]);
+        fetch(`https://localhost:4000/api/news/${currentTopic}?limit=24&page=1`)
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setNews([]);
+                        setNews(data.news);
+                    });
                 }
             })
             .catch(error => {
@@ -39,32 +25,9 @@ const NewsPage = () => {
             })
     };
 
-
-
-    useEffect(() => {
-        const offsett = (currentPage - 1) * pageSize;
-        const url = `https://localhost:4000/api/news?topic=${topic}&limit=${pageSize}&offset=${offsett})`;
-        fetch(url)
-            .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (Array.isArray(data.articles)) {
-                    console.log(data.articles);
-                    setArticles(data.articles);
-                    setTotalPages(Math.ceil(data.totalCount / pageSize));
-                } else {
-                    setArticles([]);
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка при получении новостей:', error);
-            })
-            }, [topic, pageSize, currentPage, navigate]);
-
+    useEffect( () => {
+         fetchArticlesByTopic('world');
+    }, []);
 
     return (
         <>
@@ -78,76 +41,55 @@ const NewsPage = () => {
                     <nav>
                         <div className="nav nav-tabs mb-3" id="nav-tab" role="tablist">
                             <button className="nav-link news-item-tab active" data-bs-toggle="tab"
-                                    data-bs-target="#nav-main" role="tab" aria-controls="nav-main"
-                                    onClick={() => fetchArticlesByTopic('last')}
-                                    type="button">Main
+                                    data-bs-target="#nav-world" role="tab" aria-controls="nav-world"
+                                    onClick={() => fetchArticlesByTopic('world')}
+                                    type="button">World
                             </button>
-                            <button className="nav-link news-item-tab" data-bs-toggle="tab" data-bs-target="#nav-meal"
-                                    role="tab" aria-controls="nav-meal"
-                                    onClick={() => fetchArticlesByTopic('meal')}
-                                    type="button">Sport
+                            <button className="nav-link news-item-tab" data-bs-toggle="tab" data-bs-target="#nav-politics"
+                                    role="tab" aria-controls="nav-politics"
+                                    onClick={() => fetchArticlesByTopic('politics')}
+                                    type="button">Politics
                             </button>
-                            <button className="nav-link news-item-tab" data-bs-toggle="tab" data-bs-target="#nav-sport"
-                                    role="tab" aria-controls="nav-sport"
-                                    onClick={() => fetchArticlesByTopic('sport')}
-                                    type="button">Eat
+                            <button className="nav-link news-item-tab" data-bs-toggle="tab" data-bs-target="#nav-incidents"
+                                    role="tab" aria-controls="nav-incidents"
+                                    onClick={() => fetchArticlesByTopic('incidents')}
+                                    type="button">Incidents
+                            </button>
+                            <button className="nav-link news-item-tab" data-bs-toggle="tab" data-bs-target="#nav-society"
+                                    role="tab" aria-controls="nav-society"
+                                    onClick={() => fetchArticlesByTopic('society')}
+                                    type="button">Society
+                            </button>
+                            <button className="nav-link news-item-tab" data-bs-toggle="tab" data-bs-target="#nav-economy"
+                                    role="tab" aria-controls="nav-economy"
+                                    onClick={() => fetchArticlesByTopic('economy')}
+                                    type="button">Economy
                             </button>
                         </div>
                     </nav>
-
-                    {Array.isArray(articles) && (
-                        <>
-                            <div className="tab-content" id="nav-tabContent">
-                            {articles && (
-                                (articles.length > 0 ) ? (
+                        <div className="tab-content" id="nav-tabContent">
+                            {news && (
+                                (news.length > 0 ) ? (
                                     <>
-
-                                        <div className="tab-pane fade show active" id="nav-main" role="tabpanel"
-                                             aria-labelledby="nav-main-tab">
-                                            <p>This is the latest news</p>
-                                            <div className="row">
-                                                {(articles.map((article, index) => (
-                                                    <NewsItem key={index}
-                                                      Topic={topic}
-                                                      Title={article.title}
-                                                      Description={article.description}
-                                                      Url={article.url}
-                                                      UrlToImage={article.urlToImage}
-                                                      PublishedAt={article.publishedAt}
-                                                      Content={article.content}
-                                                    />
-                                                )))}
-                                            </div>
+                                        <div className="tab-pane fade show active" id="nav-world" role="tabpanel"
+                                             aria-labelledby="nav-world-tab">
+                                            <NewsTabItem news={news}/>
                                         </div>
-                                        <div className="tab-pane fade" id="nav-meal" role="tabpanel"
-                                             aria-labelledby="nav-meal-tab">
-                                            <p>This is the latest food news</p>
-                                            {(articles.map((article, index) => (
-                                                <NewsItem key={index}
-                                                  Topic={'Meal'}
-                                                  Title={article.title}
-                                                  Description={article.description}
-                                                  Url={article.url}
-                                                  UrlToImage={article.urlToImage}
-                                                  PublishedAt={article.publishedAt}
-                                                  Content={article.content}
-                                                />
-                                            )))}
+                                        <div className="tab-pane fade" id="nav-politics" role="tabpanel"
+                                             aria-labelledby="nav-politics-tab">
+                                            <NewsTabItem news={news}/>
                                         </div>
-                                        <div className="tab-pane fade" id="nav-sport" role="tabpanel"
-                                             aria-labelledby="nav-sport-tab">
-                                            <p>This is the latest sport news</p>
-                                            {(articles.map((article, index) => (
-                                                <NewsItem key={index}
-                                                  Topic={topic}
-                                                  Title={article.title}
-                                                  Description={article.description}
-                                                  Url={article.url}
-                                                  UrlToImage={article.urlToImage}
-                                                  PublishedAt={article.publishedAt}
-                                                  Content={article.content}
-                                                />
-                                            )))}
+                                        <div className="tab-pane fade" id="nav-incidents" role="tabpanel"
+                                             aria-labelledby="nav-incidents-tab">
+                                            <NewsTabItem news={news}/>
+                                        </div>
+                                        <div className="tab-pane fade" id="nav-society" role="tabpanel"
+                                             aria-labelledby="nav-society-tab">
+                                            <NewsTabItem news={news}/>
+                                        </div>
+                                        <div className="tab-pane fade" id="nav-economy" role="tabpanel"
+                                             aria-labelledby="nav-economy-tab">
+                                            <NewsTabItem news={news}/>
                                         </div>
                                     </>
                                 ) : (
@@ -157,14 +99,10 @@ const NewsPage = () => {
                                               aria-hidden="true"></span>
                                     </>
                                 )
-
                             )}
-                            </div>
-                        </>
-                    )}
+                        </div>
                 </div>
             </div>
-
             <ErrorMessage message={errorMessage} isVisible={showError} />
         </>
     );
