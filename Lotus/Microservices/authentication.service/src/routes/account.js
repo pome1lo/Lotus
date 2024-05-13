@@ -67,7 +67,7 @@ async function identifyUser(ctx) {
     }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    verifyEmail(username, email, `Please confirm your email address using the entered code: ${code}`);
+    verifyEmail(username, email, `please confirm your email address using the entered code: ${code}`);
 
     ctx.body = {
         code: code
@@ -77,7 +77,6 @@ async function identifyUser(ctx) {
 async function loginUser(ctx) {
     const { username, password } = ctx.request.body;
 
-    ctx.body = { message: "error" };
 
     let user = JSON.parse(await redisClient.get(username));
     if (!user) {
@@ -105,22 +104,22 @@ async function loginUser(ctx) {
     };
 }
 
-async function verifyUserEmail(ctx) {
-    const { username, email } = ctx.request.body;
-
-    try {
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        verifyEmail(username, email, `Please confirm your email address using the entered code: ${code}`);
-
-        ctx.status = 200;
-        ctx.body = {
-            code: code
-        };
-    } catch (error) {
-        ctx.status = 500;
-        ctx.body = { message: 'Something went wrong' };
-    }
-}
+// async function verifyUserEmail(ctx) {
+//     const { username, email } = ctx.request.body;
+//
+//     try {
+//         const code = Math.floor(100000 + Math.random() * 900000).toString();
+//         verifyEmail(username, email, `please confirm your email address using the entered code: ${code}`);
+//
+//         ctx.status = 200;
+//         ctx.body = {
+//             code: code
+//         };
+//     } catch (error) {
+//         ctx.status = 500;
+//         ctx.body = { message: 'Something went wrong' };
+//     }
+// }
 
 async function resetUserPassword(ctx) {
     const { username, password } = ctx.request.body;
@@ -159,7 +158,7 @@ const PREFIX = "/api/auth/";
 
 router.post(PREFIX + 'account/identify', identifyUser);
 router.post(PREFIX + 'account/login', loginUser);
-router.post(PREFIX + 'account/verify-email', verifyUserEmail);
+// router.post(PREFIX + 'account/verify-email', verifyUserEmail);
 router.post(PREFIX + 'account/create', createUser);
 router.post(PREFIX + 'account/reset-password', resetUserPassword);
 router.get (PREFIX + 'account/protected', koaJwt({ secret: secretKey }), protectedRoute);

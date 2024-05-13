@@ -7,7 +7,7 @@ const SelectedNews = () => {
     const [news, setNews] = useState([]);
 
     useEffect(() => {
-        fetch(`https://localhost:31001/api/news/${id}`)
+        fetch(`https://localhost:4000/api/news/${id}`)
             .then(res => {
                 return res.json();
             })

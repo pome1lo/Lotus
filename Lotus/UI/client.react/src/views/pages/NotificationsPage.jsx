@@ -8,7 +8,7 @@ const NotificationsPage = () => {
     const [notifications, setNotifications] = useState();
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:31902/api/notify/email`)
+        fetchWithAuth(`https://localhost:4000/api/notify/email`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {

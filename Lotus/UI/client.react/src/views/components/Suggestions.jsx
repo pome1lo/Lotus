@@ -8,7 +8,7 @@ const Suggestions = () => {
     const [suggestions, setSuggestions] = useState();
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:31903/api/user/suggestions`)
+        fetchWithAuth(`https://localhost:4000/api/user/suggestions`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {

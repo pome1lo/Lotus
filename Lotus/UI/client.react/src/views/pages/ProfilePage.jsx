@@ -23,7 +23,7 @@ const ProfilePage = () => {
     const [inputDate, setDate] = useState('');
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
+        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {
@@ -44,7 +44,7 @@ const ProfilePage = () => {
         formData.append('content', inputContent);
 
         try {
-            const response = await fetchWithAuth('https://localhost:31903/api/post', {
+            const response = await fetchWithAuth('https://localhost:4000/api/post', {
                 method: 'POST',
                 body: formData
             });

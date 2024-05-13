@@ -15,17 +15,17 @@ const CommentsPage = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
     useEffect(() => {
-        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
+        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
             .then(res => {
                 return res.json();
             })
             .then(data => setUser(data.user))
-        fetchWithAuth(`https://localhost:31903/api/profile`)
+        fetchWithAuth(`https://localhost:4000/api/profile`)
             .then(res => {
                 return res.json();
             })
             .then(data => setCurrentUser(data.user))
-        fetch(`https://localhost:31903/api/profile/${username}/${post_id}`)
+        fetch(`https://localhost:4000/api/profile/${username}/${post_id}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -33,7 +33,7 @@ const CommentsPage = () => {
                 return res.json();
             })
             .then(data => setPost(data));
-        fetch(`https://localhost:31903/api/profile/${username}/${post_id}/comments`)
+        fetch(`https://localhost:4000/api/profile/${username}/${post_id}/comments`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -44,7 +44,7 @@ const CommentsPage = () => {
     }, [username, post_id, navigate]);
 
     async function sendComment() {
-        const response = await fetchWithAuth(`https://localhost:31903/api/profile/${username}/${post_id}/comment`, {
+        const response = await fetchWithAuth(`https://localhost:4000/api/profile/${username}/${post_id}/comment`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

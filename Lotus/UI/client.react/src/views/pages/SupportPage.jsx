@@ -19,7 +19,7 @@ const SupportPage = () => {
         event.preventDefault();
 
         try {
-            const response = await fetchWithAuth('https://localhost:31903/api/user/support', {
+            const response = await fetchWithAuth('https://localhost:4000/api/user/support', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

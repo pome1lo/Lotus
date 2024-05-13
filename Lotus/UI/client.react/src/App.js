@@ -25,7 +25,7 @@ import {NotificationsPage} from "./views/pages/NotificationsPage";
 import io from 'socket.io-client';
 import {ErrorMessage} from "./views/components/ErrorMessage";
 
-const socket = io('https://localhost:31903', { withCredentials: true });
+// const socket = io('https://localhost:31903', { withCredentials: true });
 // socket.on('connect', () => { console.log('Подключено к серверу'); });
 // socket.emit('message', 'Привет, сервер!');
 // socket.on('message', (data) => { console.log(data); });
@@ -36,17 +36,17 @@ function App() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showError, setShowError] = useState(false);
 
-  useEffect(() => {
-    socket.join('someRoom');
-    socket.on('new-comment', (data) => {
-      setErrorMessage((prevMessages) => [...prevMessages, data]);
-      setShowError(true);
-    });
-
-    return () => {
-      socket.off('new-comment');
-    };
-  }, []);
+  // useEffect(() => {
+  //
+  //   socket.on('new-comment', (data) => {
+  //     setErrorMessage((prevMessages) => [...prevMessages, data]);
+  //     setShowError(true);
+  //   });
+  //
+  //   return () => {
+  //     socket.off('new-comment');
+  //   };
+  // }, []);
 
   return (
     <>

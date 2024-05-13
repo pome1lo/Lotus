@@ -133,15 +133,15 @@ services:
 #    networks:
 #      - backend
 
-  recommendationwebapi:
-    container_name: recommendation-web-api
-    image: ${DOCKER_REGISTRY-}recommendationwebapi
+  newswebapi:
+    container_name: news-web-api
+    image: ${DOCKER_REGISTRY-}newswebapi
     build:
-      context: ./Microservices/recommendation.service
+      context: Microservices/news.service
       dockerfile: ./Dockerfile
     environment:
-      - DB_HOST=recommendation-db
-      - DB_NAME=RECOMMENDATION_SERVICE
+      - DB_HOST=news-db
+      - DB_NAME=NEWS_SERVICE
       - DB_PORT=40007
       - DB_PASSWORD=password@12345
       - APP_PORT=31904
@@ -176,8 +176,8 @@ services:
 #    networks:
 #      - backend
 
-  recommendationdb:
-    container_name: recommendation-db
+  newsdb:
+    container_name: news-db
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       - ACCEPT_EULA=Y

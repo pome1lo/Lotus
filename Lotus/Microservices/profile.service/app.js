@@ -47,7 +47,7 @@ const options = {
 };
 
 const server = https.createServer(options, app.callback());
-initializeSocketIo(server);
+// initializeSocketIo(server);
 
 server.listen(port, () => {
     console.log(`Сервер запущен на порту ${port}`);

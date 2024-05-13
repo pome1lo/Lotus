@@ -14,7 +14,7 @@ const SubscriptionsPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const url = `https://localhost:31903/api/user/posts`;
+        const url = `https://localhost:4000/api/user/posts`;
         fetchWithAuth(url)
             .then(res => {
                 if (!res.ok && res.status === 500) {

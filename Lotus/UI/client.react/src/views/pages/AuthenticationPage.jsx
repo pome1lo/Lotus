@@ -1,5 +1,5 @@
 import Logo from "../../assets/images/logo/logo.png";
-import {Link, NavLink, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {ErrorMessage} from "../components/ErrorMessage";
 
@@ -14,7 +14,7 @@ const AuthenticationPage = () => {
         event.preventDefault();
 
         try {
-            const response = await fetch('https://localhost:31901/api/auth/account/login', {
+            const response = await fetch('https://localhost:4000/api/auth/account/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -26,6 +26,7 @@ const AuthenticationPage = () => {
             });
 
             const data = await response.json();
+            console.log(data)
 
             if (response.ok) {
                 sessionStorage.setItem('token', data.token);
@@ -74,15 +75,6 @@ const AuthenticationPage = () => {
                     <p className="mt-3 mb-3 text-body-secondary">© 2024 Lotus</p>
                 </form>
             </main>
-
-            <div className="d-flex flex-column social-networks-block">
-                <NavLink to="https://localhost:31901/api/auth/google" className="imageHover">
-                    <i className="bi bi-google"></i>
-                </NavLink>
-                <NavLink to="https://localhost:31901/api/auth/github" className="imageHover">
-                    <i className="bi bi-github"></i>
-                </NavLink>
-            </div>
 
             <ErrorMessage message={errorMessage} isVisible={showError} />
         </>

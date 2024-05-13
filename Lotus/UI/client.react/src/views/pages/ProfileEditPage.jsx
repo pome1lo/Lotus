@@ -18,7 +18,7 @@ const ProfileEditPage = () => {
     const [inputDescription, setDescription] = useState('');
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
+        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
             .then(response => {
                 if (response) {
                     response.json().then(
@@ -30,7 +30,7 @@ const ProfileEditPage = () => {
 
     async function fetchData(event) {
         event.preventDefault();
-        const response = await fetchWithAuth('https://localhost:31903/api/account', {
+        const response = await fetchWithAuth('https://localhost:4000/api/account', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ const ProfileEditPage = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetchWithAuth('https://localhost:31903/api/profile/image', {
+        const response = await fetchWithAuth('https://localhost:4000/api/profile/image', {
             method: 'PUT',
             body: formData
         });

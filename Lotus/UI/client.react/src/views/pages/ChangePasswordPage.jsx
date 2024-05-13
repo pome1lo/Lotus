@@ -16,7 +16,7 @@ const ChangePasswordPage = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:31903/api/profile/${username}`)
+        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -27,7 +27,7 @@ const ChangePasswordPage = () => {
     }, [username, navigate]);
 
     async function changePassowrd() {
-        const response = await fetchWithAuth('https://localhost:31903/api/account/password', {
+        const response = await fetchWithAuth('https://localhost:4000/api/account/password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ const ChangePasswordPage = () => {
         }
     }
     async function deleteAccount() {
-        const response = await fetchWithAuth('https://localhost:31903/api/account', {
+        const response = await fetchWithAuth('https://localhost:4000/api/account', {
             method: 'DELETE'
         });
         if (!response.ok) {

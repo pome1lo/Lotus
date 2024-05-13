@@ -70,7 +70,7 @@ app.use(bodyParser());
 
 router.all('/api/profile/(.*)', k2c(profileProxy));
 router.all('/api/notify/(.*)', k2c(notifyProxy));
-router.all('/api/news/(.*)', k2c(newsProxy));
+router.all('/api/news.service/(.*)', k2c(newsProxy));
 router.all('/api/auth/(.*)', k2c(authProxy));
 
 router.get('/debug', async (ctx) => {

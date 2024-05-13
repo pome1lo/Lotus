@@ -17,7 +17,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
     const navigate = useNavigate();
 
     async function deletePost() {
-        const response = await fetchWithAuth(`https://localhost:31903/api/post/${post_id}`, {
+        const response = await fetchWithAuth(`https://localhost:4000/api/post/${post_id}`, {
             method: 'DELETE'
         });
         if (!response.ok) {
@@ -42,7 +42,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
         formData.append('content', Content);
 
         try {
-            const response = await fetchWithAuth(`https://localhost:31903/api/post/${post_id}`, {
+            const response = await fetchWithAuth(`https://localhost:400/api/post/${post_id}`, {
                 method: 'PUT',
                 body: formData
             });

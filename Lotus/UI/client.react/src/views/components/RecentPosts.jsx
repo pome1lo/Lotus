@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 const RecentPosts = () => {
     const [recents, setRecents] = useState([]);
     useEffect(() => {
-        fetch('https://localhost:31903/api/posts/recent')
+        fetch('https://localhost:4000/api/posts/recent')
             .then(res => {
                 if (!res.ok && res.status === 500) {
                     setRecents([]);

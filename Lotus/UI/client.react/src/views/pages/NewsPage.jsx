@@ -21,7 +21,7 @@ const NewsPage = () => {
         const offsett = (currentPage - 1) * pageSize;
         setPostStatus(false);
         setArticles([]);
-        fetch(`https://localhost:31904/api/news?topic=${currentTopic}&limit=${pageSize}&offset=${offsett}`)
+        fetch(`https://localhost:4000/api/news?topic=${currentTopic}&limit=${pageSize}&offset=${offsett}`)
             .then(res => {
                 return res.json();
             })
@@ -43,7 +43,7 @@ const NewsPage = () => {
 
     useEffect(() => {
         const offsett = (currentPage - 1) * pageSize;
-        const url = `https://localhost:31904/api/news?topic=${topic}&limit=${pageSize}&offset=${offsett})`;
+        const url = `https://localhost:4000/api/news?topic=${topic}&limit=${pageSize}&offset=${offsett})`;
         fetch(url)
             .then(res => {
                 if (!res.ok && res.status === 404) {

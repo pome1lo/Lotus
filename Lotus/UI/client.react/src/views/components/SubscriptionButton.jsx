@@ -11,8 +11,8 @@ const SubscriptionButton = ({ styles, to_id, initiallySubscribed }) => {
 
     const handleSubscriptionToggle = async () => {
         const endpoint = isSubscribed
-            ? 'https://localhost:31903/api/user/unsubscribe'
-            : 'https://localhost:31903/api/user/subscribe';
+            ? 'https://localhost:4000/api/user/unsubscribe'
+            : 'https://localhost:4000/api/user/subscribe';
 
         setButtonStyles(
             styles == null

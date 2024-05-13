@@ -13,7 +13,7 @@ const PeoplePage = () => {
     const [showError, setShowError] = useState(false);
 
     useEffect(() => {
-        fetchWithAuth('https://localhost:31903/api/user/subscriptions')
+        fetchWithAuth('https://localhost:4000/api/user/subscriptions')
             .then(response => {
                 if (response) {
                     response.json().then(data => {
@@ -21,7 +21,7 @@ const PeoplePage = () => {
                     });
                 }
             })
-        fetchWithAuth('https://localhost:31903/api/user/subscribers')
+        fetchWithAuth('https://localhost:4000/api/user/subscribers')
             .then(response => {
                 if (response) {
                     response.json().then(data => {
