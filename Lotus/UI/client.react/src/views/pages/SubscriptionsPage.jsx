@@ -14,7 +14,7 @@ const SubscriptionsPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const url = `/api/profile/user/posts`;
+        const url = `/api/profile/user/get/posts`;
         customFetch(url)
             .then(res => {
                 if (!res.ok && res.status === 500) {

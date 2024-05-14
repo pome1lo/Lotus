@@ -41,30 +41,7 @@ const AuthenticationPage = () => {
         }
     }
 
-    async function test(event) {
-        event.preventDefault();
 
-        const response = await customFetch('/debug', {
-            method: 'GET',
-        });
-        const debug = await customFetch('/api/profile/profiles', {
-            method: 'GET',
-        });
-        const response2 = await customFetch('/api/news/world', {
-            method: 'GET',
-        });
-        const response3 = await customFetch('/api/auth/account/fuck', {
-            method: 'GET',
-        });
-        const data = await response.json();
-        const data2 = await response2.json();
-        const data3 = await response3.json();
-        const debug1 = await debug.json();
-        console.log(data)
-        console.log(data2)
-        console.log(data3)
-        console.log(debug1)
-    }
 
 
     return (
@@ -74,12 +51,6 @@ const AuthenticationPage = () => {
                 <Link to="/">
                     <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
                 </Link>
-
-
-
-                <form className="text-center form-signin" onSubmit={test}>
-                    <button type="submit">asdas</button>
-                </form>
 
                 <form className="text-center form-signin" onSubmit={fetchData}>
                     <h2 className="h4 mb-3 fw-medium">Please sign in</h2>

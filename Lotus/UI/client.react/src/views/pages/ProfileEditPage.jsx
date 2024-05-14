@@ -1,7 +1,7 @@
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import {ProfileNavBar} from "../components/ProfileNavBar";
-import {customFetch} from "../../services/fetchWithAuth/customFetch";
+import {authFetch, customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const ProfileEditPage = () => {
@@ -67,7 +67,7 @@ const ProfileEditPage = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await customFetch('/api/profile/image', {
+        const response = await authFetch('http://localhost:31903/api/profile/image', {
             method: 'PUT',
             body: formData
         });

@@ -28,6 +28,10 @@ const USER = sequelize.define('USERS', {
         type: DataTypes.TEXT,
         allowNull: true
     },
+    PROFILE_PICTURE: {
+        type: DataTypes.STRING,
+        defaultValue: 'default_profile.png'
+    },
     SUBSCRIBERS_COUNT: {
         type: DataTypes.INTEGER,
         defaultValue: 0
@@ -40,10 +44,6 @@ const USER = sequelize.define('USERS', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    PROFILE_PICTURE: {
-        type: DataTypes.STRING,
-        defaultValue: 'default_profile.png'
-    }
 }, {
     timestamps: false,
     freezeTableName: true

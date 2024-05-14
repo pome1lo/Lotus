@@ -13,7 +13,7 @@ const PeoplePage = () => {
     const [showError, setShowError] = useState(false);
 
     useEffect(() => {
-        customFetch('/api/profile/user/subscriptions')
+        customFetch('/api/profile/user/get/subscriptions')
             .then(response => {
                 if (response) {
                     response.json().then(data => {
@@ -21,7 +21,7 @@ const PeoplePage = () => {
                     });
                 }
             })
-        customFetch('/api/profile/user/subscribers')
+        customFetch('/api/profile/user/get/subscribers')
             .then(response => {
                 if (response) {
                     response.json().then(data => {

@@ -3,6 +3,11 @@ const sequelize = require('../config.js');
 const { USER } = require('./user');
 
 const SUBSCRIPTION = sequelize.define('SUBSCRIPTION', {
+    ID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     SUBSCRIBER_ID: {
         type: DataTypes.INTEGER,
         references: {

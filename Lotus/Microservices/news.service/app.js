@@ -29,8 +29,8 @@ app.use(router.routes());
 app.use(newsRoutes.routes());
 
 const server = https.createServer(options, app.callback());
-// server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
-app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+// app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
 
 scheduleJob('world');
 scheduleJob('economy');

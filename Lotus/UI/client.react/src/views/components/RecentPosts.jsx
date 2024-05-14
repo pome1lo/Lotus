@@ -4,7 +4,7 @@ import {customFetch} from "../../services/fetchWithAuth/customFetch";
 const RecentPosts = () => {
     const [recents, setRecents] = useState([]);
     useEffect(() => {
-        customFetch('/api/profile/posts/recent')
+        customFetch('/api/profile/posts/get/recent-posts')
             .then(res => {
                 if (!res.ok && res.status === 500) {
                     setRecents([]);

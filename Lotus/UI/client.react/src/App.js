@@ -26,7 +26,6 @@ import {ErrorMessage} from "./views/components/ErrorMessage";
 import { Toast } from 'bootstrap';
 import {ToastComponent} from "./views/components/ToastComponent";
 
-const socket = io('http://localhost:31903', { withCredentials: true });
 
 function App() {
     useEffect(() => AOS.init , []);
@@ -37,23 +36,12 @@ function App() {
     const [image, setImage] = useState('');
     const [message, setMessage] = useState('');
 
+    const CURRENT_USER_NAME = sessionStorage.getItem('username');
 
+    const socket = io('https://localhost:31902', { withCredentials: true });
 
     useEffect(() => {
-        socket.on('connect', () => { });//  console.log('Подключено к серверу');
-
-        const CURRENT_USER_ID = 4;
-
-        const data = {
-            user_id: CURRENT_USER_ID
-        }
-
-        socket.emit('comment', data);
-
-
-        socket.on(`new_comment_${CURRENT_USER_ID}`, (data) => {
-            console.log(data.message);
-
+        socket.on(`new_comment_${CURRENT_USER_NAME}`, (data) => {
             setShowToast(true);
             setTime(data.time);
             setAuthor(data.author);
@@ -61,6 +49,8 @@ function App() {
             setMessage(data.message);
         });
     }, []);
+
+
 
     return (
         <>

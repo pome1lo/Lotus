@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState,} from "react";
 import "../../assets/css/Profile.css";
 import {SubscriptionButton} from "../components/SubscriptionButton";
 import {Post} from "../components/Post";
-import {customFetch} from "../../services/fetchWithAuth/customFetch";
+import {authFetch, customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const ProfilePage = () => {
@@ -44,7 +44,7 @@ const ProfilePage = () => {
         formData.append('content', inputContent);
 
         try {
-            const response = await customFetch('/api/profile/post', {
+            const response = await authFetch('https://localhost:31903/api/profile/post', {
                 method: 'POST',
                 body: formData
             });
@@ -156,7 +156,8 @@ const ProfilePage = () => {
                                     </p>
                                     <button type="button" className="btn btn-danger py-2 px-5 mb-5"
                                             data-bs-toggle="modal"
-                                            onClick={fetchData} data-bs-target="#staticBackdrop">
+                                             data-bs-target="#staticBackdrop">
+                                        {/*//onClick={fetchData}*/}
                                         Create post
                                     </button>
                                 </div>

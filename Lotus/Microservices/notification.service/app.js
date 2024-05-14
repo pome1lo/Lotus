@@ -7,6 +7,7 @@ const fs = require('fs');
 const https = require('https');
 const path = require("path");
 const connectRabbitMQ = require("./src/services/RabbitMQ/connectRabbitMQ");
+const {initializeSocketIo} = require("./src/services/Socket/socket");
 
 const GRPC_PORT = process.env.GRPC_PORT || 19002;
 const APP_PORT = process.env.APP_PORT || 31902;
@@ -32,7 +33,8 @@ const sslOptions = {
 };
 
 const server = https.createServer(sslOptions, app.callback());
-// server.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
-app.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
+initializeSocketIo(server);
+server.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
+// app.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
 
 connectRabbitMQ();

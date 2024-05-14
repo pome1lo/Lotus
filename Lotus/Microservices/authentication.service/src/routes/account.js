@@ -52,7 +52,6 @@ async function createUser(ctx) {
         message: 'The user has been successfully registered',
         username: newUser.USERNAME,
         token: token,
-        //user_id: newUser.ID,
     };
 }
 
@@ -145,9 +144,5 @@ router.post(PREFIX + 'account/login', loginUser);
 router.post(PREFIX + 'account/create', createUser);
 router.post(PREFIX + 'account/reset-password', resetUserPassword);
 router.get (PREFIX + 'account/protected', koaJwt({ secret: secretKey }), protectedRoute);
-router.get (PREFIX + 'account/fuck', async (ctx) => {
-    ctx.body = { message: "I FUCK YOUR MUM"} ;
-});
-
 
 module.exports = router;

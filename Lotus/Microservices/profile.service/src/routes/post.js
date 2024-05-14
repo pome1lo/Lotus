@@ -25,6 +25,6 @@ async function getRecentPosts(ctx) {
 
 const PREFIX = "/api/profile/";
 
-router.get(PREFIX + 'posts/recent', getRecentPosts);
+router.get(PREFIX + 'posts/get/recent-posts', getRecentPosts);
 
 module.exports = router;

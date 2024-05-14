@@ -3,6 +3,11 @@ import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
+import io from "socket.io-client";
+
+
+
+const socket = io('https://localhost:31902', { withCredentials: true });
 
 const CommentsPage = () => {
     const {username, post_id} = useParams();
@@ -20,7 +25,7 @@ const CommentsPage = () => {
                 return res.json();
             })
             .then(data => setUser(data.user))
-        customFetch(`/api/profile`)
+        customFetch(`/api/profile/`)
             .then(res => {
                 return res.json();
             })
@@ -60,6 +65,15 @@ const CommentsPage = () => {
         }
         if (response.ok) {
             window.location.reload();
+
+            const data = {
+                post_username: user.USERNAME,
+                comment_username: currentUser.USERNAME,
+                user_id: user.ID,
+                profile_picture: currentUser.PROFILE_PICTURE
+            }
+
+            socket.emit('comment', data);
         } else {
             setErrorMessage(data.message);
             setShowError(true);

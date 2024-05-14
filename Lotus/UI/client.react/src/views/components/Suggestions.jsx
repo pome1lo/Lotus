@@ -8,7 +8,7 @@ const Suggestions = () => {
     const [suggestions, setSuggestions] = useState();
 
     useEffect(() => {
-        customFetch(`/api/profile/user/suggestions`)
+        customFetch(`/api/profile/user/get/suggestions`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {

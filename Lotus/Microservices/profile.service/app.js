@@ -16,8 +16,6 @@ const PostRoutes = require('./src/routes/post');
 
 const connectRabbitMQ = require('./src/services/RabbitMQ/connectRabbitMQ');
 
-const {initializeSocketIo} = require('./src/services/Socket/socket');
-
 const port = process.env.APP_PORT || 31903;
 const isDocker = process.env.APP_PORT == null;
 const PathToLAB = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl' : '/app';
@@ -42,12 +40,11 @@ const options = {
     cert: fs.readFileSync(path.join(PathToLAB, 'LAB.crt'))
 };
 
-// const server = https.createServer(options, app.callback());
-const server = http.createServer(app.callback());
-initializeSocketIo(server);
+const server = https.createServer(options, app.callback());
+// const server = http.createServer(app.callback());
 
-// server.listen(port, () => {  console.log(`Сервер запущен на порту ${port}`);  });
-server.listen(port, () => { console.log(`Сервер запущен на порту ${port}`); });
+server.listen(port, () => {  console.log(`Сервер запущен на порту ${port}`);  });
+// server.listen(port, () => { console.log(`Сервер запущен на порту ${port}`); });
 
 connectRabbitMQ();
 

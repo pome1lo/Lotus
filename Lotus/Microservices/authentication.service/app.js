@@ -40,6 +40,6 @@ const options = {
 };
 
 const server = https.createServer(options, app.callback());
-// server.listen(port, () => console.log(`🟩 Authentication server running: port-${port}`));
-app.listen(port, () => console.log(`🟩 Authentication server running: port-${port}`));
+server.listen(port, () => console.log(`🟩 Authentication server running: port-${port}`));
+// app.listen(port, () => console.log(`🟩 Authentication server running: port-${port}`));
 

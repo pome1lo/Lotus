@@ -246,10 +246,10 @@ async function support(ctx) {
 
 const PREFIX = "/api/profile/";
 
-router.get(PREFIX + 'user/posts', koaJwt({ secret: SECRET_KEY }), getUserPosts);
-router.get(PREFIX + 'user/subscriptions', koaJwt({ secret: SECRET_KEY }), getUserSubscriptions);
-router.get(PREFIX + 'user/subscribers', koaJwt({ secret: SECRET_KEY }), getUserSubscribers);
-router.get(PREFIX + 'user/suggestions', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
+router.get(PREFIX + 'user/get/posts', koaJwt({ secret: SECRET_KEY }), getUserPosts);
+router.get(PREFIX + 'user/get/subscriptions', koaJwt({ secret: SECRET_KEY }), getUserSubscriptions);
+router.get(PREFIX + 'user/get/subscribers', koaJwt({ secret: SECRET_KEY }), getUserSubscribers);
+router.get(PREFIX + 'user/get/suggestions', koaJwt({ secret: SECRET_KEY }), getUserSuggestions);
 router.post(PREFIX + 'user/subscribe', koaJwt({ secret: SECRET_KEY }), subscribeUser);
 router.post(PREFIX + 'user/unsubscribe', koaJwt({ secret: SECRET_KEY }), unsubscribeUser);
 router.post(PREFIX + 'user/support', koaJwt({ secret: SECRET_KEY }), support);
