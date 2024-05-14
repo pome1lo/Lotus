@@ -1,93 +1,99 @@
-const Koa = require('koa');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const k2c = require('koa2-connect');
-const Router = require('@koa/router');
-const jwt = require('koa-jwt');
-const bodyParser = require('koa-bodyparser');
-const multer = require('@koa/multer');
-const fs = require("fs");
-const path = require("path");
-const https = require("https");
-const upload = multer();
-const port = process.env.APP_PORT || 4000;
-const isDocker = process.env.APP_PORT == null;
+    const Koa = require('koa');
+    const Router = require('@koa/router');
+    const jwt = require('koa-jwt');
+    const bodyParser = require('koa-bodyparser');
+    const cors = require('@koa/cors');
+    // const http = require('http');
+    const fs = require("fs");
+    const path = require("path");
+    const https = require("https");
+    const http = require("http");
 
-const app = new Koa();
-const router = new Router();
+    const app = new Koa();
+    app.use(cors());
+    app.use(bodyParser());
 
-const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
+    const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
+    const jwtMiddleware = jwt({ secret: SECRET_KEY, passthrough: true });
+    const isDocker = process.env.APP_PORT == null;
+    const PathToLAB = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl' : '/app';
+    const router = new Router();
 
-const jwtMiddleware = jwt({ secret: SECRET_KEY });
+    app.use(async (ctx, next) => {
+        console.log(`⚙️: ${ctx.method} ${ctx.url}`);
+        await next();
+    });
+
+    const proxyRequest = (ctx, target) => {
+        return new Promise((resolve, reject) => {
+            const options = {
+                hostname: target.hostname,
+                port: target.port,
+                path: ctx.url,
+                method: ctx.method,
+                headers: ctx.request.header,
+            };
+
+            const req = http.request(options, (res) => {    ///// CHANGE HTTPS
+                let data = '';
+                res.on('data', (chunk) => {
+                    data += chunk;
+                });
+                res.on('end', () => {
+                    ctx.status = res.statusCode;
+                    ctx.set(res.headers);
+                    ctx.body = data;
+                    resolve();
+                });
+            });
+
+            req.on('error', (e) => {
+                ctx.status = 500;
+                ctx.body = 'Что-то пошло не так.';
+                reject(e);
+            });
+
+            if (ctx.method !== 'GET' && ctx.request.body) {
+                req.write(JSON.stringify(ctx.request.body));
+            }
+
+            req.end();
+        });
+    };
+
+    router.all('/api/auth/(.*)', (ctx) => {
+        return proxyRequest(ctx, { hostname: 'localhost', port: 31901 });
+    });
+
+    router.all('/api/news/(.*)', (ctx) => {
+        return proxyRequest(ctx, { hostname: 'localhost', port: 31904 });
+    });
+
+    router.all('/api/profile/(.*)', jwtMiddleware, (ctx) => {
+        return proxyRequest(ctx, { hostname: 'localhost', port: 31903 });
+    });
+
+    router.all('/api/notify/(.*)', jwtMiddleware, (ctx) => {
+        return proxyRequest(ctx, { hostname: 'localhost', port: 31902 });
+    });
+
+    // Дебаг маршрут
+    router.get('/debug', async (ctx) => {
+        ctx.status = 200;
+        ctx.body = { message: 'SUCCESS' };
+    });
+
+    app.use(router.routes()).use(router.allowedMethods());
+
+    const port = process.env.APP_PORT || 4000;
 
 
-const profileProxyOptions = {
-    target: 'https://localhost:31903',
-    changeOrigin: true,
-    onProxyReq: (proxyReq, req) => {
-        if (req.headers.authorization) {
-            proxyReq.setHeader('Authorization', req.headers.authorization);
-        }
-    },
-    secure: false,
-};
-const authProxyOptions = {
-    target: 'https://localhost:31901',
-    changeOrigin: true,
-    onProxyReq: (proxyReq, req) => {
-        if (req.headers.authorization) {
-            proxyReq.setHeader('Authorization', req.headers.authorization);
-        }
-    },
-    secure: false,
-};
-const notifyProxyOptions = {
-    target: 'https://localhost:31902',
-    changeOrigin: true,
-    onProxyReq: (proxyReq, req) => {
-        if (req.headers.authorization) {
-            proxyReq.setHeader('Authorization', req.headers.authorization);
-        }
-    },
-    secure: false,
-};
-const newsProxyOptions = {
-    target: 'https://localhost:31904',
-    changeOrigin: true,
-    onProxyReq: (proxyReq, req) => {
-        if (req.headers.authorization) {
-            proxyReq.setHeader('Authorization', req.headers.authorization);
-        }
-    },
-    secure: false,
-};
+    const options = {
+        key:  fs.readFileSync(path.join(PathToLAB, 'LAB.key')),
+        cert: fs.readFileSync(path.join(PathToLAB, 'LAB.crt'))
+    };
 
-const profileProxy = createProxyMiddleware(profileProxyOptions);
-const authProxy = createProxyMiddleware(authProxyOptions);
-const notifyProxy = createProxyMiddleware(notifyProxyOptions);
-const newsProxy = createProxyMiddleware(newsProxyOptions);
+    const server = https.createServer(options, app.callback());
+    // server.listen(port, () => console.log(`API Gateway listening on port ${port}`));
 
-app.use(bodyParser());
-
-router.all('/api/profile/(.*)', k2c(profileProxy));
-router.all('/api/notify/(.*)', k2c(notifyProxy));
-router.all('/api/news/(.*)', k2c(newsProxy));
-router.all('/api/auth/(.*)', k2c(authProxy));
-
-router.get('/debug', async (ctx) => {
-    ctx.status = 200;
-    ctx.body = { message:  'SUCCESS'};
-});
-
-app.use(router.routes()).use(router.allowedMethods());
-
-const PathToLAB = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl' : '/app';
-
-const options = {
-    key:  fs.readFileSync(path.join(PathToLAB, 'LAB.key')),
-    cert: fs.readFileSync(path.join(PathToLAB, 'LAB.crt'))
-};
-
-
-const server = https.createServer(options, app.callback());
-server.listen(port, () => console.log(`API Gateway listening on port  ${port}`));
-
+    app.listen(port, () => { console.log(`API Gateway listening on port ${port}`); });

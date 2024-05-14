@@ -1,12 +1,7 @@
 
 CREATE DATABASE NEWS_SERVICE;
 use NEWS_SERVICE
-
-create table TOPICS (
-    ID        int primary key identity (1,1),
-    TOPIC_NAME nvarchar(255) not null,
-)
-
+  
 CREATE TABLE NEWS (
     ID INT PRIMARY KEY IDENTITY,
     TITLE TEXT NOT NULL,
@@ -15,13 +10,12 @@ CREATE TABLE NEWS (
     LINK NVARCHAR(255) NOT NULL,
     IMAGE NVARCHAR(255) NOT NULL,
     DATE NVARCHAR(255) NOT NULL,
-    TOPIC_ID INT,
-    FOREIGN KEY (TOPIC_ID) REFERENCES TOPICS(ID)
+    TOPIC_NAME nvarchar(255) not null
 );
 
 DELETE FROM NEWS;
 
-drop table NEWS;
-drop table TOPICS;
+drop table NEWS; 
 
-SELECT * FROM NEWS;
+SELECT * FROM NEWS; 
+ 

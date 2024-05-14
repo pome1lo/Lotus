@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {Post} from "../components/Post";
 import {Suggestions} from "../components/Suggestions";
 import {RecentPosts} from "../components/RecentPosts";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const SubscriptionsPage = () => {
@@ -14,8 +14,8 @@ const SubscriptionsPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const url = `https://localhost:4000/api/user/posts`;
-        fetchWithAuth(url)
+        const url = `/api/profile/user/posts`;
+        customFetch(url)
             .then(res => {
                 if (!res.ok && res.status === 500) {
                     setPosts([]);

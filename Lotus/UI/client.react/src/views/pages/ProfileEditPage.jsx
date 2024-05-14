@@ -1,7 +1,7 @@
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import {ProfileNavBar} from "../components/ProfileNavBar";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const ProfileEditPage = () => {
@@ -18,7 +18,7 @@ const ProfileEditPage = () => {
     const [inputDescription, setDescription] = useState('');
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
+        customFetch(`/api/profile/${username}`)
             .then(response => {
                 if (response) {
                     response.json().then(
@@ -30,7 +30,7 @@ const ProfileEditPage = () => {
 
     async function fetchData(event) {
         event.preventDefault();
-        const response = await fetchWithAuth('https://localhost:4000/api/account', {
+        const response = await customFetch('/api/profile/account', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ const ProfileEditPage = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetchWithAuth('https://localhost:4000/api/profile/image', {
+        const response = await customFetch('/api/profile/image', {
             method: 'PUT',
             body: formData
         });

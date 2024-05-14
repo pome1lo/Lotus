@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors');
 const fs = require("fs");
 const https = require("https");
+const http = require("http");
 
 const path = require("path");
 const serve = require("koa-static");
@@ -26,12 +27,7 @@ app.keys = [ process.env.SECRET_KEY || 'secret_key' ];
 
 const imagesPath = path.join(__dirname, './src/data/users/posts/images');
 app.use(serve(imagesPath));
-app.use(cors({
-    origin: 'https://localhost:3000',
-    allowMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    credentials: true
-}));
+app.use(cors());
 
 app.use(bodyParser());
 
@@ -46,12 +42,12 @@ const options = {
     cert: fs.readFileSync(path.join(PathToLAB, 'LAB.crt'))
 };
 
-const server = https.createServer(options, app.callback());
-// initializeSocketIo(server);
+// const server = https.createServer(options, app.callback());
+const server = http.createServer(app.callback());
+initializeSocketIo(server);
 
-server.listen(port, () => {
-    console.log(`Сервер запущен на порту ${port}`);
-});
+// server.listen(port, () => {  console.log(`Сервер запущен на порту ${port}`);  });
+server.listen(port, () => { console.log(`Сервер запущен на порту ${port}`); });
 
 connectRabbitMQ();
 

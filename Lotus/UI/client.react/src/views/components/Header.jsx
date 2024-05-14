@@ -7,13 +7,7 @@ const Header = () => {
     const [theme, setTheme] = useState('dark');
     const [, setShowButton] = useState(false);
     const navigate = useNavigate();
-
-
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    useEffect(() => {
-        const username = sessionStorage.getItem('username');
-        setIsAuthenticated(!!username);
-    }, []);
 
     const toggleTheme = () => {
         if (theme === 'light') {
@@ -33,6 +27,8 @@ const Header = () => {
     };
 
     useEffect(() => {
+        const username = sessionStorage.getItem('username');
+        setIsAuthenticated(!!username);
         const icons = document.querySelectorAll('.negative');
         icons.forEach(icon => {
             if (theme === 'dark') {
@@ -76,10 +72,13 @@ const Header = () => {
                                 <Link to="/news" className="nav-link active" aria-current="page">News</Link>
                             </li>
                             <li className="nav-item show-display">
-                                <Link to="#" className="nav-link active" aria-current="page">Home</Link>
+                                <Link to="/people" className="nav-link active" aria-current="page">People</Link>
                             </li>
                             <li className="nav-item show-display">
-                                <Link to="#" className="nav-link active" aria-current="page">Home</Link>
+                                <Link to="/subscriptions" className="nav-link active" aria-current="page">For you</Link>
+                            </li>
+                            <li className="nav-item show-display">
+                                <Link to="/notifications" className="nav-link active" aria-current="page">Notifications</Link>
                             </li>
                         </ul>
                         <div>

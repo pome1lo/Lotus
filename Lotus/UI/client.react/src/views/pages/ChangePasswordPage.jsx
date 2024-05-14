@@ -1,7 +1,7 @@
 import {ProfileNavBar} from "../components/ProfileNavBar";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const ChangePasswordPage = () => {
@@ -16,7 +16,7 @@ const ChangePasswordPage = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
+        customFetch(`/api/profile/${username}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -27,7 +27,7 @@ const ChangePasswordPage = () => {
     }, [username, navigate]);
 
     async function changePassowrd() {
-        const response = await fetchWithAuth('https://localhost:4000/api/account/password', {
+        const response = await customFetch('/api/profile/account/password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ const ChangePasswordPage = () => {
         }
     }
     async function deleteAccount() {
-        const response = await fetchWithAuth('https://localhost:4000/api/account', {
+        const response = await customFetch('/api/profile/account', {
             method: 'DELETE'
         });
         if (!response.ok) {

@@ -5,7 +5,6 @@ const { COMMENT } = require("../database/models/comment");
 const path = require('path');
 const multer = require("koa-multer");
 const koaJwt = require("koa-jwt");
-const { io } = require('./../services/Socket/socket');
 const {SUBSCRIPTION} = require("../database/models/subscription");
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
@@ -125,7 +124,6 @@ async function updatePost(ctx) {
         ctx.body = { message: 'Something went wrong' };
     }
 }
-
 async function getCurrentProfile(ctx) {
     const currentUserId = ctx.state.user.user_id;
     const username = ctx.state.user.username;
@@ -162,7 +160,6 @@ async function getCurrentProfile(ctx) {
         ctx.body = { message: 'User not found' };
     }
 }
-
 async function getProfile(ctx) {
     const currentUserId = ctx.state.user.user_id;
     const username = ctx.params.username;
@@ -199,8 +196,6 @@ async function getProfile(ctx) {
         ctx.body = { message: 'User not found' };
     }
 }
-
-
 async function getProfiles(ctx) {
     let users = await USER.findAll();
 
@@ -276,17 +271,6 @@ async function createComment(ctx) {
         ctx.body = { message: 'Something went wrong' };
     }
 }
-
-
-
-
-async function test(ctx) {
-    io.emit('new-comment', {
-        message: 'У вас новый комментарий!'
-    });
-}
-
-
 async function deletePost(ctx) {
     const { id } = ctx.query.post_id;
 
@@ -315,7 +299,6 @@ async function deletePost(ctx) {
         ctx.body = { message: 'Something went wrong' };
     }
 }
-
 async function deleteComment(ctx) {
     const postId = ctx.params.post_id;
     const commentId = ctx.params.comment_id;
@@ -356,7 +339,6 @@ async function deleteComment(ctx) {
 
 const PREFIX = "/api/profile/";
 
-router.get(PREFIX + 'test', test);
 router.get(PREFIX + 'profiles', getProfiles);
 router.get(PREFIX + ':username', koaJwt({ secret: SECRET_KEY }), getProfile);
 router.get(PREFIX, koaJwt({ secret: SECRET_KEY }), getCurrentProfile);
@@ -367,9 +349,9 @@ router.post(PREFIX + ':username/:post_id/comment', koaJwt({ secret: SECRET_KEY }
 router.put(PREFIX + 'image', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updateProfileImage);
 router.delete(PREFIX + ':username/:post_id/comment/:comment_id', koaJwt({ secret: SECRET_KEY }), deleteComment);
 
-router.post(PREFIX + '/api/post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
-router.put(PREFIX + '/api/post/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
-router.delete(PREFIX + '/api/post/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);
+router.post(PREFIX + 'post', upload.single('image'), koaJwt({ secret: SECRET_KEY }), createPost);
+router.put(PREFIX + 'post/:post_id', upload.single('image'), koaJwt({ secret: SECRET_KEY }), updatePost);
+router.delete(PREFIX + 'post/:post_id', koaJwt({ secret: SECRET_KEY }), deletePost);
 
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 
 const SubscriptionButton = ({ styles, to_id, initiallySubscribed }) => {
     const [isSubscribed, setIsSubscribed] = useState(initiallySubscribed);
@@ -11,8 +11,8 @@ const SubscriptionButton = ({ styles, to_id, initiallySubscribed }) => {
 
     const handleSubscriptionToggle = async () => {
         const endpoint = isSubscribed
-            ? 'https://localhost:4000/api/user/unsubscribe'
-            : 'https://localhost:4000/api/user/subscribe';
+            ? '/api/profile/user/unsubscribe'
+            : '/api/profile/user/subscribe';
 
         setButtonStyles(
             styles == null
@@ -22,7 +22,7 @@ const SubscriptionButton = ({ styles, to_id, initiallySubscribed }) => {
                 : styles
         )
         try {
-            const response = await fetchWithAuth(endpoint, {
+            const response = await customFetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

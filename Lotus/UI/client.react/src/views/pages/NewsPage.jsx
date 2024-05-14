@@ -3,6 +3,7 @@ import "../../assets/css/NewsPage.css";
 import {ErrorMessage} from "../components/ErrorMessage";
 import {NewsTabItem} from "../components/NewsTabItem";
 import {NewsItem} from "../components/NewsItem";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 
 const NewsPage = () => {
     const [news, setNews] = useState([]);
@@ -13,7 +14,7 @@ const NewsPage = () => {
 
     const fetchArticlesByTopic = async (currentTopic) => {
         setNews([]);
-        fetch(`https://localhost:4000/api/news/${currentTopic}?limit=24&page=${currentPage}`)
+        customFetch(`/api/news/${currentTopic}?limit=24&page=${currentPage}`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {

@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import "../../assets/css/Authentication.css";
 import {ErrorMessage} from "../components/ErrorMessage";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 
 const RegistrationPage = () => {
     const navigate = useNavigate();
@@ -27,41 +28,6 @@ const RegistrationPage = () => {
         }
     }, [timeLeft]);
 
-    // async function sendAgain() {
-    //     setTimeLeft(30);
-    //     setButtonDisabled(true);
-    //     try {
-    //         const response = await fetch('https://localhost:4000/api/auth/account/verify-email', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({
-    //                 username: inputUsername,
-    //                 email: inputEmail
-    //             })
-    //         });
-    //
-    //         const data = await response.json();
-    //
-    //         if (response.ok) {
-    //             setSuccessCode(data.code)
-    //         } else {
-    //             console.error('Ошибка входа:', data.message);
-    //             setErrorMessage(data.message);
-    //             setShowError(true);
-    //         }
-    //         setTimeLeft(30);
-    //         setButtonDisabled(true);
-    //     }
-    //     catch (error) {
-    //         console.error('Ошибка запроса:', error);
-    //         setErrorMessage(error.toString());
-    //         setShowError(true);
-    //     }
-    //
-    // }
-
     async function verifyEmail(event) {
         event.preventDefault();
         if(inputSuccessConfirm !== inputCode) {
@@ -70,7 +36,7 @@ const RegistrationPage = () => {
         }
         else {
             try {
-                const response = await fetch('https://localhost:31901/api/auth/account/create', {
+                const response = await customFetch('/api/auth/account/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -106,7 +72,7 @@ const RegistrationPage = () => {
         event.preventDefault();
 
         try {
-            const response = await fetch('https://localhost:31901/api/auth/account/identify', {
+            const response = await customFetch('/api/auth/account/identify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

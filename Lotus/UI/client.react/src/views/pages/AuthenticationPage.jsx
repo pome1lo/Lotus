@@ -2,6 +2,7 @@ import Logo from "../../assets/images/logo/logo.png";
 import {Link, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {ErrorMessage} from "../components/ErrorMessage";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 
 const AuthenticationPage = () => {
     const navigate = useNavigate();
@@ -12,9 +13,8 @@ const AuthenticationPage = () => {
 
     async function fetchData(event) {
         event.preventDefault();
-
         try {
-            const response = await fetch('https://localhost:4000/api/auth/account/login', {
+            const response = await customFetch('/api/auth/account/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -24,7 +24,6 @@ const AuthenticationPage = () => {
                     password: inputPassword
                 })
             });
-
             const data = await response.json();
             console.log(data)
 
@@ -37,10 +36,36 @@ const AuthenticationPage = () => {
                 setShowError(true);
             }
         } catch (error) {
-            setErrorMessage(error.message.toString());
+            setErrorMessage(error.message);
             setShowError(true);
         }
     }
+
+    async function test(event) {
+        event.preventDefault();
+
+        const response = await customFetch('/debug', {
+            method: 'GET',
+        });
+        const debug = await customFetch('/api/profile/profiles', {
+            method: 'GET',
+        });
+        const response2 = await customFetch('/api/news/world', {
+            method: 'GET',
+        });
+        const response3 = await customFetch('/api/auth/account/fuck', {
+            method: 'GET',
+        });
+        const data = await response.json();
+        const data2 = await response2.json();
+        const data3 = await response3.json();
+        const debug1 = await debug.json();
+        console.log(data)
+        console.log(data2)
+        console.log(data3)
+        console.log(debug1)
+    }
+
 
     return (
         <>
@@ -50,7 +75,13 @@ const AuthenticationPage = () => {
                     <img className="mb-3" src={`${Logo}`} alt="" width="72"/>
                 </Link>
 
-                <form className="text-center form-signin needs-validation" onSubmit={fetchData}>
+
+
+                <form className="text-center form-signin" onSubmit={test}>
+                    <button type="submit">asdas</button>
+                </form>
+
+                <form className="text-center form-signin" onSubmit={fetchData}>
                     <h2 className="h4 mb-3 fw-medium">Please sign in</h2>
                     <div className="form-floating username">
                         <input type="text" className="form-control" id="floatingInput" required placeholder="Username"
@@ -58,8 +89,7 @@ const AuthenticationPage = () => {
                         <label htmlFor="floatingInput">Username</label>
                     </div>
                     <div className="form-floating password ">
-                        <input type="password" className="form-control" id="floatingPassword" placeholder="Password"
-                               required
+                        <input type="password" className="form-control" id="floatingPassword" placeholder="Password" required
                                value={inputPassword} onChange={(e) => setPassword(e.target.value)}/>
                         <label htmlFor="floatingPassword">Password</label>
                     </div>

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {Link} from "react-router-dom";
 import {Publisher} from "../components/Publisher";
 import {SubscriptionButton} from "../components/SubscriptionButton";
@@ -8,7 +8,7 @@ const NotificationsPage = () => {
     const [notifications, setNotifications] = useState();
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:4000/api/notify/email`)
+        customFetch(`/api/notify/email`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {

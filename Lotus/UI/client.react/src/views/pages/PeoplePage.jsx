@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {Publisher} from "../components/Publisher";
 import {Suggestions} from "../components/Suggestions";
 import {RecentPosts} from "../components/RecentPosts";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const PeoplePage = () => {
@@ -13,7 +13,7 @@ const PeoplePage = () => {
     const [showError, setShowError] = useState(false);
 
     useEffect(() => {
-        fetchWithAuth('https://localhost:4000/api/user/subscriptions')
+        customFetch('/api/profile/user/subscriptions')
             .then(response => {
                 if (response) {
                     response.json().then(data => {
@@ -21,7 +21,7 @@ const PeoplePage = () => {
                     });
                 }
             })
-        fetchWithAuth('https://localhost:4000/api/user/subscribers')
+        customFetch('/api/profile/user/subscribers')
             .then(response => {
                 if (response) {
                     response.json().then(data => {

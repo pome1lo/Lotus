@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState,} from "react";
 import "../../assets/css/Profile.css";
 import {SubscriptionButton} from "../components/SubscriptionButton";
 import {Post} from "../components/Post";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const ProfilePage = () => {
@@ -23,7 +23,7 @@ const ProfilePage = () => {
     const [inputDate, setDate] = useState('');
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
+        customFetch(`/api/profile/${username}`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {
@@ -44,7 +44,7 @@ const ProfilePage = () => {
         formData.append('content', inputContent);
 
         try {
-            const response = await fetchWithAuth('https://localhost:4000/api/post', {
+            const response = await customFetch('/api/profile/post', {
                 method: 'POST',
                 body: formData
             });

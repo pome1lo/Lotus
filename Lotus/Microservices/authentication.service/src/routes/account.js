@@ -142,10 +142,12 @@ const PREFIX = "/api/auth/";
 
 router.post(PREFIX + 'account/identify', identifyUser);
 router.post(PREFIX + 'account/login', loginUser);
-// router.post(PREFIX + 'account/verify-email', verifyUserEmail);
 router.post(PREFIX + 'account/create', createUser);
 router.post(PREFIX + 'account/reset-password', resetUserPassword);
 router.get (PREFIX + 'account/protected', koaJwt({ secret: secretKey }), protectedRoute);
+router.get (PREFIX + 'account/fuck', async (ctx) => {
+    ctx.body = { message: "I FUCK YOUR MUM"} ;
+});
 
 
 module.exports = router;

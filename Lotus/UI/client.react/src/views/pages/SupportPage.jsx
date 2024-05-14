@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import {ProfileNavBar} from "../components/ProfileNavBar";
 import React, {useState} from "react";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 import {SuccessMessage} from "../components/SuccessMessage";
 
@@ -19,7 +19,7 @@ const SupportPage = () => {
         event.preventDefault();
 
         try {
-            const response = await fetchWithAuth('https://localhost:4000/api/user/support', {
+            const response = await customFetch('/api/profile/user/support', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

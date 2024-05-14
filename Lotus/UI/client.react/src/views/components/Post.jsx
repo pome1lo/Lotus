@@ -3,7 +3,7 @@ import React from "https://esm.run/react@18";
 import {Publisher} from "./Publisher";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useRef, useState} from "react";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "./ErrorMessage";
 
 const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, user_id, content_text, likes_count }) => {
@@ -11,13 +11,12 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
     const [Heading, setHeading] = useState(content_heading);
     const [Content, setContent] = useState(content_text);
     const [inpDate, setDate] = useState(dop_info);
-
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
     const navigate = useNavigate();
 
     async function deletePost() {
-        const response = await fetchWithAuth(`https://localhost:4000/api/post/${post_id}`, {
+        const response = await customFetch(`/api/profile/post/${post_id}`, {
             method: 'DELETE'
         });
         if (!response.ok) {
@@ -42,7 +41,7 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
         formData.append('content', Content);
 
         try {
-            const response = await fetchWithAuth(`https://localhost:400/api/post/${post_id}`, {
+            const response = await customFetch(`/api/profile/post/${post_id}`, {
                 method: 'PUT',
                 body: formData
             });

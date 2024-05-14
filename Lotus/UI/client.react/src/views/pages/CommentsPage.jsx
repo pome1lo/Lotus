@@ -1,7 +1,7 @@
 import {Comment} from "../components/Comment";
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const CommentsPage = () => {
@@ -15,17 +15,17 @@ const CommentsPage = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
     useEffect(() => {
-        fetchWithAuth(`https://localhost:4000/api/profile/${username}`)
+        customFetch(`/api/profile/${username}`)
             .then(res => {
                 return res.json();
             })
             .then(data => setUser(data.user))
-        fetchWithAuth(`https://localhost:4000/api/profile`)
+        customFetch(`/api/profile`)
             .then(res => {
                 return res.json();
             })
             .then(data => setCurrentUser(data.user))
-        fetch(`https://localhost:4000/api/profile/${username}/${post_id}`)
+        customFetch(`/api/profile/${username}/${post_id}`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -33,7 +33,7 @@ const CommentsPage = () => {
                 return res.json();
             })
             .then(data => setPost(data));
-        fetch(`https://localhost:4000/api/profile/${username}/${post_id}/comments`)
+        customFetch(`/api/profile/${username}/${post_id}/comments`)
             .then(res => {
                 if (!res.ok && res.status === 404) {
                     navigate('/not-found');
@@ -44,7 +44,7 @@ const CommentsPage = () => {
     }, [username, post_id, navigate]);
 
     async function sendComment() {
-        const response = await fetchWithAuth(`https://localhost:4000/api/profile/${username}/${post_id}/comment`, {
+        const response = await customFetch(`/api/profile/${username}/${post_id}/comment`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

@@ -2,13 +2,13 @@ import {Link, useNavigate} from "react-router-dom";
 import {Publisher} from "./Publisher";
 import {SubscriptionButton} from "./SubscriptionButton";
 import {useEffect, useState} from "react";
-import {fetchWithAuth} from "../../services/fetchWithAuth/fetchWithAuth";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 
 const Suggestions = () => {
     const [suggestions, setSuggestions] = useState();
 
     useEffect(() => {
-        fetchWithAuth(`https://localhost:4000/api/user/suggestions`)
+        customFetch(`/api/profile/user/suggestions`)
             .then(response => {
                 if (response) {
                     response.json().then(data => {

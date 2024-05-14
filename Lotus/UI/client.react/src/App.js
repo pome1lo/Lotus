@@ -8,7 +8,6 @@ import {NotFoundPage} from "./views/pages/NotFoundPage";
 import {ProfilePage} from "./views/pages/ProfilePage";
 import {ProfileEditPage} from "./views/pages/ProfileEditPage";
 import {HomePage} from "./views/pages/HomePage";
-import {SelectedNews} from "./views/pages/SelectedNews";
 import 'bootstrap';
 
 import {Layout} from "./views/Layout";
@@ -24,55 +23,76 @@ import {NotificationsPage} from "./views/pages/NotificationsPage";
 
 import io from 'socket.io-client';
 import {ErrorMessage} from "./views/components/ErrorMessage";
+import { Toast } from 'bootstrap';
+import {ToastComponent} from "./views/components/ToastComponent";
 
-// const socket = io('https://localhost:31903', { withCredentials: true });
-// socket.on('connect', () => { console.log('Подключено к серверу'); });
-// socket.emit('message', 'Привет, сервер!');
-// socket.on('message', (data) => { console.log(data); });
+const socket = io('http://localhost:31903', { withCredentials: true });
 
 function App() {
-  useEffect(() => AOS.init , []);
+    useEffect(() => AOS.init , []);
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showError, setShowError] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [time, setTime] = useState('');
+    const [author, setAuthor] = useState('');
+    const [image, setImage] = useState('');
+    const [message, setMessage] = useState('');
 
-  // useEffect(() => {
-  //
-  //   socket.on('new-comment', (data) => {
-  //     setErrorMessage((prevMessages) => [...prevMessages, data]);
-  //     setShowError(true);
-  //   });
-  //
-  //   return () => {
-  //     socket.off('new-comment');
-  //   };
-  // }, []);
 
-  return (
-    <>
-      <Routes>
-        <Route path="/" element={<Layout/>}>
-          <Route index element={<HomePage/>} />
-          <Route path="home" element={<HomePage/>} />
-          <Route path="news" element={<NewsPage/>} />
-          <Route path="support" element={<SupportPage/>} />
-          <Route path="profile/:username" element={<ProfilePage/>} />
-          <Route path="profile/:username/edit" element={<ProfileEditPage/>} />
-          <Route path="profile/:username/change-password" element={<ChangePasswordPage/>} />
-          <Route path="/:username/:post_id/comments" element={<CommentsPage/>} />
-          <Route path="/about" element={<AboutPage/>} />
-          <Route path="/people" element={<PeoplePage/>} />
-          <Route path="/subscriptions" element={<SubscriptionsPage/>} />
-          <Route path="/notifications" element={<NotificationsPage/>} />
-        </Route>
-        <Route path="login" element={<AuthenticationPage />} />
-        <Route path="register" element={<RegistrationPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
 
-      <ErrorMessage message={errorMessage} isVisible={showError}/>
-    </>
-  );
+    useEffect(() => {
+        socket.on('connect', () => { });//  console.log('Подключено к серверу');
+
+        const CURRENT_USER_ID = 4;
+
+        const data = {
+            user_id: CURRENT_USER_ID
+        }
+
+        socket.emit('comment', data);
+
+
+        socket.on(`new_comment_${CURRENT_USER_ID}`, (data) => {
+            console.log(data.message);
+
+            setShowToast(true);
+            setTime(data.time);
+            setAuthor(data.author);
+            setImage(data.image);
+            setMessage(data.message);
+        });
+    }, []);
+
+    return (
+        <>
+            <Routes>
+                <Route path="/" element={<Layout/>}>
+                    <Route index element={<HomePage/>}/>
+                    <Route path="home" element={<HomePage/>}/>
+                    <Route path="news" element={<NewsPage/>}/>
+                    <Route path="support" element={<SupportPage/>}/>
+                    <Route path="profile/:username" element={<ProfilePage/>}/>
+                    <Route path="profile/:username/edit" element={<ProfileEditPage/>}/>
+                    <Route path="profile/:username/change-password" element={<ChangePasswordPage/>}/>
+                    <Route path="/:username/:post_id/comments" element={<CommentsPage/>}/>
+                    <Route path="/about" element={<AboutPage/>}/>
+                    <Route path="/people" element={<PeoplePage/>}/>
+                    <Route path="/subscriptions" element={<SubscriptionsPage/>}/>
+                    <Route path="/notifications" element={<NotificationsPage/>}/>
+                </Route>
+                <Route path="login" element={<AuthenticationPage/>}/>
+                <Route path="register" element={<RegistrationPage/>}/>
+                <Route path="*" element={<NotFoundPage/>}/>
+            </Routes>
+
+            <ToastComponent
+                show={showToast}
+                time={time}
+                author={author}
+                image={image}
+                message={message}>
+            </ToastComponent>
+        </>
+    );
 }
 
 

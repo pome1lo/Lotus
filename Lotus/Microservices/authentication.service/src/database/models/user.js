@@ -7,14 +7,6 @@ const USER = sequelize.define('USERS', {
         primaryKey: true,
         autoIncrement: true
     },
-    GOOGLE_ID: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    GITHUB_ID: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
     USERNAME: {
         type: DataTypes.STRING,
         allowNull: false

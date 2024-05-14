@@ -14,6 +14,7 @@ const SSL_PATH = process.env.APP_PORT ? '/app' : 'D:\\FILES\\University\\3 cours
 
 const app = new Koa();
 app.use(cors());
+
 app.use(emailRoutes.routes());
 
 grpcServer.bindAsync(`0.0.0.0:${GRPC_PORT}`, grpc.ServerCredentials.createInsecure(), (error, port) => {
@@ -31,6 +32,7 @@ const sslOptions = {
 };
 
 const server = https.createServer(sslOptions, app.callback());
-server.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
+// server.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
+app.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
 
 connectRabbitMQ();

@@ -15,6 +15,7 @@ const router = new Router();
 
 const port = process.env.APP_PORT || 31904;
 const isDocker = process.env.APP_PORT == null;
+
 const PathToLAB = isDocker ? 'D:\\FILES\\University\\3 course\\2term\\Course Project\\Lotus\\Static\\ssl' : '/app';
 
 const options = {
@@ -23,11 +24,13 @@ const options = {
 };
 
 app.use(cors());
+
 app.use(router.routes());
 app.use(newsRoutes.routes());
 
 const server = https.createServer(options, app.callback());
-server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+// server.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
+app.listen(port, () => console.log(`Сервер запущен на порту ${port}`));
 
 scheduleJob('world');
 scheduleJob('economy');
