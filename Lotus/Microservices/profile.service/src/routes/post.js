@@ -1,10 +1,6 @@
 const Router = require('koa-router');
 const { POST } = require('../database/models/post');
 const { Op } = require('sequelize');
-const koaJwt = require("koa-jwt");
-
-const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
-
 const router = new Router();
 
 async function getRecentPosts(ctx) {

@@ -1,7 +1,6 @@
-const schedule = require('node-schedule');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const {NEWS} = require('./../../database/models/news');
+const { NEWS} = require('./../../database/models/news');
 const cron = require("node-cron");
 
 function scheduleJob(topic) {

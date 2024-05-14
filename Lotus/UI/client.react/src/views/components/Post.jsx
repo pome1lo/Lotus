@@ -1,9 +1,9 @@
 import "../../assets/css/Post.css";
 import React from "https://esm.run/react@18";
 import {Publisher} from "./Publisher";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useRef, useState} from "react";
-import {authFetch, customFetch} from "../../services/fetchWithAuth/customFetch";
+import {authFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "./ErrorMessage";
 
 const Post =  ({ post_id, user_image, username, dop_info, content_image, content_heading, user_id, content_text, isAuthor }) => {
@@ -47,14 +47,14 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                 body: formData
             });
 
+
+            const data = await response.json();
             if (!response.ok) {
                 console.error('Ошибка:', response.statusText);
-                setErrorMessage(response.message);
+                setErrorMessage(data.message);
                 setShowError(true);
                 return;
             }
-
-            const data = await response.json();
             window.location.reload();
         } catch (error) {
             console.error('Ошибка:', error);
@@ -62,12 +62,6 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
             setShowError(true);
         }
     }
-
-    const [isFilled, setIsFilled] = useState(true);
-
-    const savePostHandleClick = () => {
-        setIsFilled(!isFilled);
-    };
 
     return (
         <>
@@ -141,12 +135,10 @@ const Post =  ({ post_id, user_image, username, dop_info, content_image, content
                                           required value={Content}
                                           onChange={(e) => setContent(e.target.value)}
                                           aria-label="With textarea"></textarea>
-
                                 <div className="mb-3">
                                     <input type="file" ref={fileInput} className="form-control" required
                                            aria-label="Large file input example"/>
                                 </div>
-
                                 <div className="input-group has-validation">
                                     <span className="input-group-text">Publication date</span>
                                     <input type="text" className="form-control" id="heading"

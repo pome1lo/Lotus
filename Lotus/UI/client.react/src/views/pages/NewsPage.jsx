@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import "../../assets/css/NewsPage.css";
 import {ErrorMessage} from "../components/ErrorMessage";
 import {NewsTabItem} from "../components/NewsTabItem";
-import {NewsItem} from "../components/NewsItem";
 import {customFetch} from "../../services/fetchWithAuth/customFetch";
 
 const NewsPage = () => {

@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {customFetch} from "../../services/fetchWithAuth/customFetch";
-import {Link} from "react-router-dom";
 import {Publisher} from "../components/Publisher";
-import {SubscriptionButton} from "../components/SubscriptionButton";
 import {Suggestions} from "../components/Suggestions";
 import {RecentPosts} from "../components/RecentPosts";
-import {ErrorMessage} from "../components/ErrorMessage";
 
 const NotificationsPage = () => {
     const [notifications, setNotifications] = useState();

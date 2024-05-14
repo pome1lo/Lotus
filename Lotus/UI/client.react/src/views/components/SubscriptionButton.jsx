@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import {customFetch} from "../../services/fetchWithAuth/customFetch";
+import io from "socket.io-client";
 
-const SubscriptionButton = ({ styles, to_id, initiallySubscribed }) => {
+const socket = io('https://localhost:31902', { withCredentials: true });
+
+const SubscriptionButton = ({ styles, to_id, initiallySubscribed, to_username }) => {
     const [isSubscribed, setIsSubscribed] = useState(initiallySubscribed);
     const [buttonStyles, setButtonStyles] = useState(styles == null
         ? isSubscribed
@@ -33,6 +36,13 @@ const SubscriptionButton = ({ styles, to_id, initiallySubscribed }) => {
             if (response.ok) {
                 setIsSubscribed(!isSubscribed);
                 window.location.reload();
+
+                if (!isSubscribed) {
+                    socket.emit('subscribe', {
+                        user_id: to_id,
+                        username: to_username
+                    });
+                }
             } else {
                 console.error('Ошибка при переключении подписки:', response.statusText);
             }

@@ -2,7 +2,6 @@ const Router = require('koa-router');
 const {NEWS} = require("../database/models/news");
 const router = new Router();
 
-
 async function getNews(ctx) {
     try {
         const topic_name = ctx.params.topic_name;

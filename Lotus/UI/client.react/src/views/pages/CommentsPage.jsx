@@ -5,8 +5,6 @@ import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 import io from "socket.io-client";
 
-
-
 const socket = io('https://localhost:31902', { withCredentials: true });
 
 const CommentsPage = () => {
@@ -141,9 +139,7 @@ const CommentsPage = () => {
                         </div>
                     </div>
                 </div>
-
             </div>
-
             <ErrorMessage message={errorMessage} isVisible={showError} />
         </>
     )

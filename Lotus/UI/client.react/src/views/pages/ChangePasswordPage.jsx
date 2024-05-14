@@ -1,7 +1,7 @@
 import {ProfileNavBar} from "../components/ProfileNavBar";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {customFetch} from "../../services/fetchWithAuth/customFetch";
+import {authFetch, customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 
 const ChangePasswordPage = () => {
@@ -12,18 +12,12 @@ const ChangePasswordPage = () => {
     const [showError, setShowError] = useState(false);
 
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        customFetch(`/api/profile/${username}`)
-            .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
-                }
-                return res.json();
-            })
-            .then(data => setUser(data))
-    }, [username, navigate]);
+        if(username !== sessionStorage.getItem('username')) {
+            navigate('/login')
+        }
+    }, []);
 
     async function changePassowrd(event) {
         event.preventDefault();
@@ -58,17 +52,19 @@ const ChangePasswordPage = () => {
         }
     }
     async function deleteAccount() {
-        const response = await customFetch('/api/profile/account', {
+        const response = await authFetch('https://localhost:31903/api/profile/account', {
             method: 'DELETE'
         });
+        const data = await response.json();
         if (!response.ok) {
             setErrorMessage(data.message);
             setShowError(true);
             return;
         }
-        const data = await response.json();
         if (response.ok) {
             sessionStorage.removeItem('token');
+            sessionStorage.removeItem('username');
+            window.location.reload();
             navigate(`/`);
         } else {
             setErrorMessage(data.message);
@@ -100,13 +96,10 @@ const ChangePasswordPage = () => {
                         <h4 className="mt-3">Delete account</h4>
                         <hr className="mb-3 mt-3"/>
                         <p>Once you delete your account, there is no going back. Please be certain.</p>
-
-
                         <button type="button" className="btn btn btn-outline-secondary red-color" data-bs-toggle="modal"
                                 data-bs-target="#staticBackdrop">
                             Delete account
                         </button>
-
                         <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static"
                              data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel"
                              aria-hidden="true">
@@ -129,9 +122,7 @@ const ChangePasswordPage = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
             </div>
             <ProfileNavBar username={username}/>
             <ErrorMessage message={errorMessage} isVisible={showError} />

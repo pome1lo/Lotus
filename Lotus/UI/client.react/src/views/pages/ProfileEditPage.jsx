@@ -96,7 +96,6 @@ const ProfileEditPage = () => {
                                           data-bs-target="#exampleModal">
                                       Change
                                   </button>
-
                                   <div className="modal fade" id="exampleModal" tabIndex="-1"
                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
                                       <div className="modal-dialog">
@@ -178,7 +177,6 @@ const ProfileEditPage = () => {
                               </form>
                           </div>
                           <hr className="my-4"/>
-
                       </div>
                   )}
               </div>

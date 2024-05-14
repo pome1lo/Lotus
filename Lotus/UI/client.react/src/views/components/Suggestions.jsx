@@ -1,4 +1,4 @@
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Publisher} from "./Publisher";
 import {SubscriptionButton} from "./SubscriptionButton";
 import {useEffect, useState} from "react";
@@ -29,7 +29,7 @@ const Suggestions = () => {
                               <Publisher key={item.ID}
                                          avatar={"https://localhost:31903/" + item.PROFILE_PICTURE}
                                          nickname={item.USERNAME}
-                              />
+                              ></Publisher>
                           </Link>
                           <SubscriptionButton
                               styles={"btn red-link"}

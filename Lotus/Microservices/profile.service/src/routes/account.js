@@ -111,7 +111,7 @@ async function deleteAccount(ctx) {
 
         grpcDeleteUser(id);
 
-        const posts = await POST.findAll({ where: { USER_ID: { [Op.eq]: id } } });
+        const posts = await POST.findAll({ where: { USER_ID: id } });
         for (let post of posts) {
             await post.destroy();
         }

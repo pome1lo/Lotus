@@ -6,6 +6,7 @@ const path = require('path');
 const multer = require("koa-multer");
 const koaJwt = require("koa-jwt");
 const {SUBSCRIPTION} = require("../database/models/subscription");
+const {sendToQueue} = require("../services/RabbitMQ/sendToQueue");
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
@@ -45,6 +46,25 @@ async function createPost(ctx) {
             IMAGE: ctx.req.file.filename
         });
 
+        // Получаем всех подписчиков автора поста
+        const author = await USER.findByPk(ctx.state.user.user_id, {
+            include: {
+                model: USER,
+                as: 'Subscribers',
+                through: { attributes: [] }  // исключаем данные о подписке
+            }
+        });
+
+        // Отправляем сообщение в очередь для каждого подписчика
+        author.Subscribers.forEach(subscriber => {
+            sendToQueue('UserNotificationQueue', {
+                AUTHOR: author.USERNAME,
+                USER_ID: subscriber.ID,
+                CONTENT: `New post from ${author.USERNAME}: ${title}`,
+                IMAGE: author.PROFILE_PICTURE
+            });
+        });
+
         ctx.status = 201;
         ctx.body = { message: 'Post created successfully', post };
     } catch (error) {
@@ -52,6 +72,8 @@ async function createPost(ctx) {
         ctx.body = { error: 'Something went wrong' };
     }
 }
+
+
 async function updateProfileImage(ctx) {
     const user_id = ctx.state.user.user_id;
 

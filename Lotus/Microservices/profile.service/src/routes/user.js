@@ -41,6 +41,13 @@ async function subscribeUser(ctx) {
         subscribeToUser.SUBSCRIBERS_COUNT += 1;
         await subscribeToUser.save();
 
+        sendToQueue('UserNotificationQueue', {
+            AUTHOR: `New subscriber!`,
+            USER_ID: to_id,
+            CONTENT: `You have a new subscriber! ${user.USERNAME} has subscribed to you.`,
+            IMAGE: subscribeToUser.PROFILE_PICTURE
+        });
+
         ctx.status = 200;
         ctx.body = { message: 'Subscribed successfully' };
     } catch (error) {
@@ -75,7 +82,7 @@ async function unsubscribeUser(ctx) {
         user.SUBSCRIPTIONS_COUNT -= 1;
         await user.save();
 
-        unsubscribeFromUser.SUBSCRIBER_COUNT -= 1;
+        unsubscribeFromUser.SUBSCRIBERS_COUNT -= 1;  // Исправлено здесь
         await unsubscribeFromUser.save();
 
         ctx.status = 200;

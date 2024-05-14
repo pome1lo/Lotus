@@ -83,6 +83,7 @@ const ProfilePage = () => {
                                     {(currentUsername === null || user.USERNAME !== currentUsername) ? (
                                         <SubscriptionButton
                                             to_id={user.ID}
+                                            to_username={user.USERNAME}
                                             initiallySubscribed={isCurrentUserSubscribedToProfileUser}
                                             styles={"m-lg-4 btn btn-outline-secondary d-inline-flex align-items-center"}/>
                                     ) : (<></>)
@@ -133,7 +134,6 @@ const ProfilePage = () => {
                                 </div>
                             </>
                         ) : (<></>)}
-
                         <hr/>
                         {(posts === null) ?
                             <span className="spinner-border spinner-border-sm resize" role="status"
@@ -178,7 +178,6 @@ const ProfilePage = () => {
                                 )
                             )
                         }
-
                         <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static"
                              data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel"
                              aria-hidden="true">
@@ -243,7 +242,6 @@ const ProfilePage = () => {
                     </>
                 )}
             </div>
-
             <div className="position-sticky col-md-4 order-md-2">
                 <div className="sticky-xl-top ">
                     <div className="alert alert-secondary alert-dismissible fade show" role="alert">

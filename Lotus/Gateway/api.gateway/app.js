@@ -58,11 +58,7 @@ const proxyRequest = (ctx, target) => {
         });
 
         if (ctx.method !== 'GET') {
-            // if (ctx.is('multipart/form-data')) {
-            //     ctx.req.pipe(req);
-            // } else {
-                req.write(JSON.stringify(ctx.request.body));
-            // }
+            req.write(JSON.stringify(ctx.request.body));
         }
         req.end();
     });
@@ -102,5 +98,3 @@ const options = {
 
 const server = https.createServer(options, app.callback());
 server.listen(port, () => console.log(`API Gateway listening on port ${port}`));
-
-// app.listen(port, () => { console.log(`API Gateway listening on port ${port}`); });

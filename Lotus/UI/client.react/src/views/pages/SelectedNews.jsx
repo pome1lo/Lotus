@@ -30,7 +30,6 @@ const SelectedNews = () => {
                 </div>
                 <h5>We recommend it:</h5>
             </div>
-
             <div className="col-md-3 order-md-2">
                 <div className="position-sticky">
                     <div className="p-4 mb-3 bg-body-tertiary rounded">
@@ -38,7 +37,6 @@ const SelectedNews = () => {
                         <p className="mb-0">Customize this section to tell your visitors a little bit about your
                             publication, writers, content, or something else entirely. Totally up to you.</p>
                     </div>
-
                     <div>
                         <h4 className="fst-italic">Recent posts</h4>
                         <ul className="list-unstyled">
@@ -86,7 +84,6 @@ const SelectedNews = () => {
                             </li>
                         </ul>
                     </div>
-
                     <div className="p-4">
                         <h4 className="fst-italic">Archives</h4>
                         <ol className="list-unstyled mb-0">
@@ -104,7 +101,6 @@ const SelectedNews = () => {
                             <li><Link to="#">April 2020</Link></li>
                         </ol>
                     </div>
-
                     <div className="p-4">
                         <h4 className="fst-italic">Elsewhere</h4>
                         <ol className="list-unstyled">

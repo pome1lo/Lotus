@@ -48,6 +48,14 @@ function App() {
             setImage(data.image);
             setMessage(data.message);
         });
+
+        socket.on(`subscribe_${CURRENT_USER_NAME}`, (data) => {
+            setShowToast(true);
+            setTime(data.time);
+            setAuthor(data.author);
+            setImage(data.image);
+            setMessage(data.message);
+        });
     }, []);
 
     return (

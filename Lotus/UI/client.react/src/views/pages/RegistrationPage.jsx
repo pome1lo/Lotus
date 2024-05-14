@@ -150,7 +150,6 @@ const RegistrationPage = () => {
                                    value={inputCode} onChange={(e) => setCode(e.target.value)}/>
                             <label htmlFor="floatingPassword">Code</label>
                         </div>
-
                         <div className="d-flex justify-content-between align-items-center">
                             <button className="btn btn-link rounded-pill rememberMe redHover"
                                     disabled={isButtonDisabled}

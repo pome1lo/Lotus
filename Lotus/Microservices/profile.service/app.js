@@ -3,7 +3,6 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors');
 const fs = require("fs");
 const https = require("https");
-const http = require("http");
 
 const path = require("path");
 const serve = require("koa-static");
@@ -41,10 +40,8 @@ const options = {
 };
 
 const server = https.createServer(options, app.callback());
-// const server = http.createServer(app.callback());
 
 server.listen(port, () => {  console.log(`Сервер запущен на порту ${port}`);  });
-// server.listen(port, () => { console.log(`Сервер запущен на порту ${port}`); });
 
 connectRabbitMQ();
 

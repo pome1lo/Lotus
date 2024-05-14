@@ -1,12 +1,9 @@
-import {useParams} from "react-router-dom";
-import {ProfileNavBar} from "../components/ProfileNavBar";
 import React, {useState} from "react";
-import {authFetch, customFetch} from "../../services/fetchWithAuth/customFetch";
+import {customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 import {SuccessMessage} from "../components/SuccessMessage";
 
 const SupportPage = () => {
-    const {username} = useParams();
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');

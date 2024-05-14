@@ -76,7 +76,6 @@ async function identifyUser(ctx) {
 async function loginUser(ctx) {
     const { username, password } = ctx.request.body;
 
-
     let user = JSON.parse(await redisClient.get(username));
     if (!user) {
         user = await USER.findOne({ where: { USERNAME: username } });
@@ -99,10 +98,9 @@ async function loginUser(ctx) {
 
     ctx.body = {
         token,
-        username: user.USERNAME//, user_id: user.ID
+        username: user.USERNAME
     };
 }
-
 
 async function resetUserPassword(ctx) {
     const { username, password } = ctx.request.body;
@@ -132,17 +130,11 @@ async function resetUserPassword(ctx) {
     }
 }
 
-async function protectedRoute(ctx) {
-    console.log(ctx.state.user.username);
-    ctx.body = { message: 'Вы успешно прошли аутентификацию!' };
-}
-
 const PREFIX = "/api/auth/";
 
 router.post(PREFIX + 'account/identify', identifyUser);
 router.post(PREFIX + 'account/login', loginUser);
 router.post(PREFIX + 'account/create', createUser);
 router.post(PREFIX + 'account/reset-password', resetUserPassword);
-router.get (PREFIX + 'account/protected', koaJwt({ secret: secretKey }), protectedRoute);
 
 module.exports = router;

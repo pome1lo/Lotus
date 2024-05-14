@@ -35,6 +35,5 @@ const sslOptions = {
 const server = https.createServer(sslOptions, app.callback());
 initializeSocketIo(server);
 server.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
-// app.listen(APP_PORT, () => console.log(`🟩 Authentication server running: port-${APP_PORT}`));
 
 connectRabbitMQ();

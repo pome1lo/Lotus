@@ -19,6 +19,20 @@ const initializeSocketIo = (server) => {
             console.log('Клиент отключен');
         });
 
+        socket.on('subscribe', async (data) => {
+            const USER_ID = data.user_id;
+            const USERNAME = data.username;
+            const DATA = {
+                time: getCurrentTime(),
+                author: USERNAME,
+                image: "https://localhost:31903/system_notification.png",
+                message: `You have a new subscriber! ${USERNAME} has subscribed to you.`
+            }
+
+            const CHANEL_NAME = `subscribe_${USERNAME}`;
+            io.emit(CHANEL_NAME, DATA);
+        });
+
         socket.on('comment', (data) => {
             const POST_USERNAME = data.post_username;
             const COMMENT_USERNAME = data.comment_username;
@@ -40,7 +54,7 @@ const initializeSocketIo = (server) => {
             }
             const CHANEL_NAME = `new_comment_${POST_USERNAME}`;
             io.emit(CHANEL_NAME, DATA);
-        })
+        });
     });
 
 

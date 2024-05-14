@@ -81,9 +81,6 @@ const Header = () => {
                                 <Link to="/notifications" className="nav-link active" aria-current="page">Notifications</Link>
                             </li>
                         </ul>
-                        <div>
-
-                        </div>
                         <div className="bottomBlock d-lg-flex col-lg-3 justify-content-lg-end align-items-center">
                             {isAuthenticated ? (
                                 <button className="border-0 bg-transparent mr-2" type="button" onClick={handleClick}>

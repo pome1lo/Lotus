@@ -4,13 +4,10 @@ import {Publisher} from "../components/Publisher";
 import {Suggestions} from "../components/Suggestions";
 import {RecentPosts} from "../components/RecentPosts";
 import {customFetch} from "../../services/fetchWithAuth/customFetch";
-import {ErrorMessage} from "../components/ErrorMessage";
 
 const PeoplePage = () => {
     const [subscriptions, setSubscriptions] = useState();
     const [subscribers, setSubscribers] = useState();
-    const [errorMessage, setErrorMessage] = useState('');
-    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
         customFetch('/api/profile/user/get/subscriptions')
@@ -120,7 +117,6 @@ const PeoplePage = () => {
                     </div>
                     <Suggestions/>
                     <RecentPosts/>
-                    <ErrorMessage message={errorMessage} isVisible={showError} />
                 </div>
             </div>
         </>

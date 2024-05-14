@@ -2,7 +2,6 @@ import Logo from "../../assets/images/logo/logo.png";
 import {Link, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import {ErrorMessage} from "../components/ErrorMessage";
-import {customFetch} from "../../services/fetchWithAuth/customFetch";
 
 const AuthenticationPage = () => {
     const navigate = useNavigate();
