@@ -272,10 +272,9 @@ async function createComment(ctx) {
     }
 }
 async function deletePost(ctx) {
-    const { id } = ctx.query.post_id;
-
     try {
-        const post = await POST.findByPk(id);
+        const post_id = ctx.params.post_id;
+        const post = await POST.findByPk(post_id);
 
         if (!post) {
             ctx.status = 404;

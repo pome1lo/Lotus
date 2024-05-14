@@ -60,7 +60,7 @@ async function updateAccount(ctx) {
 }
 
 async function updatePassword(ctx) {
-    const { password } = ctx.request.body;
+    const { new_password } = ctx.request.body;
     const id = ctx.state.user.user_id;
 
     try {
@@ -72,20 +72,30 @@ async function updatePassword(ctx) {
         }
 
         const salt = crypto.randomBytes(32).toString('hex');
-        const hashedPassword = await argon2.hash(password + salt);
+        const hashedPassword = await argon2.hash(new_password + salt);
 
         grpcUpdatePassword(id, hashedPassword, salt);
         await user.save();
 
-        ctx.status = 200;
-        ctx.body = { message: 'User updated successfully' };
+        const token = jwt.sign({
+            user_id: user.ID,
+            username: user.USERNAME,
+            email: user.EMAIL
+        }, SECRET_KEY, { expiresIn: '1h' });
 
+        ctx.status = 200;
+        ctx.body = {
+            token,
+            message: 'User updated successfully',
+            username: user.USERNAME
+        };
     } catch (error) {
         console.error(error);
         ctx.status = 500;
         ctx.body = { message: 'Something went wrong' };
     }
 }
+
 
 async function deleteAccount(ctx) {
     const id = ctx.state.user.user_id;

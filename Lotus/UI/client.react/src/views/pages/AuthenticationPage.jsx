@@ -14,7 +14,7 @@ const AuthenticationPage = () => {
     async function fetchData(event) {
         event.preventDefault();
         try {
-            const response = await customFetch('/api/auth/account/login', {
+            const response = await fetch('https://localhost:4000/api/auth/account/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -25,24 +25,19 @@ const AuthenticationPage = () => {
                 })
             });
             const data = await response.json();
-            console.log(data)
-
-            if (response.ok) {
-                sessionStorage.setItem('token', data.token);
-                sessionStorage.setItem('username', data.username);
-                navigate('/');
-            } else {
+            if (!response.ok) {
                 setErrorMessage(data.message);
                 setShowError(true);
+                return
             }
+            sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('username', data.username);
+            navigate('/');
         } catch (error) {
             setErrorMessage(error.message);
             setShowError(true);
         }
     }
-
-
-
 
     return (
         <>

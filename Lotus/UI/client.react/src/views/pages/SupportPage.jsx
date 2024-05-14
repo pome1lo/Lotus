@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import {ProfileNavBar} from "../components/ProfileNavBar";
 import React, {useState} from "react";
-import {customFetch} from "../../services/fetchWithAuth/customFetch";
+import {authFetch, customFetch} from "../../services/fetchWithAuth/customFetch";
 import {ErrorMessage} from "../components/ErrorMessage";
 import {SuccessMessage} from "../components/SuccessMessage";
 
@@ -9,8 +9,10 @@ const SupportPage = () => {
     const {username} = useParams();
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
     const [inputContent, setContent] = useState('');
+
 
     const hideSuccessMessage = () => {
         setShowSuccess(false);
@@ -33,6 +35,8 @@ const SupportPage = () => {
 
             if (response.ok) {
                 setContent('');
+                setSuccessMessage("Message succesfully sended");
+                setShowSuccess(true);
             } else {
                 console.error('Ошибка входа:', data.message);
                 setErrorMessage(data.message);
@@ -60,7 +64,7 @@ const SupportPage = () => {
                 </form>
             </div>
             <ErrorMessage message={errorMessage} isVisible={showError} />
-            <SuccessMessage message="Message succesfully sended"
+            <SuccessMessage message={successMessage}
                 isVisible={showSuccess}
                 hideMessage={hideSuccessMessage}
             />

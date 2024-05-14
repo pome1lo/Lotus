@@ -50,8 +50,6 @@ function App() {
         });
     }, []);
 
-
-
     return (
         <>
             <Routes>

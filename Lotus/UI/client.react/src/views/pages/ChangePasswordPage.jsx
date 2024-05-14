@@ -6,7 +6,6 @@ import {ErrorMessage} from "../components/ErrorMessage";
 
 const ChangePasswordPage = () => {
     const {username} = useParams();
-    const [inputCurrentPassword, setCurrentPassword] = useState('');
     const [inputNewPassword, setNewPassword] = useState('');
     const [inputConfirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -26,28 +25,36 @@ const ChangePasswordPage = () => {
             .then(data => setUser(data))
     }, [username, navigate]);
 
-    async function changePassowrd() {
-        const response = await customFetch('/api/profile/account/password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                password: inputNewPassword
-            })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            setErrorMessage(data.message);
+    async function changePassowrd(event) {
+        event.preventDefault();
+
+        if(inputNewPassword !== inputConfirmPassword) {
+            setErrorMessage("Password and password confirmation are different.");
             setShowError(true);
-            return;
         }
-        if (response.ok) {
-            sessionStorage.setItem('token', data.token);
-            navigate(`/profile/${username}`);
-        } else {
-            setErrorMessage(data.message);
-            setShowError(true);
+        else {
+            const response = await customFetch('/api/profile/account/password', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    new_password: inputNewPassword
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                setErrorMessage(data.message);
+                setShowError(true);
+                return;
+            }
+            if (response.ok) {
+                sessionStorage.setItem('token', data.token);
+                navigate(`/profile/${username}`);
+            } else {
+                setErrorMessage(data.message);
+                setShowError(true);
+            }
         }
     }
     async function deleteAccount() {
@@ -72,28 +79,23 @@ const ChangePasswordPage = () => {
     return (
         <>
             <div className="col-md-7 order-lg-2 row mt-4">
-                <form className="col-xl-6">
+                <form className="col-xl-6" onSubmit={changePassowrd}>
                     <h4>Change password {username}</h4>
                     <hr className="mb-3 mt-3"/>
                     <div className="mb-3">
-                        <label htmlFor="exampleInputPassword1" className="form-label">Current password</label>
-                        <input type="password" className="form-control" id="exampleInputPassword1"
-                               value={inputCurrentPassword} onChange={(e) => setCurrentPassword(e.target.value)}/>
-                        />
-                    </div>
-                    <div className="mb-3">
                         <label htmlFor="exampleInputPassword2" className="form-label">New password</label>
-                        <input type="password" className="form-control" id="exampleInputPassword2"
-                               value={inputNewPassword} onChange={(e) => setNewPassword(e.target.value)}/>/>
+                        <input type="password" className="form-control" id="exampleInputPassword2" required
+                               value={inputNewPassword} onChange={(e) => setNewPassword(e.target.value)}/>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="exampleInputPassword3" className="form-label">Confirm password</label>
-                        <input type="password" className="form-control" id="exampleInputPassword3"
-                               value={inputConfirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>/>
+                        <input type="password" className="form-control" id="exampleInputPassword3" required
+                               value={inputConfirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
                     </div>
-                    <button className="w-100 btn btn-outline-secondary" type="button" onClick={changePassowrd}>
+                    <button className="w-100 btn btn-outline-secondary" type="submit" >
                         Save changes
                     </button>
+                </form>
                     <div>
                         <h4 className="mt-3">Delete account</h4>
                         <hr className="mb-3 mt-3"/>
@@ -129,7 +131,7 @@ const ChangePasswordPage = () => {
                         </div>
 
                     </div>
-                </form>
+
             </div>
             <ProfileNavBar username={username}/>
             <ErrorMessage message={errorMessage} isVisible={showError} />

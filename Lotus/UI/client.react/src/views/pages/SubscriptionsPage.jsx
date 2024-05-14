@@ -47,6 +47,7 @@ const SubscriptionsPage = () => {
                             user_id={item.USER_ID}
                             user_image={'https://localhost:31903/' + item.PROFILE_PICTURE}
                             username={item.USERNAME}
+                            isAuthor={false}
                             content_image={'https://localhost:31903/' + item.IMAGE}
                             content_heading={item.TITLE}
                             content_text={item.CONTENT}

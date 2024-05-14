@@ -41,7 +41,6 @@ const NewsPage = () => {
                     <div className="container-fluid py-5">
                         <h1 className="display-1 fw-bold">News</h1>
                     </div>
-
                 </div>
                 <div className="row p-5 ">
                     <div className="col-4">
@@ -147,9 +146,9 @@ const NewsPage = () => {
                                 </>
                             ) : (
                                 <>
-                                        <span className="spinner-border spinner-border-sm resize justify-content-center"
-                                              role="status"
-                                              aria-hidden="true"></span>
+                                    <span className="spinner-border spinner-border-sm resize justify-content-center"
+                                          role="status"
+                                          aria-hidden="true"></span>
                                 </>
                             )
                         )}

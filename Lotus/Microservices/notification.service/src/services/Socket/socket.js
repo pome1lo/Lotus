@@ -29,7 +29,7 @@ const initializeSocketIo = (server) => {
                 AUTHOR: COMMENT_USERNAME,
                 USER_ID: USER_ID,
                 CONTENT: MESSAGE,
-                IMAGE: IMAGE
+                IMAGE: IMAGE.replace("https://localhost:31903/", "")
             });
 
             const DATA = {

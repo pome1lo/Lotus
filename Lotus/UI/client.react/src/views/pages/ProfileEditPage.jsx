@@ -67,7 +67,7 @@ const ProfileEditPage = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await authFetch('http://localhost:31903/api/profile/image', {
+        const response = await authFetch('https://localhost:31903/api/profile/image', {
             method: 'PUT',
             body: formData
         });
@@ -149,7 +149,7 @@ const ProfileEditPage = () => {
                                       <input type="text" className="form-control" id="Username"
                                              placeholder="Input your username" value={inputUserName}
                                              onChange={(e) => setUserName(e.target.value)}
-                                             required/>
+                                             />
                                       <div className="invalid-feedback">
                                           Please enter your username.
                                       </div>
