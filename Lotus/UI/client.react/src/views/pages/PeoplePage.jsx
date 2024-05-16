@@ -9,7 +9,7 @@ const PeoplePage = () => {
     const [subscriptions, setSubscriptions] = useState();
     const [subscribers, setSubscribers] = useState();
 
-    useEffect(() => {
+     useEffect(() => {
         customFetch('/api/profile/user/get/subscriptions')
             .then(response => {
                 if (response) {

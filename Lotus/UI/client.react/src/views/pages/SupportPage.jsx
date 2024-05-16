@@ -13,7 +13,7 @@ const SupportPage = () => {
 
     const hideSuccessMessage = () => {
         setShowSuccess(false);
-    };
+     };
     async function fetchData(event) {
         event.preventDefault();
 

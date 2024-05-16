@@ -11,7 +11,7 @@ const SubscriptionsPage = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
 
-    const navigate = useNavigate();
+     const navigate = useNavigate();
 
     useEffect(() => {
         const url = `/api/profile/user/get/posts`;

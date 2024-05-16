@@ -9,22 +9,23 @@ volumes:
   notify_proto_volume:
 
 services:
-  # webuireact:
-  #   container_name: web-ui-react
-  #   build:
-  #     context: ./UI/client.react
-  #     dockerfile: ./Dockerfile
-  #   volumes:
-  #     - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
-  #     - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - notificationwebapi
-  #     - authenticationwebapi
-  #     - profilewebapi
-  #     - recommendationwebapi
-  #     - authdb
+  webuireact:
+    container_name: web-ui-react
+    build:
+      context: ./UI/client.react
+      dockerfile: ./Dockerfile
+    volumes:
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
+      - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
+    ports:
+      - "3000:3000"
+    depends_on:
+      - notificationwebapi
+      - authenticationwebapi
+      - profilewebapi
+      - recommendationwebapi
+      - authdb
+      - gatewayapi
 
   gatewayapi:
     container_name: api-gateway
@@ -40,13 +41,14 @@ services:
     volumes:
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
-#    networks:
-#      - backend
-#      - frontend
-#    depends_on:
-#      - notificationwebapi
-#      - authenticationwebapi
-#      - profilewebapi
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - notificationwebapi
+      - authenticationwebapi
+      - profilewebapi
+      - newswebapi
 
   notificationwebapi:
     container_name: notification-web-api
@@ -57,6 +59,9 @@ services:
     environment:
       - APP_PORT=31902
       - GRPC_PORT=19002
+      - DB_HOST=mssqldb
+      - DB_NAME=NOTIFICATION_SERVICE
+      - DB_PORT=31910
       - GRPC_PORT_AUTH_SERVICE=19001
       - RABBITMQ_HOST=sendToQueue.js
       - RABBITMQ_PORT=5672
@@ -68,11 +73,11 @@ services:
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/notify.proto:/app/notify.proto
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
-#    networks:
-#    - backend
-#    depends_on:
-#      - redis
-#      - rabbitmq
+    networks:
+      - backend
+    depends_on:
+      - redis
+      - rabbitmq
 
   authenticationwebapi:
     container_name: authentication-web-api
@@ -81,9 +86,9 @@ services:
       context: ./Microservices/authentication.service
       dockerfile: ./Dockerfile
     environment:
-      - DB_HOST=authdb
+      - DB_HOST=mssqldb
       - DB_NAME=AUTHENTICATION_SERVICE
-      - DB_PORT=40005
+      - DB_PORT=31910
       - DB_PASSWORD=password@12345
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
@@ -100,11 +105,11 @@ services:
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/protos/notify.proto:/app/notify.proto
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.key:/app/LAB.key
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
-#    networks:
-#      - backend
-#    depends_on:
-#      - redis
-#      - rabbitmq
+    networks:
+      - backend
+    depends_on:
+      - redis
+      - rabbitmq
 
   profilewebapi:
     container_name: profile-web-api
@@ -113,9 +118,9 @@ services:
       context: ./Microservices/profile.service
       dockerfile: ./Dockerfile
     environment:
-      - DB_HOST=profiledb
+      - DB_HOST=mssqldb
       - DB_NAME=PROFILE_SERVICE
-      - DB_PORT=40006
+      - DB_PORT=31910
       - DB_PASSWORD=password@12345
       - RABBITMQ_HOST=sendToQueue.js
       - RABBITMQ_PORT=5672
@@ -130,8 +135,8 @@ services:
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
     ports:
       - "31903:31903"
-#    networks:
-#      - backend
+    networks:
+      - backend
 
   newswebapi:
     container_name: news-web-api
@@ -140,9 +145,9 @@ services:
       context: Microservices/news.service
       dockerfile: ./Dockerfile
     environment:
-      - DB_HOST=news-db
+      - DB_HOST=mssqldb
       - DB_NAME=NEWS_SERVICE
-      - DB_PORT=40007
+      - DB_PORT=31910
       - DB_PASSWORD=password@12345
       - APP_PORT=31904
       - SECRET_KEY=12AASF213ASDMaMDSKASK123ksmdaasl0o4askmd123k9asdfja
@@ -151,54 +156,33 @@ services:
       - D:/FILES/University/3 course/2term/Course Project/Lotus/Static/ssl/LAB.crt:/app/LAB.crt
     ports:
       - "31904:31904"
-#    networks:
-#      - backend
+    networks:
+      - backend
 
-  authdb:
-    container_name: auth-db
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=password@12345
-    ports:
-      - "40005:1433"
-#    networks:
-#      - backend
 
-  profiledb:
+  mssqldb:
     container_name: profile-db
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=password@12345
     ports:
-      - "40006:1433"
-#    networks:
-#      - backend
-
-  newsdb:
-    container_name: news-db
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=password@12345
-    ports:
-      - "40007:1433"
-#    networks:
-#      - backend
+      - "31910:1433"
+    networks:
+      - backend
 
   redis:
     container_name: redis
     image: redis:latest
     ports:
       - "6379:6379"
-#    networks:
-#      - backend
+    networks:
+      - backend
 
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:latest
     ports:
       - "5672:5672"
-#    networks:
-#      - backend
+    networks:
+      - backend

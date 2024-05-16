@@ -7,6 +7,9 @@ const jwt = require('jsonwebtoken');
 const koaJwt = require('koa-jwt');
 const Sequelize = require('sequelize');
 const { updatePassword: grpcUpdatePassword, deleteUser: grpcDeleteUser, updateAccount: grpcUpdateAccount } = require("../services/gRPC/AuthServer");
+const {COMMENT} = require("../database/models/comment");
+const {SUBSCRIPTION} = require("../database/models/subscription");
+const {SUPPORT} = require("../database/models/support");
 const Op = Sequelize.Op;
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
@@ -109,23 +112,44 @@ async function deleteAccount(ctx) {
             return;
         }
 
-        grpcDeleteUser(id);
+        await COMMENT.destroy({ where: { USER_ID: id } });
+
+        const subscribers = await SUBSCRIPTION.findAll({ where: { SUBSCRIBED_TO_ID: id } });
+        for (let sub of subscribers) {
+            const subscriber = await USER.findByPk(sub.SUBSCRIBER_ID);
+            subscriber.SUBSCRIPTIONS_COUNT--;
+            await subscriber.save();
+        }
+
+        const subscriptions = await SUBSCRIPTION.findAll({ where: { SUBSCRIBER_ID: id } });
+        for (let sub of subscriptions) {
+            const subscribedTo = await USER.findByPk(sub.SUBSCRIBED_TO_ID);
+            subscribedTo.SUBSCRIBERS_COUNT--;
+            await subscribedTo.save();
+        }
+
+        await SUBSCRIPTION.destroy({ where: { SUBSCRIBER_ID: id } });
+        await SUBSCRIPTION.destroy({ where: { SUBSCRIBED_TO_ID: id } });
+
+        await SUPPORT.destroy({ where: { USER_ID: id } });
 
         const posts = await POST.findAll({ where: { USER_ID: id } });
         for (let post of posts) {
             await post.destroy();
         }
-
+        grpcDeleteUser(id);
         await user.destroy();
 
         ctx.status = 200;
-        ctx.body = { message: 'User deleted successfully' };
+        ctx.body = { message: 'User and all related records deleted successfully' };
     } catch (error) {
         console.error(error.message);
         ctx.status = 500;
         ctx.body = { message: 'Something went wrong' };
     }
 }
+
+
 
 const PREFIX = "/api/profile/";
 

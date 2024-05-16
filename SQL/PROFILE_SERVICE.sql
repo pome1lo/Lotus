@@ -67,8 +67,7 @@ SELECT * FROM SUPPORT;
 SELECT * FROM POSTS;
 
 SELECT * FROM USERS;
-SELECT * FROM Subscription;
-SELECT * FROM SAVED_POSTS;
+SELECT * FROM Subscription; 
 
 -- don't forget to delete the cache in Redis
 -- redis-cli flushall

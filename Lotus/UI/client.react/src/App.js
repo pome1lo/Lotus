@@ -55,7 +55,7 @@ function App() {
             setAuthor(data.author);
             setImage(data.image);
             setMessage(data.message);
-        });
+        }); 
     }, []);
 
     return (

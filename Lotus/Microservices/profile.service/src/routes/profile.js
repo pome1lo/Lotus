@@ -239,7 +239,8 @@ async function getComments(ctx) {
     let comments = await COMMENT.findAll({where: { POST_ID: post_id } });
 
     if (comments) {
-        ctx.body = comments;
+        ctx.status = 200;
+        ctx.body = {comments: comments};
     } else {
         ctx.status = 404;
         ctx.body = { message: 'Users not found' };
@@ -270,14 +271,12 @@ async function getPosts(ctx) {
 async function createComment(ctx) {
     const username =  ctx.params.username;
     const post_id =  ctx.params.post_id;
-    const { comment_text, picture } = ctx.request.body;
+    const { comment_text, picture, com_username } = ctx.request.body;
     const user_id = ctx.state.user.user_id;
-    const comment_username = ctx.state.user.username;
-
     try {
         const comment = await COMMENT.create({
             USER_ID: user_id,
-            USERNAME: comment_username,
+            USERNAME: com_username,
             COMMENT: comment_text,
             POST_ID: post_id,
             USER_PICTURE: picture
@@ -306,20 +305,23 @@ async function deletePost(ctx) {
 
         if (ctx.state.user.user_id !== post.USER_ID) {
             ctx.status = 401;
-            ctx.body = { message: 'Unauthorized: You can only update your own information' };
+            ctx.body = { message: 'Unauthorized: You can only delete your own posts' };
             return;
         }
+
+        await COMMENT.destroy({ where: { POST_ID: post_id } });
 
         await post.destroy();
 
         ctx.status = 200;
-        ctx.body = { message: 'Post deleted successfully' };
+        ctx.body = { message: 'Post and all related comments deleted successfully' };
     } catch (error) {
         console.log(error.message);
         ctx.status = 500;
         ctx.body = { message: 'Something went wrong' };
     }
 }
+
 async function deleteComment(ctx) {
     const postId = ctx.params.post_id;
     const commentId = ctx.params.comment_id;
@@ -362,7 +364,7 @@ const PREFIX = "/api/profile/";
 
 router.get(PREFIX + 'profiles', getProfiles);
 router.get(PREFIX + ':username', koaJwt({ secret: SECRET_KEY }), getProfile);
-router.get(PREFIX, koaJwt({ secret: SECRET_KEY }), getCurrentProfile);
+router.get(PREFIX, '', koaJwt({ secret: SECRET_KEY }), getCurrentProfile);
 router.get(PREFIX + ':username/posts', getPosts);
 router.get(PREFIX + ':username/:post_id', getPost);
 router.get(PREFIX + ':username/:post_id/comments', getComments);

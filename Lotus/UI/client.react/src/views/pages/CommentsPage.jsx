@@ -19,31 +19,37 @@ const CommentsPage = () => {
     const [showError, setShowError] = useState(false);
     useEffect(() => {
         customFetch(`/api/profile/${username}`)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => setUser(data.user))
-        customFetch(`/api/profile/`)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => setCurrentUser(data.user))
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setUser(data.user);
+                    });
+                }
+            });
+        customFetch(`/api/profile/${sessionStorage.getItem('username')}`)
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setCurrentUser(data.user);
+                    });
+                }
+            });
         customFetch(`/api/profile/${username}/${post_id}`)
-            .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setPost(data);
+                    });
                 }
-                return res.json();
-            })
-            .then(data => setPost(data));
+            });
         customFetch(`/api/profile/${username}/${post_id}/comments`)
-            .then(res => {
-                if (!res.ok && res.status === 404) {
-                    navigate('/not-found');
+            .then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        setComments(data.comments);
+                    });
                 }
-                return res.json();
-            })
-            .then(data => setComments(data));
+            });
     }, [username, post_id, navigate]);
 
     async function sendComment() {
@@ -52,7 +58,8 @@ const CommentsPage = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 comment_text: inputComment,
-                picture: currentUser.PROFILE_PICTURE
+                picture: currentUser.PROFILE_PICTURE,
+                com_username: sessionStorage.getItem('username')
             })
         });
         const data = await response.json();

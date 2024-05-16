@@ -38,7 +38,8 @@ const Suggestions = () => {
                   ))
               ) : (
                   <div className="bg-body-tertiary p-5 rounded mt-3">
-                      <p className="lead small">Wow! It looks like you will spend your whole life watching news and posts from all the users you subscribe to on Lotus 🥲. Good luck!</p></div>
+                      <p className="lead small">Wow! It looks like you will spend your whole life watching news and posts from all the users you subscribe to on Lotus 🥲. Good luck!</p>
+                  </div>
               )
 
           )}

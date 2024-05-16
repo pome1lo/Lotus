@@ -11,7 +11,7 @@ const NewsPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [maxPages, setMaxPages] = useState(1)
 
-    const fetchArticlesByTopic = async (currentTopic) => {
+     const fetchArticlesByTopic = async (currentTopic) => {
         setNews([]);
         customFetch(`/api/news/${currentTopic}?limit=24&page=${currentPage}`)
             .then(response => {

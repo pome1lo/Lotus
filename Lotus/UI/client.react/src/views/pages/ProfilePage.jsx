@@ -159,7 +159,9 @@ const ProfilePage = () => {
                                     ))) : (
 
                                     (currentUsername === null || user.USERNAME !== currentUsername) ? (
-                                        <p>EMPTY</p>
+                                        <div className="bg-body-tertiary p-5 rounded mt-3">
+                                            <p className="lead small">The user has not posted a single post yet 🥲</p>
+                                        </div>
                                     ) : (
                                         <div className="position-relative p-5 text-center text-muted">
                                             <i className="bi bi-check2-circle display-3"></i>
